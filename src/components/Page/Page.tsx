@@ -2,6 +2,7 @@ import {
   Alert,
   Box,
   Chip,
+  DocumentPagination,
   Group,
   HashLink,
   Heading,
@@ -13,6 +14,8 @@ import {
 } from '@osuresearch/ui';
 
 import React, { createContext, useContext, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+
 import { useRipple } from '../../hooks/useRipple';
 import { useRippleContext } from '../../hooks/useRippleContext';
 import { Conditional } from '../Conditional';
@@ -42,7 +45,7 @@ export const context = createContext<PageContext>({} as PageContext);
  *
  */
 export function Page({ name, autolayout = false, children }: PageProps) {
-  const { form, reset, getValues } = useRippleContext();
+  const { form, reset, getPreviousPage, getNextPage, getValues } = useRippleContext();
 
   // load this page's responses into RHF
   // if there's fields we don't have yet, load 'em
@@ -52,10 +55,15 @@ export function Page({ name, autolayout = false, children }: PageProps) {
   // sum up errors for all fields on this page
   // handle all the magic custom rendering / auto rendering / etc.
 
+  // This can be undefined if someone input an invalid page name.
   const page = form.pages[name];
 
   // default'n
   useEffect(() => {
+    if (!page) {
+      return;
+    }
+
     reset(
       {
         ...getValues(),
@@ -84,6 +92,9 @@ export function Page({ name, autolayout = false, children }: PageProps) {
     );
   }
 
+  const prev = getPreviousPage(name);
+  const next = getNextPage(name);
+
   return (
     <Provider value={{ name, page }}>
       <Conditional name={name} condition={page.condition}>
@@ -99,10 +110,36 @@ export function Page({ name, autolayout = false, children }: PageProps) {
           </Paper>
         )}
 
-        <Stack align="stretch" gap="xxl" py="lg">
+        <Stack align="stretch" gap="xl" py="lg">
           {autolayout && <Autolayout page={page} />}
           {!autolayout && <>{children}</>}
         </Stack>
+
+        <Group justify="apart">
+          {!prev && (
+            <DocumentPagination as={RouterLink} to="/" direction="previous">
+              Home
+            </DocumentPagination>
+          )}
+
+          {prev && (
+            <DocumentPagination as={RouterLink} to={'/page/' + prev.name} direction="previous">
+              {prev.definition.title}
+            </DocumentPagination>
+          )}
+
+          {next && (
+            <DocumentPagination as={RouterLink} to={'/page/' + next.name} direction="next">
+              {next.definition.title}
+            </DocumentPagination>
+          )}
+
+          {!next && (
+            <DocumentPagination as={RouterLink} to="/submit" direction="next">
+              Review &amp; Submit
+            </DocumentPagination>
+          )}
+        </Group>
       </Conditional>
     </Provider>
   );

@@ -2,9 +2,14 @@ import { Item } from '@osuresearch/ui';
 import React, { ComponentType } from 'react';
 import { useListData } from 'react-stately';
 import { BaseFieldProps, ChoiceFieldProps } from '../../react';
+import { Markdown } from '../Markdown';
 
-export type ChoiceFieldRendererProps = BaseFieldProps & {
-  as: ComponentType<ChoiceFieldProps>;
+type ChoiceItem = {
+  name: string;
+  label: React.ReactNode;
+};
+export type ChoiceFieldRendererProps = BaseFieldProps<any> & {
+  as: ComponentType<ChoiceFieldProps<any>>;
   choices: ChoicesList;
 };
 
@@ -13,16 +18,17 @@ export function ChoiceFieldRenderer({
   choices,
   ...props
 }: ChoiceFieldRendererProps) {
-  const list = useListData({
+  const list = useListData<ChoiceItem>({
     initialItems: Object.keys(choices).map((c) => ({
       name: c,
-      label: choices[c]
+      label: <Markdown text={choices[c]} />
     })),
     // initialSelectedKeys: [], TODO!
     getKey: (item) => item.name
   });
 
   // TODO: Never finished React Stately list integration for RUI.
+  // TODO: Strict type
   return (
     <Component
       {...props}
@@ -30,7 +36,7 @@ export function ChoiceFieldRenderer({
       selectedKeys={list.selectedKeys}
       onSelectionChange={list.setSelectedKeys}
     >
-      {(item) => <Item key={item.name}>{item.label}</Item>}
+      {(item: ChoiceItem) => <Item key={item.name}>{item.label}</Item>}
     </Component>
   );
 }

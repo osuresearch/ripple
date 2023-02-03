@@ -5,11 +5,11 @@ import { defaultComponent, FieldComponentProps, FieldComponentType } from '../re
 import { useRippleContext } from './useRippleContext';
 
 export type UseRippleFieldReturn = {
-  component: FieldComponentType;
+  component: FieldComponentType<any>;
   componentProps: React.ComponentProps<any>;
 };
 
-type InvalidFieldProps = FieldComponentProps & {
+type InvalidFieldProps = FieldComponentProps<any> & {
   error?: string;
 };
 
@@ -21,14 +21,16 @@ function InvalidField(props: InvalidFieldProps) {
   );
 }
 
-export function useRippleField(
+export function useRippleField<T extends object = any>(
   name: string,
   def: FieldDefinition,
   instance?: string
 ): UseRippleFieldReturn {
-  const { options, register } = useRippleContext();
+  const { options, register, selector } = useRippleContext();
 
-  let component: FieldComponentType | undefined = undefined;
+  const interactionMode = selector((state) => state.settings.interactionMode);
+
+  let component: FieldComponentType<T> | undefined = undefined;
   let props: React.ComponentProps<any> = {};
 
   if (def.type === 'Collection') {
@@ -54,7 +56,9 @@ export function useRippleField(
     }
   }
 
-  const registerProps = register(instance ? `${instance}.${name}` : name);
+  const registerProps = register(instance ? `${instance}.${name}` : name, {
+    disabled: interactionMode !== 'Edit'
+  });
 
   return {
     component,

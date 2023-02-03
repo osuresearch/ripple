@@ -1,7 +1,8 @@
 import React from 'react';
 import { Divider, Heading, Stack } from '@osuresearch/ui';
-import { Comment } from '../Comment';
+import { Thread } from '../Thread';
 import { useRippleContext } from '../../hooks/useRippleContext';
+import { irbInitialThreads } from '../../app/mocks';
 
 export function Comments() {
   const { selector } = useRippleContext();
@@ -12,14 +13,17 @@ export function Comments() {
     return null;
   }
 
+  const mocks = irbInitialThreads;
+
   return (
     <>
       <Divider orientation="vertical" />
       <Stack miw={400} align="stretch">
         <Heading level={2}>Comments</Heading>
-        <Comment />
-        <Comment />
-        <Comment />
+        TODO: Contextual vs list button. All pages vs current page button.
+        {mocks.map((thread) => (
+          <Thread key={thread.id} node={thread} />
+        ))}
       </Stack>
     </>
   );

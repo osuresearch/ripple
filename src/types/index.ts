@@ -6,6 +6,10 @@
 
 type DiffMode = 'Current' | 'Unified' | 'SideBySide';
 
+type LayoutMode = 'Paged' | 'Single';
+
+type InteractionMode = 'Edit' | 'Read' | 'Review';
+
 /**
  * GitHub-flavored markdown text
  */
@@ -30,6 +34,8 @@ type ChoicesList = Record<ChoiceKey, ChoiceValue>;
 const atomic = [
   'Text',
   'Boolean',
+  'Number',
+  'NumberRange',
   'Flag',
   'FlagArray',
   'Key',
@@ -193,4 +199,68 @@ type FormResponses = Record<FieldName, FieldResponse>;
 
 type FieldReferenceSet = {
   [x: FieldName]: [FieldDefinition, PageDefinition] | [undefined, undefined];
+};
+
+type ThreadContext = {
+  field?: FieldDefinition;
+  // except we don't have field NAME in this definition.
+  // would make more sense to just use PageName and FieldName.
+  // Also need text range context. And whether we're commenting on
+  // a particular item of the field (a checkbox, the label,
+  // text range, etc)
+};
+
+/**
+ * A comment thread made on a field within the form
+ */
+type Thread = {
+  id: string;
+
+  /** Who started the thread */
+  person: Person;
+
+  /** This user's role in relation to the current form */
+  role: string;
+
+  message: string;
+
+  date: Date;
+
+  /** Is this thread one that needs a resolution or has been resolved */
+  resolved?: boolean;
+
+  /**
+   * What is the target of discussion in this thread.
+   * Typically a field or a page.
+   */
+  context: ThreadContext;
+
+  /**
+   * Replies to this thread from other users
+   */
+  replies?: ThreadReply[];
+};
+
+type ThreadReply = {
+  id: string;
+
+  /** Who created the reply */
+  person: Person;
+
+  /** This user's role in relation to the current form */
+  role: string;
+
+  message: string;
+
+  date: Date;
+};
+
+/**
+ * Person Atomic from osuresearch/atomics (pending)
+ */
+type Person = {
+  id: string;
+  name: string;
+  username: string;
+  email?: string;
 };

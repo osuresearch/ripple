@@ -11,7 +11,7 @@ export type RippleOptions = {
    * If your form definition contains custom field components, you will define
    * your mapping here.
    */
-  components: Record<string, FieldComponentType>;
+  components: Record<string, FieldComponentType<any>>;
 };
 
 export type RippleContext = {
@@ -24,6 +24,20 @@ export type RippleContext = {
   // and other libraries.
   dispatch: () => RippleDispatch;
   selector: TypedUseSelectorHook<RootState>;
+
+  getPreviousPage: (page: PageName) =>
+    | {
+        name: PageName;
+        definition: PageDefinition;
+      }
+    | undefined;
+
+  getNextPage: (page: PageName) =>
+    | {
+        name: PageName;
+        definition: PageDefinition;
+      }
+    | undefined;
 } & UseRippleFormReturn<any, any>;
 
 export type UseRippleReturn<T extends FormDefinition> = RippleContext;
@@ -51,6 +65,30 @@ export function useRipple<T extends FormDefinition>(
     options: opt,
     dispatch: useDispatch,
     selector: useSelector,
+    getNextPage: (page: PageName) => {
+      // TODO: Condition magic
+      const keys = Object.keys(form.pages);
+
+      const idx = keys.indexOf(page);
+      if (idx > -1 && idx < keys.length - 1) {
+        return {
+          name: keys[idx + 1],
+          definition: form.pages[keys[idx + 1]]
+        };
+      }
+    },
+    getPreviousPage: (page: PageName) => {
+      // TODO: Condition magic
+      const keys = Object.keys(form.pages);
+
+      const idx = keys.indexOf(page);
+      if (idx > -1 && idx > 0) {
+        return {
+          name: keys[idx - 1],
+          definition: form.pages[keys[idx - 1]]
+        };
+      }
+    },
     ...rform
   };
 }

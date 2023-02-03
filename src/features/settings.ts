@@ -4,14 +4,24 @@ type SettingsState = {
   value: number;
   showComments: boolean;
   showConditions: boolean;
+  showNavigation: boolean;
+  showDebugger: boolean;
   diffMode: DiffMode;
+  layoutMode: LayoutMode;
+  interactionMode: InteractionMode;
+
+  currentPage?: PageName;
 };
 
 const initialState: SettingsState = {
   value: 0,
   showComments: true,
-  showConditions: true,
-  diffMode: 'Current'
+  showConditions: false,
+  showNavigation: true,
+  showDebugger: false,
+  diffMode: 'Current',
+  layoutMode: 'Paged',
+  interactionMode: 'Edit'
 };
 
 export const settingsSlice = createSlice({
@@ -21,16 +31,40 @@ export const settingsSlice = createSlice({
     toggleComments: (state, action: PayloadAction<boolean>) => {
       state.showComments = action.payload;
     },
+    toggleNavigation: (state, action: PayloadAction<boolean>) => {
+      state.showNavigation = action.payload;
+    },
+    toggleDebugger: (state, action: PayloadAction<boolean>) => {
+      state.showDebugger = action.payload;
+    },
     toggleConditions: (state, action: PayloadAction<boolean>) => {
       state.showConditions = action.payload;
     },
     setDiffMode: (state, action: PayloadAction<DiffMode>) => {
       state.diffMode = action.payload;
+    },
+    setLayoutMode: (state, action: PayloadAction<LayoutMode>) => {
+      state.layoutMode = action.payload;
+    },
+    setInteractionMode: (state, action: PayloadAction<InteractionMode>) => {
+      state.interactionMode = action.payload;
+    },
+    setCurrentPage: (state, action: PayloadAction<PageName>) => {
+      state.currentPage = action.payload;
     }
   }
 });
 
-export const { toggleComments, toggleConditions, setDiffMode } = settingsSlice.actions;
+export const {
+  toggleComments,
+  toggleNavigation,
+  toggleConditions,
+  toggleDebugger,
+  setDiffMode,
+  setLayoutMode,
+  setInteractionMode,
+  setCurrentPage
+} = settingsSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 // export const selectCount = (state: RootState) => state.counter.value;

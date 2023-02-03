@@ -9,50 +9,55 @@ import {
   DateField,
   RadioSetField,
   CheckboxSetField,
-  FormFieldBase
+  FormFieldBase,
+  NumberField
 } from '@osuresearch/ui';
 import { UseRippleFormRegisterReturn } from 'src/hooks/useRippleForm';
 import { RefCallBack } from 'react-hook-form';
 
-export type BaseFieldProps = {
-  name?: string;
-  label: React.ReactNode;
-  description: React.ReactNode;
-  errorMessage?: React.ReactNode;
-  isRequired?: boolean;
-};
-
-export type ValueFieldProps = BaseFieldProps;
-
-export type ChoiceFieldProps = BaseFieldProps & ListProps<any>;
-
-export type FieldRendererProps = BaseFieldProps & (ChoiceFieldProps | ValueFieldProps);
-
-export type FieldComponentType = React.ComponentType<FieldComponentProps>;
-
-export type FieldComponentProps = {
+export type BaseFieldProps<T> = {
   name?: FieldName;
-
   label: React.ReactNode;
   description: React.ReactNode;
 
   validationState?: 'invalid' | 'valid';
   errorMessage?: React.ReactNode;
+  necessityIndicator?: boolean;
 
-  value?: any;
-  onChange?: (value: any) => void;
-  onBlur?: (e: React.FocusEvent) => void;
-
-  isDisabled?: boolean;
   isRequired?: boolean;
+  isDisabled?: boolean;
+  diff?: DiffMode;
+
+  value?: T;
+  onChange?: (value: T) => void;
+  onBlur?: (e: React.FocusEvent) => void;
 
   children: any;
 };
 
+export interface PreviousValueBase<T> {
+  previousValue?: T;
+}
+
+export interface PreviousCollectionBase<T> {
+  previousValue?: T;
+
+  /** Previous items objects in the collection. */
+  previousItems?: Iterable<T>;
+}
+
+export type ValueFieldProps<T> = BaseFieldProps<T> & PreviousValueBase<T>;
+
+export type ChoiceFieldProps<T> = BaseFieldProps<T> & ListProps<any> & PreviousCollectionBase<any>;
+
+export type FieldComponentProps<T> = BaseFieldProps<T> & (ChoiceFieldProps<T> | ValueFieldProps<T>);
+
+export type FieldComponentType<T> = React.ComponentType<FieldComponentProps<T>>;
+
 /**
  * Mapping between a Ripple atomic and default RUI component
  */
-export const defaultComponent: Record<Atomic, FieldComponentType | undefined> = {
+export const defaultComponent: Record<Atomic, FieldComponentType<any> | undefined> = {
   Text: TextAreaField,
   Boolean: YesNoField,
   Person: TextField,
@@ -64,5 +69,8 @@ export const defaultComponent: Record<Atomic, FieldComponentType | undefined> = 
   FlagArray: CheckboxSetField,
 
   Date: DateField,
-  File: undefined // FilesField
+  File: undefined, // FilesField
+
+  Number: NumberField,
+  NumberRange: undefined // RangeField?
 };

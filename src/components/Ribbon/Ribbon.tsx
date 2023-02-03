@@ -2,17 +2,31 @@ import {
   CheckboxField,
   CheckboxSetField,
   Code,
+  Divider,
   Group,
+  Icon,
   Item,
   Paper,
   RadioSetField,
+  SelectField,
   Stack,
-  Text
+  TabPanel,
+  Text,
+  ToggleButton
 } from '@osuresearch/ui';
 import React from 'react';
 import { useRippleContext } from '../../hooks/useRippleContext';
 
-import { toggleComments, toggleConditions, setDiffMode } from '../../features/settings';
+import {
+  toggleComments,
+  toggleConditions,
+  setDiffMode,
+  toggleNavigation,
+  toggleDebugger,
+  setLayoutMode,
+  setInteractionMode
+} from '../../features/settings';
+import { SubmitButton } from '../SubmitButton';
 
 // export type RibbonProps = {};
 
@@ -23,74 +37,120 @@ export function Ribbon() {
     formState: { errors, dirtyFields, touchedFields, defaultValues }
   } = ctx;
 
-  const diffMode = ctx.selector((state) => state.settings.diffMode);
   const showComments = ctx.selector((state) => state.settings.showComments);
   const showConditions = ctx.selector((state) => state.settings.showConditions);
+  const showNavigation = ctx.selector((state) => state.settings.showNavigation);
+  const showDebugger = ctx.selector((state) => state.settings.showDebugger);
+  const diffMode = ctx.selector((state) => state.settings.diffMode);
+  const layoutMode = ctx.selector((state) => state.settings.layoutMode);
+  const interactionMode = ctx.selector((state) => state.settings.interactionMode);
   const dispatch = ctx.dispatch();
 
   return (
     <Paper
       shadow="md"
-      p="sm"
+      bgc="light"
+      p={0}
       mb="xl"
-      mah={180}
+      h={108}
       style={{
         position: 'sticky',
         top: 0,
         zIndex: 9999,
-        overflowY: 'scroll'
+        overflowY: 'hidden'
       }}
     >
-      <Group>
-        <RadioSetField
-          label="View as"
-          value={diffMode}
-          onChange={(value) => {
-            dispatch(setDiffMode(value as DiffMode));
-          }}
-        >
-          <Item key="Current">Current version</Item>
-          <Item key="Unified">Unified diff</Item>
-          <Item key="SideBySide">Side by side diff</Item>
-        </RadioSetField>
+      <TabPanel variant="simple">
+        <Item title="Home">
+          <Group p="sm">Formatting things</Group>
+        </Item>
+        <Item title="Design">
+          <Group p="sm">Design things for devs</Group>
+        </Item>
+        <Item title="Review">
+          <Group p="sm">
+            <ToggleButton
+              variant="default"
+              isSelected={showComments}
+              onChange={(value) => dispatch(toggleComments(value as boolean))}
+            >
+              Comments
+            </ToggleButton>
 
-        <Stack>
-          <CheckboxField
-            isSelected={showComments}
-            label="Show comments"
-            onChange={(value) => dispatch(toggleComments(value))}
-          />
+            <Divider orientation="vertical" gap={0} />
 
-          <CheckboxField
-            isSelected={showConditions}
-            label="Show conditions"
-            onChange={(value) => dispatch(toggleConditions(value))}
-          />
-        </Stack>
+            <SelectField
+              aria-label="View tracked changes as"
+              value={diffMode}
+              onChange={(value) => {
+                dispatch(setDiffMode(value as DiffMode));
+              }}
+            >
+              <Item key="Current">Current version</Item>
+              <Item key="Unified">Unified diff</Item>
+              <Item key="SideBySide">Side by side diff</Item>
+            </SelectField>
+          </Group>
+        </Item>
+        <Item title="View">
+          <Group p="sm">
+            <ToggleButton
+              variant="default"
+              isSelected={showNavigation}
+              onChange={(value) => dispatch(toggleNavigation(value as boolean))}
+            >
+              Navigation
+            </ToggleButton>
 
-        <Stack>
-          <Text fw="bold">formState.touchedFields</Text>
-          <Code block>{JSON.stringify(touchedFields, undefined, 2)}</Code>
+            <ToggleButton
+              variant="default"
+              isSelected={showDebugger}
+              onChange={(value) => dispatch(toggleDebugger(value as boolean))}
+            >
+              <Icon name="code" /> Debugger
+            </ToggleButton>
 
-          <Text fw="bold">formState.dirtyFields</Text>
-          <Code block>{JSON.stringify(dirtyFields, undefined, 2)}</Code>
-        </Stack>
+            <ToggleButton
+              variant="default"
+              isSelected={showConditions}
+              onChange={(value) => dispatch(toggleConditions(value as boolean))}
+            >
+              <Icon name="code" /> Conditions
+            </ToggleButton>
 
-        <Stack>
-          <Text fw="bold">formState.errors</Text>
-          <Code block>{JSON.stringify(errors, undefined, 2)}</Code>
-        </Stack>
+            <Divider orientation="vertical" gap={0} />
 
-        <Stack>
-          <Text fw="bold">formState.defaultValues</Text>
-          <Code block>{JSON.stringify(defaultValues, undefined, 2)}</Code>
-        </Stack>
+            <SelectField
+              aria-label="Layout"
+              value={layoutMode}
+              onChange={(value) => {
+                dispatch(setLayoutMode(value as LayoutMode));
+              }}
+            >
+              <Item key="Paged">Paged</Item>
+              <Item key="Single">Single page</Item>
+            </SelectField>
 
-        <Stack>
-          <Text fw="bold">getValues</Text>
-          <Code block>{JSON.stringify(getValues(), undefined, 2)}</Code>
-        </Stack>
-      </Group>
+            <Divider orientation="vertical" gap={0} />
+
+            <SelectField
+              aria-label="Interaction Mode"
+              value={interactionMode}
+              onChange={(value) => {
+                dispatch(setInteractionMode(value as InteractionMode));
+              }}
+            >
+              <Item key="Edit">Editable</Item>
+              <Item key="Read">Read Only</Item>
+              <Item key="Review">Review</Item>
+            </SelectField>
+          </Group>
+        </Item>
+        <Item title="Help">
+          <Group p="sm">Docs link, contact support link, about this product, etc.</Group>
+        </Item>
+      </TabPanel>
+      <SubmitButton absolute />
     </Paper>
   );
 }

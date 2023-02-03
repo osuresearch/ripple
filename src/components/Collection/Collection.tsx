@@ -4,12 +4,12 @@ import { context } from '../Page';
 import { Markdown } from '../Markdown';
 import { Conditional } from '../Conditional';
 import { useRippleContext } from '../../hooks/useRippleContext';
-import { FieldComponentProps, FieldComponentType } from '../../react';
-import { Alert, Button, Group, Heading, Stack } from '@osuresearch/ui';
+import { FieldComponentProps } from '../../react';
+import { Alert, Button, Group, Heading, Stack, Text } from '@osuresearch/ui';
 import { useFieldArray } from 'react-hook-form';
 import { InstanceSummary } from './InstanceSummary';
 
-export type CollectionProps = FieldComponentProps;
+export type CollectionProps = FieldComponentProps<any>;
 
 export function Collection({ name = '__invalid', ...props }: CollectionProps) {
   const { control } = useRippleContext();
@@ -77,7 +77,7 @@ export function Collection({ name = '__invalid', ...props }: CollectionProps) {
       </Stack>
 
       {fields.length < 1 && (
-        <>There&apos;s nothing here! Click the Add button to start adding entries</>
+        <Text>There&apos;s nothing here! Click the Add button to start adding entries</Text>
       )}
     </Stack>
   );

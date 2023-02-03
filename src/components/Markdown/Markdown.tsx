@@ -78,6 +78,23 @@ export function _Markdown({ text }: MarkdownProps) {
               py: 'xs'
             }
           },
+          // TODO: How should this be styled?
+          // See Radiation page.
+          blockquote: {
+            component: Text,
+            props: {
+              as: 'p',
+              pl: 'md'
+            }
+          },
+          small: {
+            component: Text,
+            props: {
+              as: 'p',
+              fs: 'sm',
+              c: 'dark'
+            }
+          },
 
           // TODO: Don't really have a list component yet.
           // Hacking something in.

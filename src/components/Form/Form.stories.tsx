@@ -7,14 +7,10 @@ import IRBInitial from '../../app/forms/osu-irb-initial';
 import { Page } from '../Page';
 import { Field } from '../Field';
 
-// import { Item, Stack, TabPanel, Text } from '@osuresearch/ui';
-
-import { Alert, Box, Code, Item, TabPanel, Text } from '@osuresearch/ui';
+import { Item, TabPanel, NumberField } from '@osuresearch/ui';
 import { RippleOptions } from '../../hooks/useRipple';
 import { InvestigatorSearchField } from '../../app/components/InvestigatorSearchField';
 import { ApprovedResearchSiteSearchField } from '../../app/components/ApprovedResearchSiteSearchField';
-import { Training } from '../../app/components/Training';
-import { Ribbon } from '../Ribbon';
 
 export default {
   title: 'Components/Form',
@@ -40,6 +36,18 @@ export const Template: Story<FormProps> = (args) => (
     form basis to add custom content and layout configurations.
 
     */}
+
+    <Page name="team">
+      <Field name="team" />
+    </Page>
+
+    {/* Autolayout */}
+    <Page name="activities" autolayout />
+
+    {/*
+      Explicit layout - a developer can customize content between pages.
+      However custom content may not be included in final printouts.
+    */}
     {/* <Page name="multiSiteStudy">
       <Field name="isTest1" />
 
@@ -54,17 +62,6 @@ export const Template: Story<FormProps> = (args) => (
     </Page> */}
 
     <Page name="locations" autolayout />
-
-    {/* <Page name="activities" autolayout />
-
-    <Page name="newTeamMember">
-      <Field name="person" />
-
-      <Training />
-
-      <Field name="designation" />
-      <Field name="activities" />
-    </Page> */}
   </Form>
 );
 

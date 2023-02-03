@@ -8,7 +8,9 @@ import { useRippleField } from '../../hooks/useRippleField';
 import { ValueFieldRenderer } from './ValueFieldRenderer';
 import { ChoiceFieldRenderer } from './ChoiceFieldRenderer';
 import { Conditional } from '../Conditional';
-import { AriaNecessityIndicator, Chip, Stack, Text } from '@osuresearch/ui';
+import { Chip, Stack, Text } from '@osuresearch/ui';
+import { useResizeObserver } from '../../hooks/useResizeObserver';
+import { Anchor } from '../Anchor';
 
 export type FieldProps = {
   /**
@@ -46,6 +48,7 @@ export function Field({ name, instance }: FieldProps) {
   // If loading response data, placeholder it or persist as read-only
   // until available for editing. (every RUI field should have a skeleton state, tbh)
 
+  // TODO: Can be null if the field is invalid
   const definition = page.fields[name];
 
   const { component, componentProps } = useRippleField(name, definition, instance);
@@ -55,14 +58,15 @@ export function Field({ name, instance }: FieldProps) {
   } = useRippleContext();
 
   const diffMode = selector((state) => state.settings.diffMode);
+  const interactionMode = selector((state) => state.settings.interactionMode);
 
   // honestly, diff handling should be here instead.
   // In case we need to do unified diff on labels and descriptions.
 
   const error = errors[name];
 
-  // should be in the hook too...
-  const fieldProps: BaseFieldProps & AriaNecessityIndicator = {
+  // TODO: Should be in the hook too tbh
+  const fieldProps: Partial<BaseFieldProps<any>> = {
     name,
     label: (
       // Using data tags for targetting fields as we can't guarantee that a
@@ -75,8 +79,8 @@ export function Field({ name, instance }: FieldProps) {
     description: <Markdown text={definition.description} />,
     errorMessage: error?.message as string,
     // isRequired: !!definition?.required,
-    isRequired: true,
-    necessityIndicator: true
+    necessityIndicator: !!definition?.required,
+    diff: diffMode !== 'Current' ? diffMode : undefined
   };
 
   // if (!definition) {
@@ -102,29 +106,35 @@ export function Field({ name, instance }: FieldProps) {
 
   // --- everything below is default rendering behaviour ---
 
+  const [ref, rect] = useResizeObserver<HTMLDivElement>();
+
   if (definition.choices) {
     // If there's choices, we need <Item> children to represent each choice.
     // We assume all RUI choice components behave the same way by default.
     // TODO: Don't assume, verify.
     return (
-      <Conditional name={name} condition={definition.condition}>
-        <ChoiceFieldRenderer
-          as={component as ComponentType<ChoiceFieldProps>}
-          {...fieldProps}
-          {...componentProps}
-          choices={definition.choices}
-        />
-      </Conditional>
+      <Anchor name={(instance ?? '') + name}>
+        <Conditional name={name} condition={definition.condition}>
+          <ChoiceFieldRenderer
+            as={component as ComponentType<ChoiceFieldProps<any>>}
+            {...fieldProps}
+            {...componentProps}
+            choices={definition.choices}
+          />
+        </Conditional>
+      </Anchor>
     );
   }
 
   return (
     <Conditional name={name} condition={definition.condition}>
-      <ValueFieldRenderer
-        as={component as ComponentType<ValueFieldProps>}
-        {...fieldProps}
-        {...componentProps}
-      />
+      <Anchor name={(instance ?? '') + name}>
+        <ValueFieldRenderer
+          as={component as ComponentType<ValueFieldProps<any>>}
+          {...fieldProps}
+          {...componentProps}
+        />
+      </Anchor>
     </Conditional>
   );
 }

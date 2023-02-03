@@ -127,6 +127,8 @@
     "markdown-to-jsx": "^7.1.8",
     "react-hook-form": "^7.42.1",
     "react-redux": "^8.0.5",
+    "react-router": "^6.8.0",
+    "react-router-dom": "^6.8.0",
     "regexify-string": "^1.0.19",
     "tsconfig-paths-webpack-plugin": "^4.0.0"
   }

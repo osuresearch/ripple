@@ -32,7 +32,7 @@ function FieldInfo({
   }
 
   return (
-    <Text fw="bold">
+    <Text fw="bold" c="warning-contrast">
       {name}
       <Callout
         contentSlot={
@@ -45,7 +45,7 @@ function FieldInfo({
           </Stack>
         }
       >
-        <IconButton label="More information" name="questionCircle" size={16} />
+        <IconButton c="warning-contrast" label="More information" name="questionCircle" size={16} />
       </Callout>
     </Text>
   );
@@ -79,7 +79,10 @@ export function ConditionInformation({
     <div style={{ border: '2px dashed var(--rui-warning)' }}>
       <Group justify="apart">
         <Text as="div" bgc="warning-shade" c="warning-contrast" p="xs">
-          <Text fw="bold">Condition: </Text> {formatted}
+          <Text fw="bold" c="warning-contrast">
+            Condition:{' '}
+          </Text>{' '}
+          {formatted}
         </Text>
         <Chip m="sm" c={passed ? 'success' : 'error'}>
           {passed ? 'Visible' : 'Hidden'}
