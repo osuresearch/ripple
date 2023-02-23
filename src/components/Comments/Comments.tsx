@@ -9,6 +9,8 @@ export function Comments() {
   const [sorted, setSorted] = useState<Thread[]>();
 
   useEffect(() => {
+    if (!threads) return;
+
     setSorted(
       [...threads].sort((a, b) =>
         (a.context.rect?.top ?? 0) < (b.context.rect?.top ?? 0) ? -1 : 1

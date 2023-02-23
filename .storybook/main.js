@@ -12,6 +12,9 @@ module.exports = {
     "storybook-dark-mode",
   ],
   framework: "@storybook/react",
+  core: {
+    builder: 'webpack5',
+  },
   // webpackFinal: async (config, { configType }) => {
   //   config.resolve.plugins = [new TsconfigPathsPlugin()];
   //   return config;
