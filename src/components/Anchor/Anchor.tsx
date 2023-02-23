@@ -23,17 +23,6 @@ export function Anchor({ name, children }: AnchorProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    // if (!ref.current) {
-    //   return;
-    // }
-
-    // // Triggers reflow when there's a large number of elements...
-    // const r = ref.current?.getBoundingClientRect();
-    // if (r) {
-    //   console.log(name, r.top);
-    //   anchorPositions[name] = r.top;
-    // }
-
     if (ref.current) {
       observer.observe(ref.current);
     }

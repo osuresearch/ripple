@@ -27,6 +27,7 @@ import {
   setInteractionMode
 } from '../../features/settings';
 import { SubmitButton } from '../SubmitButton';
+import { Awareness } from '../Awareness';
 
 // export type RibbonProps = {};
 
@@ -60,97 +61,103 @@ export function Ribbon() {
         overflowY: 'hidden'
       }}
     >
-      <TabPanel variant="simple">
-        <Item title="Home">
-          <Group p="sm">Formatting things</Group>
-        </Item>
-        <Item title="Design">
-          <Group p="sm">Design things for devs</Group>
-        </Item>
-        <Item title="Review">
-          <Group p="sm">
-            <ToggleButton
-              variant="default"
-              isSelected={showComments}
-              onChange={(value) => dispatch(toggleComments(value as boolean))}
-            >
-              Comments
-            </ToggleButton>
+      <Group justify="apart">
+        <TabPanel variant="simple">
+          <Item title="Home">
+            <Group p="sm">Formatting things</Group>
+          </Item>
+          <Item title="Design">
+            <Group p="sm">Design things for devs</Group>
+          </Item>
+          <Item title="Review">
+            <Group p="sm">
+              <ToggleButton
+                variant="default"
+                isSelected={showComments}
+                onChange={(value) => dispatch(toggleComments(value as boolean))}
+              >
+                Comments
+              </ToggleButton>
 
-            <Divider orientation="vertical" gap={0} />
+              <Divider orientation="vertical" gap={0} />
 
-            <SelectField
-              aria-label="View tracked changes as"
-              value={diffMode}
-              onChange={(value) => {
-                dispatch(setDiffMode(value as DiffMode));
-              }}
-            >
-              <Item key="Current">Current version</Item>
-              <Item key="Unified">Unified diff</Item>
-              <Item key="SideBySide">Side by side diff</Item>
-            </SelectField>
-          </Group>
-        </Item>
-        <Item title="View">
-          <Group p="sm">
-            <ToggleButton
-              variant="default"
-              isSelected={showNavigation}
-              onChange={(value) => dispatch(toggleNavigation(value as boolean))}
-            >
-              Navigation
-            </ToggleButton>
+              <SelectField
+                aria-label="View tracked changes as"
+                value={diffMode}
+                onChange={(value) => {
+                  dispatch(setDiffMode(value as DiffMode));
+                }}
+              >
+                <Item key="Current">Current version</Item>
+                <Item key="Unified">Unified diff</Item>
+                <Item key="SideBySide">Side by side diff</Item>
+              </SelectField>
+            </Group>
+          </Item>
+          <Item title="View">
+            <Group p="sm">
+              <ToggleButton
+                variant="default"
+                isSelected={showNavigation}
+                onChange={(value) => dispatch(toggleNavigation(value as boolean))}
+              >
+                Navigation
+              </ToggleButton>
 
-            <ToggleButton
-              variant="default"
-              isSelected={showDebugger}
-              onChange={(value) => dispatch(toggleDebugger(value as boolean))}
-            >
-              <Icon name="code" /> Debugger
-            </ToggleButton>
+              <ToggleButton
+                variant="default"
+                isSelected={showDebugger}
+                onChange={(value) => dispatch(toggleDebugger(value as boolean))}
+              >
+                <Icon name="code" /> Debugger
+              </ToggleButton>
 
-            <ToggleButton
-              variant="default"
-              isSelected={showConditions}
-              onChange={(value) => dispatch(toggleConditions(value as boolean))}
-            >
-              <Icon name="code" /> Conditions
-            </ToggleButton>
+              <ToggleButton
+                variant="default"
+                isSelected={showConditions}
+                onChange={(value) => dispatch(toggleConditions(value as boolean))}
+              >
+                <Icon name="code" /> Conditions
+              </ToggleButton>
 
-            <Divider orientation="vertical" gap={0} />
+              <Divider orientation="vertical" gap={0} />
 
-            <SelectField
-              aria-label="Layout"
-              value={layoutMode}
-              onChange={(value) => {
-                dispatch(setLayoutMode(value as LayoutMode));
-              }}
-            >
-              <Item key="Paged">Paged</Item>
-              <Item key="Single">Single page</Item>
-            </SelectField>
+              <SelectField
+                aria-label="Layout"
+                value={layoutMode}
+                onChange={(value) => {
+                  dispatch(setLayoutMode(value as LayoutMode));
+                }}
+              >
+                <Item key="Paged">Paged</Item>
+                <Item key="Single">Single page</Item>
+              </SelectField>
 
-            <Divider orientation="vertical" gap={0} />
+              <Divider orientation="vertical" gap={0} />
 
-            <SelectField
-              aria-label="Interaction Mode"
-              value={interactionMode}
-              onChange={(value) => {
-                dispatch(setInteractionMode(value as InteractionMode));
-              }}
-            >
-              <Item key="Edit">Editable</Item>
-              <Item key="Read">Read Only</Item>
-              <Item key="Review">Review</Item>
-            </SelectField>
-          </Group>
-        </Item>
-        <Item title="Help">
-          <Group p="sm">Docs link, contact support link, about this product, etc.</Group>
-        </Item>
-      </TabPanel>
-      <SubmitButton absolute />
+              <SelectField
+                aria-label="Interaction Mode"
+                value={interactionMode}
+                onChange={(value) => {
+                  dispatch(setInteractionMode(value as InteractionMode));
+                }}
+              >
+                <Item key="Edit">Editable</Item>
+                <Item key="Read">Read Only</Item>
+                <Item key="Review">Review</Item>
+              </SelectField>
+            </Group>
+          </Item>
+          <Item title="Help">
+            <Group p="sm">Docs link, contact support link, about this product, etc.</Group>
+          </Item>
+        </TabPanel>
+
+        <Group p="sm">
+          <Awareness />
+          <SubmitButton />
+        </Group>
+      </Group>
     </Paper>
   );
 }

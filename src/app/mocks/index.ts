@@ -27,10 +27,10 @@ export const irbInitialThreads: Thread[] = [
     person: people.chase,
     role: 'reviewer',
     message: 'This is a hot thread with replies',
-    date: new Date(),
+    date: new Date().getUTCSeconds(),
     resolved: false,
     context: {
-      field: IRBInitial.pages.activities.fields.activities
+      field: 'activities'
     },
     replies: [
       {
@@ -38,14 +38,15 @@ export const irbInitialThreads: Thread[] = [
         person: people.chase,
         role: 'reviewer',
         message: 'Rabble rabble!',
-        date: new Date()
+        date: new Date().getUTCSeconds()
       },
       {
         id: 'reply-1.2',
         person: people.brutus,
         role: 'reviewer',
-        message: 'I agree with the rabble rabble',
-        date: new Date()
+        message:
+          'I agree with the rabble rabble. And also this is going to be a comment with a lot of content that should, ideally, fade out until we focus on the comment to see the rest.',
+        date: new Date().getUTCSeconds()
       }
     ]
   },
@@ -53,11 +54,13 @@ export const irbInitialThreads: Thread[] = [
     id: 'thread-2',
     person: people.chase,
     role: 'reviewer',
-    message: 'This is a thread that no one replied to',
-    date: new Date(),
+    message:
+      'This is a thread that no one replied to. And also this is going to be a comment with a lot of content that should, ideally, fade out until we focus on the comment to see the rest.',
+    date: new Date().getUTCSeconds(),
     resolved: false,
+    replies: [],
     context: {
-      field: IRBInitial.pages.activities.fields.activities
+      field: 'activities'
     }
   },
   {
@@ -65,10 +68,10 @@ export const irbInitialThreads: Thread[] = [
     person: people.neil,
     role: 'submitter',
     message: 'This is a thread that we resolved',
-    date: new Date(),
+    date: new Date().getUTCSeconds(),
     resolved: true,
     context: {
-      field: IRBInitial.pages.activities.fields.activities
+      field: 'activities'
     },
     replies: [
       {
@@ -76,7 +79,7 @@ export const irbInitialThreads: Thread[] = [
         person: people.chase,
         role: 'reviewer',
         message: 'LGTM',
-        date: new Date()
+        date: new Date().getUTCSeconds()
       }
     ]
   }

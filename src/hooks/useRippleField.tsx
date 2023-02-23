@@ -1,8 +1,10 @@
 import { Alert, mergeProps } from '@osuresearch/ui';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { YTextEvent } from 'yjs';
 import { Collection } from '../components/Collection';
 import { defaultComponent, FieldComponentProps, FieldComponentType } from '../react';
 import { useRippleContext } from './useRippleContext';
+import { useDebouncedState } from './useDebouncedState';
 
 export type UseRippleFieldReturn = {
   component: FieldComponentType<any>;
@@ -26,12 +28,14 @@ export function useRippleField<T extends object = any>(
   def: FieldDefinition,
   instance?: string
 ): UseRippleFieldReturn {
-  const { options, register, selector } = useRippleContext();
+  const { doc, options, register, selector, watch, setValue } = useRippleContext();
 
   const interactionMode = selector((state) => state.settings.interactionMode);
 
   let component: FieldComponentType<T> | undefined = undefined;
   let props: React.ComponentProps<any> = {};
+
+  const key = instance ? `${instance}.${name}` : name;
 
   if (def.type === 'Collection') {
     component = Collection;
@@ -56,12 +60,68 @@ export function useRippleField<T extends object = any>(
     }
   }
 
-  const registerProps = register(instance ? `${instance}.${name}` : name, {
-    disabled: interactionMode !== 'Edit'
-  });
+  // const { onChange, ...registerProps } = register(key, {
+  //   disabled: interactionMode !== 'Edit'
+  // });
+
+  const [ynode, setYNode] = useState(doc.getText(key));
+
+  useEffect(() => {
+    console.log('hook observer');
+    const observer = (e: YTextEvent) => {
+      setValue(key, e.target.toString(), {
+        shouldValidate: true,
+        shouldDirty: true
+      });
+    };
+
+    ynode.observe(observer);
+    return () => ynode.unobserve(observer);
+  }, [ynode]);
+
+  const value = watch(key);
+
+  const [debouncedValue, setDebouncedValue] = useDebouncedState('', 200);
+
+  // Fire off a Yjs sync whenever our debounced value is updated
+  useEffect(() => {
+    if (Array.isArray(value)) {
+    } else if (typeof value === 'string') {
+      // TODO: Be smart about insertions.
+      if (ynode.length > 0) ynode.delete(0, ynode.length);
+
+      ynode.insert(0, value);
+      console.debug(ynode);
+    } else if (typeof value === 'number') {
+    } else {
+      // ???
+    }
+  }, [debouncedValue]);
+
+  // Wrap onChange with a Yjs node sync
+  const handleChange = async (value: any) => {
+    setValue(key, value);
+    setDebouncedValue(value);
+    // Pass down to RHF onChange.
+    // onChange && onChange(value);
+  };
+
+  useEffect(() => {
+    console.log('hook register');
+    register(key, {
+      disabled: interactionMode !== 'Edit'
+    });
+  }, [key, register, interactionMode]);
 
   return {
     component,
-    componentProps: mergeProps(props, registerProps)
+    componentProps: mergeProps(
+      props,
+      // registerProps,
+      {
+        onChange: handleChange,
+        value: value ?? undefined
+      }
+    )
   };
 }

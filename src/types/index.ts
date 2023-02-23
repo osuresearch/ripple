@@ -4,6 +4,13 @@
 
 // Replicate: https://code.osu.edu/ORIS/flow/-/blob/v2-dev/src/Integration/GraphQL/types.gql
 
+type Rect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 type DiffMode = 'Current' | 'Unified' | 'SideBySide';
 
 type LayoutMode = 'Paged' | 'Single';
@@ -202,19 +209,29 @@ type FieldReferenceSet = {
 };
 
 type ThreadContext = {
-  field?: FieldDefinition;
-  // except we don't have field NAME in this definition.
-  // would make more sense to just use PageName and FieldName.
-  // Also need text range context. And whether we're commenting on
-  // a particular item of the field (a checkbox, the label,
-  // text range, etc)
+  field: FieldName;
+
+  // Text selection range within the context to associate with the thread
+  from: number;
+  to: number;
+
+  /**
+   * Where is this thread in relation to the source document.
+   *
+   * Note that this is `Document`-relative, which impacts contexts
+   * that are within scrollable iframes.
+   */
+  rect?: DOMRect;
 };
+
+type ThreadReplyID = string;
+type ThreadID = string;
 
 /**
  * A comment thread made on a field within the form
  */
 type Thread = {
-  id: string;
+  id: ThreadID;
 
   /** Who started the thread */
   person: Person;
@@ -224,10 +241,20 @@ type Thread = {
 
   message: string;
 
-  date: Date;
+  date: number;
 
   /** Is this thread one that needs a resolution or has been resolved */
   resolved?: boolean;
+
+  /** Is this thread deleted but recoverable */
+  deleted?: boolean;
+
+  /**
+   * Can this thread be recovered once deleted
+   *
+   * Threads with no content tend to not be recoverable.
+   */
+  recoverable?: boolean;
 
   /**
    * What is the target of discussion in this thread.
@@ -238,11 +265,11 @@ type Thread = {
   /**
    * Replies to this thread from other users
    */
-  replies?: ThreadReply[];
+  replies: ThreadReply[];
 };
 
 type ThreadReply = {
-  id: string;
+  id: ThreadReplyID;
 
   /** Who created the reply */
   person: Person;
@@ -252,7 +279,17 @@ type ThreadReply = {
 
   message: string;
 
-  date: Date;
+  date: number;
+
+  /** Is this reply deleted but recoverable */
+  deleted?: boolean;
+
+  /**
+   * Can this reply be recovered once deleted.
+   *
+   * Replies with no content tend to not be recoverable.
+   */
+  recoverable?: boolean;
 };
 
 /**

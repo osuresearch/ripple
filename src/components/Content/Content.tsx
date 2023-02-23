@@ -1,4 +1,4 @@
-import { Group, Heading, Divider, FormErrors, Text } from '@osuresearch/ui';
+import { Group, Heading, Divider, FormErrors, Text, Box } from '@osuresearch/ui';
 import React from 'react';
 import { Outlet } from 'react-router';
 import { useRippleContext } from '../../hooks';
@@ -17,9 +17,9 @@ export function Content() {
   } = useRippleContext();
 
   return (
-    <Group>
+    <Group grow>
       <Navigation />
-      <div>
+      <Box w="100%">
         <Heading level={1}>{form.title}</Heading>
         <Text fs="sm" c="dark">
           Version {form.version}
@@ -38,7 +38,7 @@ export function Content() {
           <Button variant="subtle">Cancel</Button>
           <SubmitButton />
         </Group> */}
-      </div>
+      </Box>
       <Aside />
     </Group>
   );

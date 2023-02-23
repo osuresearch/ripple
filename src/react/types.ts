@@ -14,9 +14,10 @@ import {
 } from '@osuresearch/ui';
 import { UseRippleFormRegisterReturn } from 'src/hooks/useRippleForm';
 import { RefCallBack } from 'react-hook-form';
+import { TextEditor } from '../components/TextEditor';
 
 export type BaseFieldProps<T> = {
-  name?: FieldName;
+  name: FieldName;
   label: React.ReactNode;
   description: React.ReactNode;
 
@@ -58,7 +59,8 @@ export type FieldComponentType<T> = React.ComponentType<FieldComponentProps<T>>;
  * Mapping between a Ripple atomic and default RUI component
  */
 export const defaultComponent: Record<Atomic, FieldComponentType<any> | undefined> = {
-  Text: TextAreaField,
+  // Text: TextAreaField,
+  Text: TextEditor,
   Boolean: YesNoField,
   Person: TextField,
 

@@ -1,5 +1,6 @@
-import { Stack, Code, Text } from '@osuresearch/ui';
+import { Stack, Code, Text, Heading } from '@osuresearch/ui';
 import React from 'react';
+import { useCommentingContext } from '../../hooks/useCommentingContext';
 import { useRippleContext } from '../../hooks';
 
 export function Debugger() {
@@ -8,8 +9,11 @@ export function Debugger() {
     getValues
   } = useRippleContext();
 
+  const { threads } = useCommentingContext();
+
   return (
-    <Stack miw={400} style={{ overflowX: 'auto' }}>
+    <Stack miw={400} w={400} style={{ overflowX: 'auto' }}>
+      <Heading level={2}>RHF</Heading>
       <Text fw="bold">formState.touchedFields</Text>
       <Code block>{JSON.stringify(touchedFields, undefined, 2)}</Code>
 
@@ -24,6 +28,9 @@ export function Debugger() {
 
       <Text fw="bold">getValues</Text>
       <Code block>{JSON.stringify(getValues(), undefined, 2)}</Code>
+
+      <Heading level={2}>Threads</Heading>
+      <Code block>{JSON.stringify(threads, undefined, 2)}</Code>
     </Stack>
   );
 }

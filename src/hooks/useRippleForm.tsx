@@ -1,5 +1,5 @@
 import { parseDate } from '@internationalized/date';
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   FieldPath,
   FieldValues,
@@ -9,6 +9,9 @@ import {
   useForm,
   RefCallBack
 } from 'react-hook-form';
+import { ydoc } from '../yjs';
+
+import * as Y from 'yjs';
 
 /**
  * Props to spread into RUI Field components to integrate with React Hook Form 7
@@ -52,6 +55,8 @@ export type UseRippleFormReturn<
   TContext = any
 > = Omit<UseFormReturn<TFieldValues, TContext>, 'register'> & {
   register: UseRippleFormRegister<TFieldValues>;
+  save: () => Promise<void>;
+  doc: Y.Doc;
 };
 
 // TODO: Unused. I'm thinking of offering a plugin system for formatting
@@ -77,70 +82,82 @@ export function useRippleForm<TFieldValues extends FormResponses = FormResponses
     mode: 'onBlur'
   });
 
-  // TODO: Memoize? I need to benchmark this
-  return {
-    register: (name, options) => {
-      const registerProps = rhfRegister(name, options);
+  // Apps often use 'cursor' in awareness to communicate cursor locations.
 
-      // Error info from the global form state
-      let error = undefined;
-      if (rest.formState.errors) {
-        error = rest.formState.errors[registerProps.name];
-      }
+  // Memoized to ensure that our save and register methods don't trigger
+  // re-renders when used in hook deps.
+  return useMemo<UseRippleFormReturn<TFieldValues, TContext>>(
+    () => ({
+      doc: ydoc,
+      save: async () => {
+        // TODO: Push RHF form data to the API.
+      },
+      register: (name, options) => {
+        const registerProps = rhfRegister<any>(name, options);
 
-      // Default value from the global form state
-      let defaultValue = undefined;
-      if (rest.formState.defaultValues) {
-        defaultValue = rest.formState.defaultValues[registerProps.name];
-      }
+        // Error info from the global form state
+        let error = undefined;
+        if (rest.formState.errors) {
+          error = rest.formState.errors[registerProps.name];
+        }
 
-      // TODO: Date AND time parsing option.
-      if (options?.valueAsDate && defaultValue && typeof defaultValue === 'string') {
-        defaultValue = parseDate(defaultValue);
-      }
+        // Default value from the global form state
+        let defaultValue = undefined;
+        if (rest.formState.defaultValues) {
+          defaultValue = rest.formState.defaultValues[registerProps.name];
+        }
 
-      // TODO: defaultValue is also an issue for DateValue fields.
-      // would need to typehint somehow... or custom converter hint it
-      // This is basically what I do in Unity, actually
+        // TODO: Date AND time parsing option.
+        if (options?.valueAsDate && defaultValue && typeof defaultValue === 'string') {
+          defaultValue = parseDate(defaultValue);
+        }
 
-      return {
-        name: registerProps.name,
-        isDisabled: registerProps.disabled,
-        isRequired: registerProps.required,
+        // TODO: defaultValue is also an issue for DateValue fields.
+        // would need to typehint somehow... or custom converter hint it
+        // This is basically what I do in Unity, actually
 
-        defaultValue,
-        ref: registerProps.ref,
+        return {
+          name: registerProps.name,
+          isDisabled: registerProps.disabled,
+          isRequired: registerProps.required,
 
-        // TODO: Controlled value? RHF uses refs to target elements for a reset()
-        // or a setValue(), but we don't have an equivalent here since a number of
-        // components are too complex. I don't want to force <Controller> usage
-        // across the board.
+          defaultValue,
+          ref: registerProps.ref,
 
-        // Our onChange handler comes from React Aria ValueBase as:
-        //  ValueBase<C> { onChange?: (value: C) => void }
-        // RHF expects a ChangeHandler in the form:
-        //  (event: { target: any; type?: any; }) => Promise<void | boolean>
-        onChange: (value) => {
-          // Convert DateValue back to ISO 8601 strings
-          // TODO: Type check for a DateValue just to be sure.
-          // A developer may set valueAsDate without actually using DateValue types.
-          if (options?.valueAsDate && typeof value !== 'string' && !!value) {
-            value = value.toString();
-          }
+          // TODO: Controlled value? RHF uses refs to target elements for a reset()
+          // or a setValue(), but we don't have an equivalent here since a number of
+          // components are too complex. I don't want to force <Controller> usage
+          // across the board.
 
-          registerProps.onChange({
-            target: {
-              name: registerProps.name,
-              value
-            },
-            type: 'change'
-          });
-        },
+          // Our onChange handler comes from React Aria ValueBase as:
+          //  ValueBase<C> { onChange?: (value: C) => void }
+          // RHF expects a ChangeHandler in the form:
+          //  (event: { target: any; type?: any; }) => Promise<void | boolean>
+          onChange: (value) => {
+            // Convert DateValue back to ISO 8601 strings
+            // TODO: Type check for a DateValue just to be sure.
+            // A developer may set valueAsDate without actually using DateValue types.
+            if (options?.valueAsDate && typeof value !== 'string' && !!value) {
+              value = value.toString();
+            }
 
-        // Transform errors to a ReactNode for rendering
-        errorMessage: error ? <>{error.message}</> : undefined
-      };
-    },
-    ...rest
-  };
+            // TODO: yjs integration here instead?
+
+            registerProps.onChange({
+              target: {
+                name: registerProps.name,
+                value
+              },
+              type: 'change'
+            });
+          },
+
+          // Transform errors to a ReactNode for rendering
+          errorMessage: error ? <>{error.message}</> : undefined
+        };
+      },
+      ...rest
+    }),
+    [rhfRegister]
+  );
 }
