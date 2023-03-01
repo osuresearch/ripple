@@ -25,21 +25,27 @@ import { isInViewport } from '../../react/utils';
 import { Profile } from './Profile';
 
 export type ThreadProps = {
-  node: Thread;
+  node: Annotation;
 };
 
 export function Thread({ node }: ThreadProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const { focused, focus, updateComment, resolve, reopen, remove, recover } = useThread(node.id);
+  const { focused, replies, focus, updateComment, resolve, reopen, remove, recover } = useThread(
+    node.id
+  );
 
   const [isEditing, setEditing] = useState(false);
   const [isAutofocus, setAutofocus] = useState(false);
 
-  const { resolved, replies } = node;
+  const body = node.body.find((b) => b.type === 'TextualBody') as AnnotationTextualBody;
+  const state = node.body.find((b) => b.type === 'RippleThread') as AnnotationThreadBody;
+
+  const defaultValue = body.value;
+  const { deleted, recoverable, resolved } = state;
 
   // An initial thread is one where the user hasn't added any
   // content yet to the main thread comment.
-  const isInitial = node.message.trim().length < 1;
+  const isInitial = defaultValue.trim().length < 1;
 
   // If this thread needs to be focused immediately on mount,
   // and we don't have any content (e.g. someone just started
@@ -89,7 +95,7 @@ export function Thread({ node }: ThreadProps) {
     updateComment(message);
     setEditing(false);
 
-    if (!message.length && node.message.length < 1) {
+    if (!message.length && message.length < 1) {
       remove(false);
     }
   };
@@ -100,13 +106,13 @@ export function Thread({ node }: ThreadProps) {
     // If the thread has no comment or replies, we delete it entirely.
     // This may have been a thread that was started by accident, or
     // the user decided to scrub it.
-    if (node.message.length < 1 && node.replies.length < 1) {
+    if (defaultValue.length < 1 && replies.length < 1) {
       remove(false);
     }
   };
 
   // Recoverable deleted threads get a placeholder to undo
-  if (node.deleted && node.recoverable) {
+  if (deleted && recoverable) {
     return (
       <Paper withBorder p="xs">
         Deleted thread.{' '}
@@ -118,7 +124,7 @@ export function Thread({ node }: ThreadProps) {
   }
 
   // Non-recoverable deleted threads are just hidden.
-  if (node.deleted) {
+  if (deleted) {
     return null;
   }
 
@@ -167,7 +173,7 @@ export function Thread({ node }: ThreadProps) {
                   label="Edit comment"
                   onPress={() => setEditing(true)}
                 />
-                <Menu label="More actions" asMoreOptions onAction={onAction}>
+                <Menu label="More actions" /*asMoreOptions*/ onAction={onAction}>
                   <Item key="link">Link to thread</Item>
                   <Item key="resolve">Resolve thread</Item>
                   <Item key="delete">Delete thread</Item>
@@ -178,18 +184,20 @@ export function Thread({ node }: ThreadProps) {
 
           {isEditing ? (
             <EditableMessage
-              defaultValue={node.message}
+              defaultValue={defaultValue}
               autosave={isAutofocus}
               onSave={onSave}
               onCancel={onCancel}
             />
           ) : (
-            <ReadOnlyMessage message={node.message} />
+            <ReadOnlyMessage message={defaultValue} />
           )}
+
+          {node.id}
 
           {focused && !isEditing && (
             <Text c="dark" fs="xs">
-              {new Date(node.date).toLocaleString()}
+              {new Date(node.created).toLocaleString()}
             </Text>
           )}
 
@@ -200,7 +208,7 @@ export function Thread({ node }: ThreadProps) {
           )}
 
           {(!resolved || focused) &&
-            replies?.map((reply) => <Reply key={reply.id} thread={node} node={reply} />)}
+            replies.map((reply) => <Reply key={reply.id} thread={node} node={reply} />)}
 
           {!resolved && !isInitial && <StartReply thread={node} />}
         </Stack>

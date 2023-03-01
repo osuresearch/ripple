@@ -1,8 +1,6 @@
-import { Extension, Mark } from '@tiptap/core';
-import { getMarkRange, mergeAttributes, ReactNodeViewRenderer } from '@tiptap/react';
-import { redo, undo, yCursorPlugin, ySyncPlugin, yUndoPlugin, yUndoPluginKey } from 'y-prosemirror';
+import { Mark } from '@tiptap/core';
+import { mergeAttributes } from '@tiptap/react';
 
-import { Plugin, TextSelection } from 'prosemirror-state';
 import { CommentView } from './CommentView';
 
 declare module '@tiptap/core' {
@@ -94,10 +92,6 @@ export const Comment = Mark.create<CommentOptions>({
         ({ commands }: any) =>
           commands.unsetMark('comment')
     };
-  },
-
-  addNodeView() {
-    return ReactNodeViewRenderer(CommentView);
   }
 
   // addKeyboardShortcuts() {

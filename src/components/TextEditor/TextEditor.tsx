@@ -21,7 +21,7 @@ import './collab-cursor.css';
 import './comment.css';
 import { Comment } from './comment';
 import { Editor } from '@tiptap/core';
-import { useCommentingContext } from '../../hooks/useCommentingContext';
+import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 
 import CommentView from './comment-view';
 
@@ -32,7 +32,7 @@ export type TextEditorProps = BaseFieldProps<string> & {
 // TODO: Rename to TextField or RichtextField
 export function TextEditor({ limit = 1000, ...props }: TextEditorProps) {
   const [provider, setProvider] = useState<WebrtcProvider>();
-  const { focusThread, clearFocus, startThread } = useCommentingContext();
+  const { focus, clearFocus, createThread } = useAnnotationsContext();
 
   const { name, onChange, onBlur, value } = props;
 
@@ -114,7 +114,7 @@ export function TextEditor({ limit = 1000, ...props }: TextEditorProps) {
     console.log('activate comment', editor.getAttributes('comment'));
 
     const id = editor.getAttributes('comment').comment;
-    focusThread(id);
+    focus(id);
   };
 
   const checkForUpdatedSelection = (editor: Editor) => {
@@ -147,10 +147,12 @@ export function TextEditor({ limit = 1000, ...props }: TextEditorProps) {
         const context = editor.state.doc.textBetween(from, to, ' ');
         console.log(context);
 
-        const thread = startThread({
-          field: name,
-          from,
-          to
+        const thread = createThread(name, 'commenting', {
+          type: 'RippleAnnoSelector',
+          subtype: 'highlight',
+          top: 0, // TODO: DOM-relative top position
+          start: from,
+          end: to
         });
 
         // Inject the comment as a mark into the DOM

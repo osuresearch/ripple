@@ -1,11 +1,11 @@
 import React from 'react';
 
-export type ReviewPopoverProps = {
+export type AnnotationPopoverProps = {
   coords: Rect;
   onAddComment: () => void;
 };
 
-export function ReviewPopover({ coords, onAddComment }: ReviewPopoverProps) {
+export function AnnotationPopover({ coords, onAddComment }: AnnotationPopoverProps) {
   return (
     <button
       style={{

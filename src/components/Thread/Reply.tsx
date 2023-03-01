@@ -20,17 +20,26 @@ import { Profile } from './Profile';
 import { ReadOnlyMessage } from './ReadOnlyMessage';
 
 export type ReplyProps = {
-  thread: Thread;
-  node: ThreadReply;
+  thread: Annotation;
+  node: Annotation;
 };
 
 /**
  * Render a comment as a reply to a thread
  */
 export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, node }, ref) => {
-  const { focused, updateReply, removeReply, recoverReply } = useThread(thread.id);
+  const { focused, replies, updateReply, removeReply, recoverReply } = useThread(thread.id);
 
   const [isEditing, setEditing] = useState(false);
+
+  // TODO: I don't like these. Stick stateful things into the hook.
+  const body = node.body.find((b) => b.type === 'TextualBody') as AnnotationTextualBody;
+  const state = node.body.find((b) => b.type === 'RippleReply') as AnnotationReplyBody;
+  const threadState = thread.body.find((b) => b.type === 'RippleThread') as AnnotationThreadBody;
+
+  const defaultValue = body.value;
+  const { deleted, recoverable } = state;
+  const { resolved } = threadState;
 
   const onAction = (key: React.Key) => {
     if (key === 'delete') {
@@ -48,9 +57,9 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
   // The first comment from an individual in a thread gets
   // a role chip. The rest don't to reduce UI noise.
   // TODO: Clean this up. It's just a hack atm.
-  let isFirstFromPerson = node.person.id !== thread.person.id;
+  let isFirstFromPerson = node.creator.id !== thread.creator.id;
   let found = false;
-  thread.replies?.forEach((r) => {
+  replies.forEach((r) => {
     if (found) {
       return;
     }
@@ -60,15 +69,13 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
       return;
     }
 
-    if (r.person.id === node.person.id) {
+    if (r.creator.id === node.creator.id) {
       isFirstFromPerson = false;
     }
   });
 
-  const resolved = !!thread.resolved;
-
   // Recoverable deleted replies get a placeholder to undo
-  if (node.deleted && node.recoverable) {
+  if (deleted && recoverable) {
     return (
       <Text p="xs" fs="sm">
         Deleted reply.{' '}
@@ -80,7 +87,7 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
   }
 
   // Non-recoverable deleted replies are just hidden.
-  if (node.deleted) {
+  if (deleted) {
     return null;
   }
 
@@ -100,7 +107,7 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
                 onPress={() => setEditing(true)}
               />
 
-              <Menu label="More actions" asMoreOptions onAction={onAction}>
+              <Menu label="More actions" /*asMoreOptions*/ onAction={onAction}>
                 <Item key="delete">Delete reply</Item>
               </Menu>
             </div>
@@ -109,17 +116,17 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
 
         {isEditing ? (
           <EditableMessage
-            defaultValue={node.message}
+            defaultValue={defaultValue}
             onSave={onSave}
             onCancel={() => setEditing(false)}
           />
         ) : (
-          <ReadOnlyMessage message={node.message} />
+          <ReadOnlyMessage message={defaultValue} />
         )}
 
         {focused && !isEditing && (
           <Text c="dark" fs="xs">
-            {new Date(node.date).toLocaleString()}
+            {new Date(node.created).toLocaleString()}
           </Text>
         )}
       </Stack>

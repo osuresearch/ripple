@@ -2,8 +2,8 @@ import React from 'react';
 import { Story, Meta } from '@storybook/react';
 
 import { ExternalDocument, ExternalDocumentProps } from './ExternalDocument';
-import { CommentsProvider } from '../CommentsProvider';
-import { threads } from '../../app/mocks/threads';
+import { AnnotationsProvider } from '../AnnotationsProvider';
+import { annotations } from '../../app/mocks/annotations';
 
 export default {
   title: 'Components/ExternalDocument',
@@ -12,9 +12,9 @@ export default {
 } as Meta<typeof ExternalDocument>;
 
 export const Simple: Story<ExternalDocumentProps> = (args) => (
-  <CommentsProvider>
+  <AnnotationsProvider>
     <ExternalDocument {...args} />
-  </CommentsProvider>
+  </AnnotationsProvider>
 );
 Simple.args = {
   content: `
@@ -138,7 +138,7 @@ export const StressTest: Story<ExternalDocumentProps> = (args) => {
   );
 
   return (
-    <CommentsProvider initialThreads={threads}>
+    <AnnotationsProvider initialItems={annotations}>
       <ExternalDocument
         {...args}
         content={`
@@ -161,6 +161,6 @@ export const StressTest: Story<ExternalDocumentProps> = (args) => {
         </html>
         `}
       />
-    </CommentsProvider>
+    </AnnotationsProvider>
   );
 };

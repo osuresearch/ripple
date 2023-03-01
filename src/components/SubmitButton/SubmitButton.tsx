@@ -11,12 +11,14 @@ export function SubmitButton({ absolute = false }: SubmitButtonProps) {
       type="submit"
       variant="primary"
       style={
-        absolute && {
-          position: 'absolute',
-          right: 'var(--rui-spacing-xs)',
-          top: 'var(--rui-spacing-xs)',
-          zIndex: 1000
-        }
+        absolute
+          ? {
+              position: 'absolute',
+              right: 'var(--rui-spacing-xs)',
+              top: 'var(--rui-spacing-xs)',
+              zIndex: 1000
+            }
+          : {}
       }
     >
       Save &amp; Exit

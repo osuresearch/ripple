@@ -2,30 +2,36 @@ import React from 'react';
 import { Group, Avatar, Chip, Text } from '@osuresearch/ui';
 
 export type ProfileProps = {
-  node: Thread | ThreadReply;
+  node: Annotation;
   showRole?: boolean;
 };
 
 export function Profile({ node, showRole }: ProfileProps) {
+  // Get the creator's role from the annotation body if we can
+  const body = node.body.find((b) => b.type === 'RippleReply' || b.type === 'RippleThread') as {
+    role: string;
+  };
+  const role = body ? body.role : '';
+
   return (
     <Group align="center" gap="xxs">
       <Avatar
-        alt={node.person.name}
+        alt={node.creator.name}
         size={24}
-        name={node.person.name}
-        opicUsername={node.person.username}
+        name={node.creator.name}
+        opicUsername={node.creator.nickname}
         style={{
           marginLeft: -28
         }}
       />
 
       <Text fw="bold" fs="sm">
-        {node.person.name}
+        {node.creator.name}
       </Text>
 
-      {showRole && (
+      {showRole && role && (
         <Chip variant="outline" c="blue">
-          {node.role}
+          {role}
         </Chip>
       )}
     </Group>

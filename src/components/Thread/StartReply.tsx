@@ -4,7 +4,7 @@ import { EditableMessage } from './EditableMessage';
 import { useThread } from '../../hooks/useThread';
 
 export type StartReplyProps = {
-  thread: Thread;
+  thread: Annotation;
 };
 
 export function StartReply({ thread }: StartReplyProps) {

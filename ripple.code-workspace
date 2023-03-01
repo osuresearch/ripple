@@ -1,12 +1,12 @@
 {
   "folders": [
-	{
-		"path": "D:/Projects/ORIS/ripple"
-	},
-	{
-		"path": "D:/Projects/ORIS/ui5"
-	}
-],
+		{
+			"path": "."
+		},
+		{
+			"path": "../ui5"
+		}
+	],
 "settings": {
 	"workbench.colorCustomizations": {
 		"activityBar.activeBackground": "#ab307e",

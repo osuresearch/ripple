@@ -2,8 +2,7 @@ import { Code, Group, Heading, Stack } from '@osuresearch/ui';
 import React from 'react';
 import Frame from 'react-frame-component';
 
-import { Comments } from '../Comments';
-import { useCommentingContext } from '../../hooks/useCommentingContext';
+import { Annotations } from '../Annotations';
 import { Controller } from './Controller';
 
 // Styles to inject into the inner iframe
@@ -27,18 +26,6 @@ export type ExternalDocumentProps = {
    */
   content: string;
 };
-
-function Debug() {
-  const { threads, focused } = useCommentingContext();
-  return (
-    <Stack>
-      <Heading level={3}>🔧 Debug things</Heading>
-      {focused ? 'Focused thread: ' + JSON.stringify(focused, undefined, 2) : 'No focused thread'}
-
-      <Code block>{JSON.stringify(threads, undefined, 2)}</Code>
-    </Stack>
-  );
-}
 
 /**
  * Container for a reviewable document that was generated through
@@ -65,8 +52,7 @@ export function ExternalDocument(props: ExternalDocumentProps) {
         mah="100%"
         style={{ overflowY: 'scroll', overflowX: 'hidden' }}
       >
-        <Comments />
-        <Debug />
+        <Annotations />
       </Stack>
     </Group>
   );

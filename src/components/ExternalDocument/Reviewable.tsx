@@ -7,9 +7,9 @@ import StarterKit from '@tiptap/starter-kit';
 
 import { Comment } from '../TextEditor/comment';
 import { CommentFocus } from '../TextEditor/comment-focus';
-import { useCommentingContext } from '../../hooks/useCommentingContext';
+import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import { useFrame } from 'react-frame-component';
-import { ReviewPopover } from './ReviewPopover';
+import { AnnotationPopover } from './AnnotationPopover';
 import { isInViewport } from '../../react/utils';
 
 type Rect = {
@@ -28,7 +28,7 @@ type ActiveMark = Rect & {
  *
  * @param editor
  */
-function getCurrentThreadIDs(editor: Editor): Set<ThreadID> {
+function getCurrentThreadIDs(editor: Editor): Set<AnnotationID> {
   // The ProseEditor way of navigating the node tree is a bit complex
   // (see: https://discuss.prosemirror.net/t/best-method-for-collecting-all-marks-in-a-block/2883)
 
@@ -36,7 +36,7 @@ function getCurrentThreadIDs(editor: Editor): Set<ThreadID> {
   // If this doesn't scale in the future, look into Node-based iteration.
 
   const views = editor.view.dom.querySelectorAll<HTMLElement>('comment-view');
-  const ids = new Set<ThreadID>();
+  const ids = new Set<AnnotationID>();
   views.forEach((el) => el.dataset.comment && ids.add(el.dataset.comment));
 
   return ids;
@@ -70,13 +70,13 @@ export type ReviewableProps = {
  */
 export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, content }, ref) => {
   const [isTextSelected, setIsTextSelected] = useState(false);
-  const { window, document } = useFrame();
+  const { window } = useFrame();
 
   // Global context for the entire document for thread management
-  const { threads, focused, startThread, focusThread, clearFocus } = useCommentingContext();
+  const { annotations, focused, createThread, focus, clearFocus } = useAnnotationsContext();
 
   // Track threads that are currently associated with this reviewable section
-  const [threadIds, setThreadIds] = useState<ThreadID[]>([]);
+  const [threadIds, setThreadIds] = useState<AnnotationID[]>([]);
 
   const [selectionCoords, setSelectionCoords] = useState<Rect>();
 
@@ -124,10 +124,10 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     // const ids = getCurrentThreadIDs(editor);
     // console.log('UPDATE MARKS (mount)', ids);
 
-    const ids = new Set<ThreadID>();
+    const ids = new Set<AnnotationID>();
 
-    // Find threads that are loaded for this context but we don't track yet
-    threads.forEach((t) => t.context.field === name && ids.add(t.id));
+    // Find threads that are associated with this field but we don't track yet
+    annotations.forEach((t) => t.target.source === name && ids.add(t.id));
 
     setThreadIds(Array.from(ids));
   }, [editor]);
@@ -154,14 +154,14 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     // If we click inside a comment mark, it takes selection priority.
     if (mark && editor.isFocused) {
       const id = editor.getAttributes('comment').comment;
-      focusThread(id);
+      focus(id);
     }
 
     setSelectionCoords(undefined);
     setIsTextSelected(false);
   };
 
-  const reapplyMarks = (editor: Editor, threads: Thread[]) => {
+  const reapplyMarks = (editor: Editor, threads: Annotation[]) => {
     console.log('reapply marks', editor, threads);
 
     // Remove all comment marks
@@ -171,26 +171,30 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     // We don't mark deleted or resolved threads.
     // However, if the user focuses a resolved thread, we
     // show the focus mark.
-    threads.forEach(
-      (t) =>
-        !t.deleted &&
-        !t.resolved &&
+    threads.forEach((t) => {
+      const { deleted, resolved } = t.body.find(
+        (b) => b.type === 'RippleThread'
+      ) as AnnotationThreadBody;
+
+      if (!deleted && !resolved) {
         commands
           .setTextSelection({
-            from: t.context.from,
-            to: t.context.to
+            from: (t.target.selector as RippleAnnoSelector).start ?? 0,
+            to: (t.target.selector as RippleAnnoSelector).end ?? 0
           })
-          .setComment(t.id)
-    );
+          .setComment(t.id);
+      }
+    });
 
     // Select the focused thread if it's in our group
+    // This can merge with the above.
     threads.forEach(
       (t) =>
         t.id === focused?.id &&
         commands
           .setTextSelection({
-            from: t.context.from,
-            to: t.context.to
+            from: (t.target.selector as RippleAnnoSelector).start ?? 0,
+            to: (t.target.selector as RippleAnnoSelector).end ?? 0
           })
           .setCommentFocus(t.id)
     );
@@ -216,20 +220,16 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
       if (!empty) {
         const context = editor.state.doc.textBetween(from, to, ' ');
 
-        const thread = startThread({
-          field: name,
+        const thread = createThread(name, 'commenting', {
+          type: 'RippleAnnoSelector',
+          subtype: 'highlight',
+          // TODO: Instance ID support
+          top: fromPos.top + (window?.scrollY ?? 0),
+          // left: fromPos.left,
+          // bottom: fromPos.bottom - fromPos.top + (window?.scrollY ?? 0)
 
-          // TODO: I reconstruct a TextSelection from these. But is this position
-          // the same thing as a TextSelection Range?
-          from,
-          to,
-
-          rect: new DOMRect(
-            fromPos.left,
-            fromPos.top + (window?.scrollY ?? 0),
-            0, // Width isn't calculated for these
-            fromPos.bottom - fromPos.top + (window?.scrollY ?? 0)
-          )
+          start: from,
+          end: to
         });
 
         // Add to the list of tracked threads
@@ -252,12 +252,16 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     // on iterating *all* threads during changes.
 
     // Filter down to threads we're tracking
-    const trackedThreads = threads.filter((t) => threadIds.includes(t.id));
+    const trackedThreads = annotations.filter((t) => threadIds.includes(t.id));
 
     // Sum up threads that haven't been deleted or resolved
     let totalVisible = 0;
     trackedThreads.forEach((t) => {
-      if (!t.deleted && !t.resolved) {
+      const { deleted, resolved } = t.body.find(
+        (b) => b.type === 'RippleThread'
+      ) as AnnotationThreadBody;
+
+      if (!deleted && !resolved) {
         totalVisible++;
       }
     });
@@ -268,7 +272,7 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
       reapplyMarks(editor, trackedThreads);
       setMarkCount(totalVisible);
     }
-  }, [editor, threads, threadIds]);
+  }, [editor, annotations, threadIds]);
 
   // If a tracked thread is focused, update our marker to match
   useEffect(() => {
@@ -280,29 +284,39 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     // previously focused on this instance.
     const commands = editor.chain().selectAll().unsetCommentFocus().setTextSelection(0);
 
-    if (focused && !focused.deleted && focused.context.rect && threadIds.includes(focused.id)) {
-      // Find the updated context position in the editor
-      const pos = rectAtPos(window as Window, editor, focused.context.from);
-
-      setActiveMark({
-        id: focused.id,
-        ...pos
-      });
-
-      // Wrap it with a comment-focus mark
-      commands
-        .setTextSelection({
-          from: focused.context.from,
-          to: focused.context.to
-        })
-        .setCommentFocus(focused.id);
-
-      scrollIntoView(pos);
-    } else {
-      setActiveMark(undefined);
+    const range = { from: 0, to: 0 };
+    if (focused?.target.selector?.type === 'RippleAnnoSelector') {
+      range.from = focused.target.selector.start ?? 0;
+      range.to = focused.target.selector.end ?? 0;
     }
 
-    commands.run();
+    if (!focused) {
+      setActiveMark(undefined);
+      commands.run();
+      return;
+    }
+
+    const { deleted } = focused?.body.find(
+      (b) => b.type === 'RippleThread'
+    ) as AnnotationThreadBody;
+    if (deleted || !threadIds.includes(focused.id)) {
+      setActiveMark(undefined);
+      commands.run();
+      return;
+    }
+
+    // Find the updated context position in the editor
+    const pos = rectAtPos(window as Window, editor, range.from);
+
+    setActiveMark({
+      id: focused.id,
+      ...pos
+    });
+
+    scrollIntoView(pos);
+
+    // Wrap it with a comment-focus mark
+    commands.setTextSelection(range).setCommentFocus(focused.id).run();
   }, [editor, threadIds, focused]);
 
   const scrollIntoView = (rect: Rect) => {
@@ -324,7 +338,7 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
       <EditorContent editor={editor} />
 
       {isTextSelected && selectionCoords && isFocused && (
-        <ReviewPopover coords={selectionCoords} onAddComment={addCommentOnSelection} />
+        <AnnotationPopover coords={selectionCoords} onAddComment={addCommentOnSelection} />
       )}
 
       {/* <div style={{ border: '1px solid red' }}>

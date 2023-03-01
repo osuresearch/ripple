@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRippleContext } from '../../hooks';
-import { Comments } from '../Comments';
+import { Annotations } from '../Annotations';
 
 export function Aside() {
   const { selector } = useRippleContext();
@@ -10,5 +10,5 @@ export function Aside() {
     return null;
   }
 
-  return <Comments />;
+  return <Annotations />;
 }
