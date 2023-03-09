@@ -143,6 +143,20 @@ type CollectionField = {
 };
 
 /**
+ * A divider that separates and groups like-fields.
+ *
+ * Typically presented as a semantic header in the DOM
+ * and may be used for generating automatic navigation
+ * within a page.
+ */
+type SectionField = {
+  type: 'Section'
+  template?: never;
+  component?: never;
+  choices?: never;
+}
+
+/**
  * An explicit question and response
  */
 type AtomicField = {
@@ -160,7 +174,7 @@ type AtomicField = {
   template?: never;
 };
 
-type FieldDefinition = BaseField & (AtomicField | CollectionField);
+type FieldDefinition = BaseField & (AtomicField | CollectionField | SectionField);
 
 type PageDefinition = {
   title: string;
