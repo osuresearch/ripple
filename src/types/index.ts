@@ -20,6 +20,11 @@ type InteractionMode = 'Edit' | 'Read' | 'Review';
 type Markdown = string;
 
 /**
+ * Mustache template text
+ */
+type Mustache = string;
+
+/**
  * React component to use in place of the default field renderer.
  *
  * You can pass through additional props to the component.
@@ -61,6 +66,8 @@ type ReservedNames = (typeof reservedNames)[number];
 type PageName = Exclude<string, keyof ReservedNames>;
 type FieldName = Exclude<string, keyof ReservedNames>;
 
+type FieldType = Atomic | 'Section' | 'Collection';
+
 type Validator = {
   // required: Input your ZIP code
 };
@@ -98,6 +105,14 @@ type BaseField = {
   description?: Markdown;
 
   /**
+   * Content to display when there is no response to the field.
+   *
+   * Depending on the implementing component for the field, this
+   * may or may not actually support Markdown format.
+   */
+  placeholder?: Markdown;
+
+  /**
    * Simple "is this field required" validation rule.
    *
    * If the value is a string, the error message presented for the
@@ -112,6 +127,12 @@ type BaseField = {
   required?: string;
 
   /**
+   * If true, this field is computed from the responses in other
+   * fields and cannot be modified by the submitter.
+   */
+  computed?: boolean;
+
+  /**
    * Frontend and backend validation rules for this field.
    *
    * Some validation rules may help block saving the field's response
@@ -124,6 +145,11 @@ type BaseField = {
    * Condition for displaying this field based on existing responses
    */
   condition?: Condition;
+
+  /**
+   * Example response value for demonstrating this field
+   */
+  example?: any;
 };
 
 /**
@@ -138,9 +164,40 @@ type CollectionField = {
    */
   template: PageDefinition;
 
+  /**
+   * Summary content for each entry in the collection.
+   *
+   * This supports both markdown and Mustache for templating.
+   *
+   * Mustache variables will be derived from the field responses
+   * within each instance being summarized.
+   */
+  summary?: Markdown;
+
   component?: never;
   choices?: never;
 };
+
+/**
+ * A section within a form to create a grouping of related fields.
+ *
+ * Will typically be rendered as a heading. Sections do not persist
+ * with form response data.
+ */
+type SectionField = {
+  type: 'Section',
+
+  /**
+   * Optional component to render.
+   *
+   * If omitted, Ripple will use the default section component.
+   */
+  component?: ReactFieldComponent;
+
+  choices?: never;
+  template?: never;
+  summary?: never;
+}
 
 /**
  * An explicit question and response
@@ -158,9 +215,10 @@ type AtomicField = {
   component?: ReactFieldComponent;
 
   template?: never;
+  summary?: never;
 };
 
-type FieldDefinition = BaseField & (AtomicField | CollectionField);
+type FieldDefinition = BaseField & (AtomicField | CollectionField | SectionField);
 
 type PageDefinition = {
   title: string;
@@ -214,3 +272,9 @@ type Person = {
   username: string;
   email?: string;
 };
+
+type TableOfContentsSection = {
+  id: string
+  title: string
+  level: number
+}

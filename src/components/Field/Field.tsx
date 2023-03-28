@@ -10,7 +10,6 @@ import { ChoiceFieldRenderer } from './ChoiceFieldRenderer';
 import { Conditional } from '../Conditional';
 import { Chip, Stack, Text } from '@osuresearch/ui';
 import { useResizeObserver } from '../../hooks/useResizeObserver';
-import { Anchor } from '../Anchor';
 
 export type FieldProps = {
   /**
@@ -71,12 +70,13 @@ export function Field({ name, instance }: FieldProps) {
     label: (
       // Using data tags for targetting fields as we can't guarantee that a
       // developer won't place multiple instances of the form in the same DOM.
-      <Stack data-ripple-field={name}>
-        {/* <Chip>Field: {name}</Chip> */}
+      <span data-ripple-field={name}>
+        <Chip variant="outline" c="pink" style={{ float: 'right' }}>field: {name}</Chip>
         <Markdown text={definition.label} />
-      </Stack>
+      </span>
     ),
     description: <Markdown text={definition.description} />,
+    placeholder: definition.placeholder ? <Markdown text={definition.placeholder} /> : undefined,
     errorMessage: error?.message as string,
     // isRequired: !!definition?.required,
     necessityIndicator: !!definition?.required,
@@ -113,7 +113,7 @@ export function Field({ name, instance }: FieldProps) {
     // We assume all RUI choice components behave the same way by default.
     // TODO: Don't assume, verify.
     return (
-      <Anchor name={(instance ?? '') + name}>
+      // <Anchor name={(instance ?? '') + name}>
         <Conditional name={name} condition={definition.condition}>
           <ChoiceFieldRenderer
             as={component as ComponentType<ChoiceFieldProps<any>>}
@@ -122,19 +122,19 @@ export function Field({ name, instance }: FieldProps) {
             choices={definition.choices}
           />
         </Conditional>
-      </Anchor>
+      // </Anchor>
     );
   }
 
   return (
     <Conditional name={name} condition={definition.condition}>
-      <Anchor name={(instance ?? '') + name}>
+      {/* <Anchor name={(instance ?? '') + name}> */}
         <ValueFieldRenderer
           as={component as ComponentType<ValueFieldProps<any>>}
           {...fieldProps}
           {...componentProps}
         />
-      </Anchor>
+      {/* </Anchor> */}
     </Conditional>
   );
 }

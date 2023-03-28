@@ -23,6 +23,7 @@ export function Collection({ name = '__invalid', ...props }: CollectionProps) {
   // This is magic that needs to handle instances.
 
   const template = page.fields[name].template;
+  const summaryTemplate = page.fields[name].summary;
 
   if (!template) {
     return (
@@ -68,6 +69,7 @@ export function Collection({ name = '__invalid', ...props }: CollectionProps) {
           <InstanceSummary
             name={name}
             template={template}
+            summaryTemplate={summaryTemplate}
             key={field.id}
             id={field.id}
             index={index}
@@ -77,7 +79,7 @@ export function Collection({ name = '__invalid', ...props }: CollectionProps) {
       </Stack>
 
       {fields.length < 1 && (
-        <Text>There&apos;s nothing here! Click the Add button to start adding entries</Text>
+        <Text>{props.placeholder ?? 'There\'s nothing here! Click the Add button to start adding entries'}</Text>
       )}
     </Stack>
   );

@@ -5,6 +5,7 @@ import { DocsContainer } from './DocsContainer';
 
 import { RUIProvider } from '@osuresearch/ui';
 import '@osuresearch/ui/dist/index.css';
+import './preview.css';
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },

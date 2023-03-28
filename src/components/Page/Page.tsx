@@ -102,7 +102,7 @@ export function Page({ name, autolayout = false, children }: PageProps) {
           <HashLink id={'ripple-page-' + name}>{page.title}</HashLink>
         </Heading>
 
-        <Chip isRemovable={false}>page.name: {name}</Chip>
+        <Chip variant="outline" c="pink">page.name: {name}</Chip>
 
         {page.description && (
           <Paper p="lg" bgc="light" shadow="sm" withBorder>

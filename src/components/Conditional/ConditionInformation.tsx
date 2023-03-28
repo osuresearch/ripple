@@ -40,7 +40,7 @@ function FieldInfo({
             <Text>{field?.label}</Text>
             <Group>
               <Chip c="error">required</Chip>
-              <Chip>Page: {page?.title ?? 'Unknown'}</Chip>
+              <Chip variant="outline" c="pink">page: {page?.title ?? 'Unknown'}</Chip>
             </Group>
           </Stack>
         }

@@ -1,6 +1,7 @@
-import { Box, Button, FocusRing, Item, LookupField, LookupFieldProps } from '@osuresearch/ui';
+import { Box, Button, Code, FocusRing, FormField, Item, LookupField, LookupFieldProps } from '@osuresearch/ui';
 import React, { useRef, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useTextField } from 'react-aria';
 
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -21,7 +22,6 @@ import './collab-cursor.css';
 import './comment.css';
 import { Comment } from './comment';
 import { Editor } from '@tiptap/core';
-import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 
 import CommentView from './comment-view';
 
@@ -167,11 +167,28 @@ export function TextEditor({ limit = 1000, ...props }: TextEditorProps) {
     setIsTextSelected(false);
   };
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(props, inputRef);
+
   return (
-    <Box className="rui-border-2" p="sm">
-      <EditorContent editor={editor} />
-      {editor?.storage.characterCount?.characters() ?? 0}/{limit} characters
-      {isTextSelected && <Button onPress={addCommentOnSelection}>Comment</Button>}
-    </Box>
+    <FormField
+      labelProps={labelProps}
+      descriptionProps={descriptionProps}
+      errorMessageProps={errorMessageProps}
+      {...props}
+    >
+      <Box className="rui-border-2" p="sm">
+        <EditorContent editor={editor}
+          id={inputProps.id}
+          aria-labelledby={inputProps['aria-labelledby']}
+          aria-describedby={inputProps['aria-describedby']}
+          // disabled, readOnly, value, name, onBlur (null), type: text
+        />
+
+        {editor?.storage.characterCount?.characters() ?? 0}/{limit} characters
+        {isTextSelected && <Button onPress={addCommentOnSelection}>Comment</Button>}
+      </Box>
+    </FormField>
   );
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useRippleContext } from '../../hooks';
-import { Annotations } from '../Annotations';
 
 export function Aside() {
   const { selector } = useRippleContext();
@@ -10,5 +9,10 @@ export function Aside() {
     return null;
   }
 
-  return <Annotations />;
+  return (
+    <div>
+      Annotator components have been moved to @osuresearch/annotator
+      and will need to be re-added.
+    </div>
+  )
 }

@@ -12,14 +12,26 @@ import {
   FormFieldBase,
   NumberField
 } from '@osuresearch/ui';
-import { UseRippleFormRegisterReturn } from 'src/hooks/useRippleForm';
-import { RefCallBack } from 'react-hook-form';
 import { TextEditor } from '../components/TextEditor';
+import { Section } from '../components/Section';
 
 export type BaseFieldProps<T> = {
-  name: FieldName;
+
+  // TODO: This is only optional for compat with a react-aria
+  // feature we don't use. Need to somehow make it stricter
+  // while dropping react-aria's nonsense.
+  name?: string;
+
   label: React.ReactNode;
-  description: React.ReactNode;
+  description?: React.ReactNode;
+
+  /**
+   * Placeholder content if the field has not been filled out.
+   *
+   * This must be a string to support inserting placeholder
+   * text within native `input` elements.
+   */
+  placeholder?: string;
 
   validationState?: 'invalid' | 'valid';
   errorMessage?: React.ReactNode;
@@ -58,7 +70,7 @@ export type FieldComponentType<T> = React.ComponentType<FieldComponentProps<T>>;
 /**
  * Mapping between a Ripple atomic and default RUI component
  */
-export const defaultComponent: Record<Atomic, FieldComponentType<any> | undefined> = {
+export const defaultComponent: Record<FieldType, FieldComponentType<any> | undefined> = {
   // Text: TextAreaField,
   Text: TextEditor,
   Boolean: YesNoField,
@@ -74,5 +86,9 @@ export const defaultComponent: Record<Atomic, FieldComponentType<any> | undefine
   File: undefined, // FilesField
 
   Number: NumberField,
-  NumberRange: undefined // RangeField?
+  NumberRange: undefined, // RangeField?
+
+  Section: Section,
+
+  Collection: undefined,
 };

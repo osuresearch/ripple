@@ -20,9 +20,10 @@ export type InstanceSummaryProps = {
   index: number;
   onRemove: (index: number) => void;
   template: PageDefinition;
+  summaryTemplate?: Markdown;
 };
 
-export function InstanceSummary({ name, id, index, template, onRemove }: InstanceSummaryProps) {
+export function InstanceSummary({ name, id, index, template, summaryTemplate, onRemove }: InstanceSummaryProps) {
   const PageProvider = context.Provider;
 
   const { watch } = useRippleContext();
@@ -33,6 +34,9 @@ export function InstanceSummary({ name, id, index, template, onRemove }: Instanc
   const firstField = Object.keys(template.fields)[0];
   const title = watch(`${name}.${index}.${firstField}`);
 
+  // TODO: Render summary template
+  const summary = summaryTemplate;
+
   // Content is in the context of the collection template, not the parent page.
   return (
     <PageProvider value={{ name, page: template }}>
@@ -40,7 +44,10 @@ export function InstanceSummary({ name, id, index, template, onRemove }: Instanc
         mt="-xxs"
         summary={
           <>
-            <Text style={{ paddingRight: 100 }}>{title ?? 'Untitled'}</Text>
+            {summary
+              ? summary
+              : <Text style={{ paddingRight: 100 }}>{title ?? 'Untitled'}</Text>
+            }
 
             <ConfirmButton
               variant="subtle"
@@ -60,7 +67,7 @@ export function InstanceSummary({ name, id, index, template, onRemove }: Instanc
           </>
         }
       >
-        <Chip>ID: {id}</Chip>
+        <Chip variant="outline" c="pink">ID: {id}</Chip>
 
         {Object.keys(template.fields).map((fieldName) => (
           <Field key={fieldName} name={fieldName} instance={`${name}.${index}`} />

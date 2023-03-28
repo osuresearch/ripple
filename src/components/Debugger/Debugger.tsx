@@ -1,6 +1,5 @@
 import { Stack, Code, Text, Heading } from '@osuresearch/ui';
 import React from 'react';
-import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import { useRippleContext } from '../../hooks';
 
 export function Debugger() {
@@ -9,7 +8,7 @@ export function Debugger() {
     getValues
   } = useRippleContext();
 
-  const { annotations } = useAnnotationsContext();
+  // const { annotations } = useAnnotationsContext();
 
   return (
     <Stack miw={400} w={400} style={{ overflowX: 'auto' }}>
@@ -29,8 +28,9 @@ export function Debugger() {
       <Text fw="bold">getValues</Text>
       <Code block>{JSON.stringify(getValues(), undefined, 2)}</Code>
 
+      {/*
       <Heading level={2}>Threads</Heading>
-      <Code block>{JSON.stringify(annotations, undefined, 2)}</Code>
+      <Code block>{JSON.stringify(annotations, undefined, 2)}</Code> */}
     </Stack>
   );
 }

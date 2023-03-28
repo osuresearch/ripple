@@ -64,6 +64,10 @@ export function useRippleField<T extends object = any>(
   //   disabled: interactionMode !== 'Edit'
   // });
 
+  // TODO: Only enable the observer for specific fields.
+  // E.g. we don't want observers on sections (unless we want
+  // to show that collaborators are in sections?)
+
   const [ynode, setYNode] = useState(doc.getText(key));
 
   useEffect(() => {

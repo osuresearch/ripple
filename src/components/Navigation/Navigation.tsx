@@ -1,4 +1,4 @@
-import { Box, FocusRing, Stack, Divider, Link } from '@osuresearch/ui';
+import { Box, FocusRing, Stack, Divider, Link, Text } from '@osuresearch/ui';
 import React, { CSSProperties } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useRippleContext } from '../../hooks';
@@ -42,11 +42,11 @@ function PageNavLink({ name, children }: PageNavLinkProps) {
       <FocusRing>
         <NavLink to={'page/' + name}>
           {({ isActive }) => (
-            <>
+            <Text>
               {definition.title}
               {children}
               {isActive ? ' 😎' : ''}
-            </>
+            </Text>
           )}
         </NavLink>
       </FocusRing>
