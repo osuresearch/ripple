@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import settingsReducer from './features/settings';
-import commentsReducer from './features/comments';
 
 export const store = configureStore({
   reducer: {
     settings: settingsReducer,
-    comments: commentsReducer
   }
 });
 

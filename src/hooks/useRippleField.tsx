@@ -1,64 +1,29 @@
-import { Alert, mergeProps } from '@osuresearch/ui';
-import React, { useState, useEffect } from 'react';
-import { YTextEvent } from 'yjs';
-import { Collection } from '../components/Collection';
-import { defaultComponent, FieldComponentProps, FieldComponentType } from '../react';
+import { mergeProps } from '@osuresearch/ui';
+import React from 'react';
+import { useController } from 'react-hook-form';
+
 import { useRippleContext } from './useRippleContext';
-import { useDebouncedState } from './useDebouncedState';
+import { FieldComponentType } from '../react';
+import { useCollab } from './useCollab';
+import { useFieldComponent } from './useFieldComponent';
+import { FieldDefinition } from '../types';
 
 export type UseRippleFieldReturn = {
+  ref: (instance: any) => void;
   component: FieldComponentType<any>;
   componentProps: React.ComponentProps<any>;
 };
 
-type InvalidFieldProps = FieldComponentProps<any> & {
-  error?: string;
-};
-
-function InvalidField(props: InvalidFieldProps) {
-  return (
-    <Alert variant="error" title={`Missing field component for '${props.name}'`}>
-      {props.error}
-    </Alert>
-  );
-}
 
 export function useRippleField<T extends object = any>(
   name: string,
   def: FieldDefinition,
-  instance?: string
 ): UseRippleFieldReturn {
-  const { doc, options, register, selector, watch, setValue } = useRippleContext();
+  const { selector, setValue, control } = useRippleContext();
+  const [ component, props ] = useFieldComponent<T>(def);
+  const [ setCollabValue ] = useCollab(name);
 
   const interactionMode = selector((state) => state.settings.interactionMode);
-
-  let component: FieldComponentType<T> | undefined = undefined;
-  let props: React.ComponentProps<any> = {};
-
-  const key = instance ? `${instance}.${name}` : name;
-
-  if (def.type === 'Collection') {
-    component = Collection;
-  } else if (def.component) {
-    if (options.components[def.component.name]) {
-      component = options.components[def.component.name];
-      props = def.component.props ?? {};
-    } else {
-      component = InvalidField;
-      props = {
-        error: `Custom component '${def.component.name}' missing from Ripple options`
-      };
-    }
-  } else {
-    // Attempt to use the default built-in renderer
-    component = defaultComponent[def.type as keyof typeof defaultComponent];
-    if (!component) {
-      component = InvalidField;
-      props = {
-        error: `No built-in component for field type '${def.type}'`
-      };
-    }
-  }
 
   // const { onChange, ...registerProps } = register(key, {
   //   disabled: interactionMode !== 'Edit'
@@ -68,64 +33,47 @@ export function useRippleField<T extends object = any>(
   // E.g. we don't want observers on sections (unless we want
   // to show that collaborators are in sections?)
 
-  const [ynode, setYNode] = useState(doc.getText(key));
-
-  useEffect(() => {
-    console.log('hook observer');
-    const observer = (e: YTextEvent) => {
-      setValue(key, e.target.toString(), {
-        shouldValidate: true,
-        shouldDirty: true
-      });
-    };
-
-    ynode.observe(observer);
-    return () => ynode.unobserve(observer);
-  }, [ynode]);
-
-  const value = watch(key);
-
-  const [debouncedValue, setDebouncedValue] = useDebouncedState('', 200);
-
-  // Fire off a Yjs sync whenever our debounced value is updated
-  useEffect(() => {
-    if (Array.isArray(value)) {
-    } else if (typeof value === 'string') {
-      // TODO: Be smart about insertions.
-      if (ynode.length > 0) ynode.delete(0, ynode.length);
-
-      ynode.insert(0, value);
-      console.debug(ynode);
-    } else if (typeof value === 'number') {
-    } else {
-      // ???
-    }
-  }, [debouncedValue]);
-
   // Wrap onChange with a Yjs node sync
   const handleChange = async (value: any) => {
-    setValue(key, value);
-    setDebouncedValue(value);
+    setValue(name, value);
+    setCollabValue(value);
     // Pass down to RHF onChange.
     // onChange && onChange(value);
   };
 
-  useEffect(() => {
-    console.log('hook register');
-    register(key, {
-      disabled: interactionMode !== 'Edit'
-    });
-  }, [key, register, interactionMode]);
+  // useEffect(() => {
+  //   console.log('hook register');
+  //   register(key, {
+  //     disabled: interactionMode !== 'Edit'
+  //   });
+  // }, [key, register, interactionMode]);
+
+  const { field: { ref, onChange, onBlur, value } } = useController({ name, control });
+
+  console.log(name, value);
 
   return {
+    ref,
     component,
     componentProps: mergeProps(
       props,
       // registerProps,
       {
-        onChange: handleChange,
-        value: value ?? undefined
+        onBlur: onBlur,
+        onChange: onChange,
+        value: value,
+        isDisabled: interactionMode !== 'Edit',
+        // isDisabled: true,
       }
+      // register(name, {
+      //   disabled: interactionMode !== 'Edit'
+      // }),
+
+
+      // {
+      //   onChange: handleChange,
+      //   value: value ?? undefined
+      // }
     )
   };
 }

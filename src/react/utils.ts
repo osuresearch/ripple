@@ -1,4 +1,5 @@
-import { defaultComponent, FieldComponentType } from './types';
+import { Rect } from '../types';
+import { defaultComponent, FieldComponentType} from './types';
 
 export function isInViewport(window: Window, rect: Rect) {
   if (!window || !document) {

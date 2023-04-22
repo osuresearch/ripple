@@ -1,10 +1,12 @@
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
+import styled from 'styled-components';
 import { useRipple, context, RippleOptions } from '../../hooks/useRipple';
 import { useRippleContext } from '../../hooks/useRippleContext';
 import { Ribbon } from '../Ribbon';
 import { store } from '../../store';
 import { PageRouter } from '../PageRouter';
+import { FormDefinition } from '../../types';
 
 export type FormProps = {
   form: FormDefinition;
@@ -43,12 +45,10 @@ function FormWrapper({ children }: { children: React.ReactNode }) {
   const onSubmit = (data: any) => console.log(data);
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Ribbon />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Ribbon />
 
-        <PageRouter>{children}</PageRouter>
-      </form>
-    </div>
+      <PageRouter>{children}</PageRouter>
+    </form>
   );
 }

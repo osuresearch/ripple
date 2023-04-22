@@ -1,9 +1,29 @@
-import { Box, FocusRing, Stack, Divider, Link, Text } from '@osuresearch/ui';
-import React, { CSSProperties } from 'react';
-import { NavLink } from 'react-router-dom';
-import { useRippleContext } from '../../hooks';
+import { Box, FocusRing, Stack, Divider, Link, Text, IconButton, ScrollArea, Icon, Group, Tooltip } from '@osuresearch/ui';
+import { isActive } from '@tiptap/core';
+import React, { CSSProperties, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import styled from 'styled-components'
+import { toggleNavigation } from '../../features/settings';
+import { useCondition, useRippleContext } from '../../hooks';
 import { Conditional } from '../Conditional';
 import { Debugger } from '../Debugger';
+import { PageName } from '../../types';
+
+const StyledNavLink = styled.div<{ isActive: boolean, isHidden: boolean }>`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-left: 4px;
+  margin-left: -4px;
+
+  color: ${
+    (props) => props.isHidden ? 'var(--rui-dark)'
+      : (props.isActive ? 'var(--rui-primary)'
+      : 'var(--rui-light-contrast)')
+  };
+
+  box-shadow: ${(props) => props.isActive ? '-4px 0px 0px 0px var(--rui-primary)' : 'none'};
+`
 
 type PageNavLinkProps = {
   name: PageName;
@@ -11,13 +31,12 @@ type PageNavLinkProps = {
 };
 
 function PageNavLink({ name, children }: PageNavLinkProps) {
-  const activeStyle: CSSProperties = {
-    border: '1px solid red'
-  };
-
-  const { form } = useRippleContext();
-
+  const { form, selector } = useRippleContext();
   const definition = form.pages[name];
+
+  const showConditions = selector((state) => state.settings.showConditions);
+
+  const { passed, error, fields, references } = useCondition(definition.condition);
 
   if (!definition) {
     return (
@@ -27,87 +46,67 @@ function PageNavLink({ name, children }: PageNavLinkProps) {
     );
   }
 
-  // Can't use link as - navlink doesn't use the same className
-  // or style props and I can't hand down callables. Annoying.
-  // Will just need to style it myself I guess.
+  if (!showConditions && !passed) {
+    return null;
+  }
 
-  // <Link as={NavLink} className="hi" to={to}>
-  //   {({ isActive }) => <></>}
-  // </Link>
-
-  // TODO: I actually don't like their navigation style. I'd rather be able
-  // to control navigation with arrow keys and all that.
-  return (
-    <Conditional name={name} condition={definition.condition}>
-      <FocusRing>
-        <NavLink to={'page/' + name}>
-          {({ isActive }) => (
-            <Text>
-              {definition.title}
-              {children}
-              {isActive ? ' 😎' : ''}
-            </Text>
-          )}
-        </NavLink>
-      </FocusRing>
-    </Conditional>
-  );
-}
-
-type CustomNavLinkProps = {
-  to: string;
-  children: React.ReactNode;
-};
-
-function CustomNavLink({ to, children }: CustomNavLinkProps) {
   return (
     <FocusRing>
-      <NavLink to={to}>
-        {({ isActive }) => (
-          <>
-            {children} {isActive ? ' 😎' : ''}
-          </>
-        )}
-      </NavLink>
+      <Group w={300} justify="apart" px="xs">
+        <NavLink to={'page/' + name} style={{ maxWidth: 250 }}>
+          {({ isActive }) => <StyledNavLink isActive={isActive} isHidden={!passed}>
+            {definition.title} {children}
+          </StyledNavLink>}
+        </NavLink>
+
+        {showConditions && definition.condition &&
+        <Tooltip contentSlot="This page is conditionally displayed" delay={0}>
+          <NavLink to={'page/' + name}>
+            <Icon size={20} name={passed ? 'eye' : 'eyeSlash'} c="error" aria-label="Conditional" />
+          </NavLink>
+        </Tooltip>
+        }
+
+        {!showConditions &&
+          <Icon name="exclamationFill" c="error" aria-label="Errors" />
+        }
+      </Group>
     </FocusRing>
   );
 }
 
 export function Navigation() {
-  const { selector, form } = useRippleContext();
+  const { selector, dispatch, form } = useRippleContext();
 
   const showNavigation = selector((state) => state.settings.showNavigation);
-  const showDebugger = selector((state) => state.settings.showDebugger);
   const layoutMode = selector((state) => state.settings.layoutMode);
-
-  // Debug view is priority
-  if (showDebugger) {
-    return <Debugger />;
-  }
-
-  if (!showNavigation) {
-    return null;
-  }
+  const dispatcher = dispatch();
 
   // Link behaviour changes based on layout mode.
   // If we're on a single page, each link will jump to
   // the heading of the appropriate section.
 
-  // Paged navigation uses React Router routing.
-
   // Paged navigation uses React Router to change the current page.
   if (layoutMode === 'Paged') {
     return (
-      <Stack miw={300}>
-        <CustomNavLink to="/">Home</CustomNavLink>
-        <Divider orientation="horizontal" />
+      <Stack p="md">
+        <IconButton
+          name="bars"
+          size={24}
+          label="Toggle navigation"
+          onPress={() => dispatcher(toggleNavigation(!showNavigation))}
+        />
 
-        {Object.keys(form.pages).map((name) => (
-          <PageNavLink key={name} name={name} />
-        ))}
-
-        <Divider orientation="horizontal" />
-        <CustomNavLink to="/submit">Submit</CustomNavLink>
+        {showNavigation &&
+        <ScrollArea h="100px" type="hover" style={{ flexGrow: 1 }} hideDelay={1000}>
+          <Stack gap="xs">
+            <Text c="dark" fw="bold" fs="sm">Outline</Text>
+            {Object.keys(form.pages).map((name) => (
+              <PageNavLink key={name} name={name} />
+            ))}
+          </Stack>
+        </ScrollArea>
+        }
       </Stack>
     );
   }
@@ -116,7 +115,7 @@ export function Navigation() {
   // target page heading.
   if (layoutMode === 'Single') {
     return (
-      <Stack miw={300}>
+      <Stack miw={500}>
         TODO: Single page navigation links.
         {Object.keys(form.pages).map((name) => (
           <Link key={name} href={'#ripple-page-' + name}>

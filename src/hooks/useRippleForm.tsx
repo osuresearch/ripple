@@ -12,6 +12,7 @@ import {
 import { ydoc } from '../yjs';
 
 import * as Y from 'yjs';
+import { FormResponses } from '../types';
 
 /**
  * Props to spread into RUI Field components to integrate with React Hook Form 7

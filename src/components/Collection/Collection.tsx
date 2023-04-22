@@ -1,85 +1,74 @@
-import React, { forwardRef, useContext } from 'react';
-
-import { context } from '../Page';
-import { Markdown } from '../Markdown';
-import { Conditional } from '../Conditional';
+import React, { useEffect, useState } from 'react';
 import { useRippleContext } from '../../hooks/useRippleContext';
 import { FieldComponentProps } from '../../react';
-import { Alert, Button, Group, Heading, Stack, Text } from '@osuresearch/ui';
-import { useFieldArray } from 'react-hook-form';
-import { InstanceSummary } from './InstanceSummary';
+import { Button, Group, Heading, Stack, Text } from '@osuresearch/ui';
+import { InstanceSummary } from '../InstanceSummary/InstanceSummary';
+import { useCollection } from '../../hooks/useCollection';
+import { DeleteButton } from './DeleteButton';
+import { SubpageLink } from './SubpageLink';
+import { CollectionInstanceId } from '../../types';
 
-export type CollectionProps = FieldComponentProps<any>;
+export type CollectionProps = FieldComponentProps<any> & {
+  variant?: 'subpage' | 'inline'
+}
 
-export function Collection({ name = '__invalid', ...props }: CollectionProps) {
-  const { control } = useRippleContext();
-  const { name: pageName, page } = useContext(context);
+export function Collection({
+  name = '__invalid',
+  variant = 'inline',
+  isDisabled,
+  ...props
+}: CollectionProps) {
+  const { items, add, remove, definition } = useCollection(name);
+  const [recentlyAdded, setRecentlyAdded] = useState<string | undefined>();
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
-    control,
-    name
-  });
-
-  // This is magic that needs to handle instances.
-
-  const template = page.fields[name].template;
-  const summaryTemplate = page.fields[name].summary;
-
-  if (!template) {
-    return (
-      <Alert variant="error" title={`Missing template for '${name}'`}>
-        Form definition does not include a PageDefinition template to use for instancing this
-        collection.
-      </Alert>
-    );
-  }
-
-  const onRemove = (index: number) => {
-    remove(index);
-    // TODO: ?
-  };
+  const ids = Object.keys(items).filter((id) => !items[id]._deleted);
+  // const deletedIds = Object.keys(items).filter((id) => items[id]._deleted);
 
   const onAdd = () => {
-    append({
-      // Generate a set of unanswered fields from the template
-      ...Object.keys(template.fields).reduce(
-        (agg, name) => ((agg[name] = null), agg),
-        {} as Record<string, any>
-      )
-    });
+    const id = add();
+    setRecentlyAdded(id);
+  }
 
-    // TODO: take them to the page for editing?
-  };
+  const onRemove = (id: CollectionInstanceId) => {
+    remove(id);
+  }
 
   return (
     <Stack align="stretch">
-      {/* Will be a Stack + Markdown */}
       <Group justify="apart" align="center">
         <Heading level={3}>{props.label}</Heading>
-        <Button onPress={onAdd}>Add</Button>
+
+        {!isDisabled && <Button onPress={onAdd}>Add</Button>}
       </Group>
 
-      {/* Will be markdown (optional) */}
       {props.description}
+
+      variant: {variant}
 
       {/* TODO: errorMessage, isRequired, necessityIndicator  */}
 
       <Stack gap={0} align="stretch">
-        {fields.map((field, index) => (
+        {ids.map((id) =>
+        <Group key={id}>
           <InstanceSummary
-            name={name}
-            template={template}
-            summaryTemplate={summaryTemplate}
-            key={field.id}
-            id={field.id}
-            index={index}
-            onRemove={onRemove}
+            id={id}
+            definition={definition}
+            responses={items[id]}
           />
-        ))}
+          {!isDisabled &&
+          <div>
+            <SubpageLink id={id} name={name} label="Edit" />
+            <DeleteButton id={id} definition={definition} onRemove={onRemove} />
+          </div>
+          }
+        </Group>)}
       </Stack>
 
-      {fields.length < 1 && (
-        <Text>{props.placeholder ?? 'There\'s nothing here! Click the Add button to start adding entries'}</Text>
+      {ids.length < 1 && (
+        <Text>{
+          props.placeholder
+          ?? 'There\'s nothing here! Click the Add button to start adding entries'
+        }</Text>
       )}
     </Stack>
   );

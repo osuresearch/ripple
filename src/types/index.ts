@@ -1,43 +1,63 @@
 // TypeScript-based form data.
 // Replicate: https://code.osu.edu/ORIS/flow/-/blob/v2-dev/src/Integration/GraphQL/types.gql
 
-type Rect = {
+export type Rect = {
   x: number;
   y: number;
   width: number;
   height: number;
 };
 
-type DiffMode = 'Current' | 'Unified' | 'SideBySide';
+export type DiffMode = 'Current' | 'Unified' | 'SideBySide';
 
-type LayoutMode = 'Paged' | 'Single';
+export type LayoutMode = 'Paged' | 'Single';
 
-type InteractionMode = 'Edit' | 'Read' | 'Review';
+export type InteractionMode = 'Edit' | 'Read' | 'Review';
 
 /**
  * GitHub-flavored markdown text
  */
-type Markdown = string;
+export type Markdown = string;
+
+/**
+ * Generate markdown composed of response data.
+ */
+export type MarkdownFactory = ((responses: FormResponses) => Markdown);
 
 /**
  * Mustache template text
  */
-type Mustache = string;
+export type Mustache = string;
 
 /**
  * React component to use in place of the default field renderer.
  *
  * You can pass through additional props to the component.
  */
-type ReactFieldComponent = {
-  name: string;
+export type ReactFieldComponent = {
+  /**
+   * Name of the custom component.
+   *
+   * If omitted, the default component will be used and the props
+   * will be passed through to customize that component.
+   */
+  name?: string;
+
+  /**
+   * Props to pass through to the component.
+   *
+   * This should only ever be simple values that can render on both
+   * the server and client side or be passed through APIs. For example,
+   * strings, booleans, simple JavaScript objects and arrays are okay.
+   * React components or callables are not.
+   */
   props?: any;
 };
 
-type ChoiceKey = string;
-type ChoiceValue = string;
+export type ChoiceKey = string;
+export type ChoiceValue = string;
 
-type ChoicesList = Record<ChoiceKey, ChoiceValue>;
+export type ChoicesList = Record<ChoiceKey, ChoiceValue>;
 
 // Basically osuresearch/atomics
 const atomic = [
@@ -51,24 +71,26 @@ const atomic = [
   'KeyArray',
   'Person',
   'Date',
-  'File'
+  'Attachment',
+  'Signature',
 ] as const;
 
-type Atomic = (typeof atomic)[number];
+export type Atomic = (typeof atomic)[number];
 
 // Really should be a mapping between atomic type -> value.
 // But that's future atomics work.
-type AtomicValue = string | number | string[] | number[] | boolean;
+export type AtomicValue = string | number | string[] | number[] | boolean;
 
 const reservedNames = ['title', 'id', 'required'] as const;
-type ReservedNames = (typeof reservedNames)[number];
+export type ReservedNames = (typeof reservedNames)[number];
 
-type PageName = Exclude<string, keyof ReservedNames>;
-type FieldName = Exclude<string, keyof ReservedNames>;
+export type CollectionInstanceId = string;
+export type PageName = Exclude<string, keyof ReservedNames>;
+export type FieldName = Exclude<string, keyof ReservedNames>;
 
-type FieldType = Atomic | 'Section' | 'Collection';
+export type FieldType = Atomic | 'Section' | 'Collection';
 
-type Validator = {
+export type Validator = {
   // required: Input your ZIP code
 };
 
@@ -85,12 +107,12 @@ type Validator = {
  *
  * TOOD: Long documentation about this, filtrex, and such.
  */
-type Condition = string;
+export type Condition = string;
 
 /**
  * Properties common across all types of fields
  */
-type BaseField = {
+export type BaseField = {
   /**
    * Primary label for the field.
    */
@@ -156,7 +178,7 @@ type BaseField = {
  * A set of instanced pages, each matching the same page
  * template and with their own set of responses.
  */
-type CollectionField = {
+export type CollectionField = {
   type: 'Collection';
 
   /**
@@ -172,9 +194,15 @@ type CollectionField = {
    * Mustache variables will be derived from the field responses
    * within each instance being summarized.
    */
-  summary?: Markdown;
+  summary?: Markdown | MarkdownFactory;
 
-  component?: never;
+  /**
+   * Optional component to render.
+   *
+   * If omitted, Ripple will use the default collection component.
+   */
+  component?: ReactFieldComponent;
+
   choices?: never;
 };
 
@@ -184,7 +212,7 @@ type CollectionField = {
  * Will typically be rendered as a heading. Sections do not persist
  * with form response data.
  */
-type SectionField = {
+export type SectionField = {
   type: 'Section',
 
   /**
@@ -202,7 +230,7 @@ type SectionField = {
 /**
  * An explicit question and response
  */
-type AtomicField = {
+export type AtomicField = {
   type: Atomic;
   choices?: ChoicesList;
 
@@ -218,9 +246,9 @@ type AtomicField = {
   summary?: never;
 };
 
-type FieldDefinition = BaseField & (AtomicField | CollectionField | SectionField);
+export type FieldDefinition = BaseField & (AtomicField | CollectionField | SectionField);
 
-type PageDefinition = {
+export type PageDefinition = {
   title: string;
   description?: Markdown;
   condition?: Condition;
@@ -228,7 +256,7 @@ type PageDefinition = {
   fields: Record<FieldName, FieldDefinition>;
 };
 
-type FormDefinition = {
+export type FormDefinition = {
   title: string;
   version: string;
 
@@ -239,14 +267,14 @@ type FormDefinition = {
 // This is the transformation of backend storage ->  form data.
 // Should also be able to feed directly into RHF 7.
 
-type FieldResponse =
+export type FieldResponse =
   | AtomicValue
   | {
       // collection instances by key
       [key: string]: PageResponses;
     };
 
-type PageResponses = {
+export type PageResponses = {
   [name: FieldName]: FieldResponse;
 };
 
@@ -257,24 +285,126 @@ type PageResponses = {
 //   responses: Record<FieldName, FieldResponse>
 // }
 
-type FormResponses = Record<FieldName, FieldResponse>;
+export type FormResponses = Record<FieldName, FieldResponse>;
 
-type FieldReferenceSet = {
+export type FieldReferenceSet = {
   [x: FieldName]: [FieldDefinition, PageDefinition] | [undefined, undefined];
 };
 
 /**
  * Person Atomic from osuresearch/atomics (pending)
  */
-type Person = {
+export type Person = {
   id: string;
   name: string;
   username: string;
   email?: string;
 };
 
-type TableOfContentsSection = {
+export type TableOfContentsSection = {
   id: string
   title: string
   level: number
+}
+
+/**
+ * Specialized error class for promises that may
+ * be cancelled mid-work.
+ */
+class CancellationError extends Error {
+
+}
+
+export type RipplePersistenceProvider = {
+  // TODO: What's passed in? What comes out?
+  // Does this also handle data load or just save?
+
+  save: (responses: FormResponses) => Promise<void>;
+
+  // load - do we specify keys to load?
+  // how about a preload state?
+  // what about external sync / monitor / live updates?
+  //    maybe that's an argument for load()? Live update
+  //    callback of sorts.
+
+  getResponses: (fields: FieldName[]) => Promise<FieldResponse[]>;
+    // TODO: Collections...?
+}
+
+export type RippleLookupProvider<T extends LookupResult = LookupResult> = {
+
+  /**
+   * Get a list of supported datasets for this provider.
+   *
+   * Requests for lookups will route to this provider if the
+   * field matches a provided key.
+   */
+  keys: () => Promise<string[]>;
+
+  /**
+   * Resolve an autocomplete request for search terms.
+   *
+   * If the promise needs to be cancelled (e.g. due to throttling frequent
+   * autocomplete requests) then throw a `CancellationError` and Ripple will
+   * safely ignore the result.
+   *
+   * @param key   The key of the dataset to autocomplete against.
+   *              Each field on a form may be associated with
+   *              a different dataset (e.g. countries vs US states).
+   * @param terms The user's search terms as they type.
+   * @returns
+   */
+  autocomplete: (key: string, terms: string) => Promise<T[]>;
+
+  /**
+   * Resolve one or more known lookup values by ID.
+   *
+   * This is used to load previous response data from a Ripple
+   * form that was already populated through a lookup.
+   *
+   * @param key   The key of the dataset to retrieve from.
+   *              Each field on a form may be associated with
+   *              a different dataset (e.g. countries vs US states).
+   *
+   * @param ids Result IDs that need to be resolved.
+   *            Each ID MUST be resolved to a result.
+   *
+   *            If the source data in the dataset is no
+   *            longer available, use the null object
+   *            pattern for resolution and use validation
+   *            to ensure that the value is updated by the
+   *            user of the form before submission.
+   * @returns
+   */
+  get: (key: string, id: string[]) => Promise<T[]>;
+
+  /**
+   * Retrieve *all* values for a dataset.
+   *
+   * This is used for Ripple fields that need to display
+   * all possible values as part of the form.
+   *
+   * If the dataset is too large to support returning all
+   * values, then throw (TODO: something?) to indicate that
+   * the field must be refactored to a type that uses
+   * autocomplete suggestions instead.
+   *
+   * @returns
+   */
+  all: (key: string) => Promise<T[]>;
+}
+
+export type RippleValidationProvider = {
+  // TODO: what's passed in? What comes out?
+}
+
+export type LookupResult = {
+  id: string
+  value: string
+
+  // TODO: Shape will change based on what we're looking up.
+  // Can I standardize this in some way?
+  // We need to lookup simple values (countries, states)
+  // complex values like people, locations
+  // and full form data like collection instances.
 }

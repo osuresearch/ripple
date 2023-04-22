@@ -1,8 +1,15 @@
 import React, { createContext } from 'react';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import type { RootState, RippleDispatch } from '../store';
-import { defaultComponent, FieldComponentType } from '../react';
+import { FieldComponentType } from '../react';
 import { useRippleForm, UseRippleFormReturn } from './useRippleForm';
+import { LocalStoragePersistence } from '../providers/LocalStoragePersistence';
+import { ClientsideValidation } from '../providers/ClientsideValidation';
+import { NullLookup } from '../providers/NullLookup';
+import { getNextPage, getPreviousPage } from '../tools';
+import { RipplePersistenceProvider, RippleLookupProvider, RippleValidationProvider, FormDefinition, PageName, PageDefinition } from '../types';
+
+import { defaultComponent } from '../react/mappings';
 
 export type RippleOptions = {
   /**
@@ -11,7 +18,29 @@ export type RippleOptions = {
    * If your form definition contains custom field components, you will define
    * your mapping here.
    */
-  components: Record<string, FieldComponentType<any>>;
+  components: Record<string, FieldComponentType<any> | undefined>;
+
+  /**
+   * Service layer for persisting response changes within the form.
+   */
+  persistence: RipplePersistenceProvider;
+
+  /**
+   * Service layers for providing options in named lookup fields
+   *
+   * Multiple lookups may be attached, each capable of resolving
+   * its own collection of datasets.
+   */
+  lookup: RippleLookupProvider[];
+
+  /**
+   * Service layers for validating responses and form state.
+   *
+   * Multiple validators may be attached, for example one to
+   * validate state clientside and another to perform serverside
+   * validation for more complex business logic.
+   */
+  validation: RippleValidationProvider[];
 };
 
 export type RippleContext = {
@@ -48,9 +77,22 @@ export function useRipple<T extends FormDefinition>(
   form: T,
   options: Partial<RippleOptions> = {}
 ): UseRippleReturn<T> {
+  const { components, ...otherOptions } = options;
+
   const opt: RippleOptions = {
-    components: {},
-    ...options
+    // Default options
+    persistence: LocalStoragePersistence,
+    validation: [ClientsideValidation],
+    lookup: [NullLookup],
+
+    // Merge default components with overrides
+    components: {
+      ...defaultComponent,
+      ...components,
+    },
+
+    // Merge the rest of the overrides
+    ...otherOptions
   };
 
   // Wire up to RHF
@@ -65,30 +107,8 @@ export function useRipple<T extends FormDefinition>(
     options: opt,
     dispatch: useDispatch,
     selector: useSelector,
-    getNextPage: (page: PageName) => {
-      // TODO: Condition magic
-      const keys = Object.keys(form.pages);
-
-      const idx = keys.indexOf(page);
-      if (idx > -1 && idx < keys.length - 1) {
-        return {
-          name: keys[idx + 1],
-          definition: form.pages[keys[idx + 1]]
-        };
-      }
-    },
-    getPreviousPage: (page: PageName) => {
-      // TODO: Condition magic
-      const keys = Object.keys(form.pages);
-
-      const idx = keys.indexOf(page);
-      if (idx > -1 && idx > 0) {
-        return {
-          name: keys[idx - 1],
-          definition: form.pages[keys[idx - 1]]
-        };
-      }
-    },
+    getNextPage: (page: PageName) => getNextPage(form, page),
+    getPreviousPage: (page: PageName) => getPreviousPage(form, page),
     ...rform
   };
 }

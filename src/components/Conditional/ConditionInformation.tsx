@@ -1,6 +1,8 @@
 import { Callout, IconButton, Stack, Group, Chip, Text, HashLink } from '@osuresearch/ui';
 import React from 'react';
 import regexifyString from 'regexify-string';
+import { Condition, FieldReferenceSet, FieldDefinition, PageDefinition } from '../../types';
+import styled from 'styled-components';
 
 export type ConditionInformationProps = {
   name: string;
@@ -24,8 +26,8 @@ function FieldInfo({
     return (
       <Text c="error" fw="bold">
         {name}
-        <Callout contentSlot={<Text p="sm">Field is missing from the form definition</Text>}>
-          <IconButton label="More information" name="exclamationCircle" c="error" size={16} />
+        <Callout contentSlot={<Text p="sm" fs="sm">Field is missing from the form definition</Text>}>
+          <IconButton label="More information" name="exclamationCircle" c="error" size={14} />
         </Callout>
       </Text>
     );
@@ -37,19 +39,46 @@ function FieldInfo({
       <Callout
         contentSlot={
           <Stack p="sm">
-            <Text>{field?.label}</Text>
+            <Text fs="sm">{field?.label}</Text>
             <Group>
               <Chip c="error">required</Chip>
-              <Chip variant="outline" c="pink">page: {page?.title ?? 'Unknown'}</Chip>
+              <Chip variant="indicator" c="green">page: {page?.title ?? 'Unknown'}</Chip>
             </Group>
           </Stack>
         }
       >
-        <IconButton c="warning-contrast" label="More information" name="questionCircle" size={16} />
+        <IconButton c="warning-contrast" label="More information" name="questionCircle" size={14} />
       </Callout>
     </Text>
   );
 }
+
+const Container = styled.div`
+  border: 2px dashed var(--rui-warning);
+  position: relative;
+
+  // Being able to fade it out would be nice. But there's
+  // a lot of quirks.
+
+  /* &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    opacity: 0.1;
+
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(0,0,0,0),
+      rgba(0,0,0,0) 10px,
+      var(--rui-warning) 10px,
+      var(--rui-warning) 20px
+    );
+  } */
+`;
 
 export function ConditionInformation({
   name,
@@ -76,9 +105,9 @@ export function ConditionInformation({
   });
 
   return (
-    <div style={{ border: '2px dashed var(--rui-warning)' }}>
+    <Container>
       <Group justify="apart">
-        <Text as="div" bgc="warning-shade" c="warning-contrast" p="xs">
+        <Text as="div" bgc="warning-shade" c="warning-contrast" p="xs" fs="sm">
           <Text fw="bold" c="warning-contrast">
             Condition:{' '}
           </Text>{' '}
@@ -89,6 +118,6 @@ export function ConditionInformation({
         </Chip>
       </Group>
       {children}
-    </div>
+    </Container>
   );
 }

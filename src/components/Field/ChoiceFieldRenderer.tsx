@@ -3,6 +3,7 @@ import React, { ComponentType } from 'react';
 import { useListData } from 'react-stately';
 import { BaseFieldProps, ChoiceFieldProps } from '../../react';
 import { Markdown } from '../Markdown';
+import { ChoicesList } from '../../types';
 
 type ChoiceItem = {
   name: string;

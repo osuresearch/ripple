@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react';
-import { MemoryRouter, Routes, Route } from 'react-router';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { useRippleContext } from '../../hooks';
 import { Content } from '../Content';
 import { ErrorBoundary } from '../ErrorBoundary';
+import { PageNotFound } from '../PageNotFound';
 import { PageProps, Page } from '../Page';
 
 export type PageRouterProps = {
@@ -65,8 +66,9 @@ export function PageRouter({ children }: PageRouterProps) {
         <Routes>
           <Route path="/" element={<Content />} errorElement={<ErrorBoundary />}>
             {Object.keys(pages).map((name) => (
-              <Route key={name} path={'page/' + name} element={pages[name]} />
+              <Route key={name} path={`page/${name}/*`} element={pages[name]} />
             ))}
+            <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>
       )}
@@ -90,26 +92,3 @@ export function PageRouter({ children }: PageRouterProps) {
     </MemoryRouter>
   );
 }
-
-// function PageFooter() {
-//   const {
-//     getPreviousPage,
-//     getNextPage,
-//     selector
-//   } = useRippleContext();
-
-//   const page = selector((state) => state.settings.currentPage);
-
-//   // we already know current from react-router...
-//   // or usePage... page context...
-//   // which is already fucking condition wrapped ofc.
-
-//   if (!page) {
-//     return <>Missing current page</>
-//   }
-
-//   const prev = getPreviousPage(page.)
-
-//   return (
-//   )
-// }

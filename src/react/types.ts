@@ -1,29 +1,19 @@
 import React from 'react';
 import { ListProps } from 'react-stately';
+import { DiffMode } from '../types';
 
-import {
-  CheckboxField,
-  TextAreaField,
-  TextField,
-  YesNoField,
-  DateField,
-  RadioSetField,
-  CheckboxSetField,
-  FormFieldBase,
-  NumberField
-} from '@osuresearch/ui';
-import { TextEditor } from '../components/TextEditor';
-import { Section } from '../components/Section';
+export type PageDeepLink = {
+  label: React.ReactNode;
+  href: string;
+}
 
 export type BaseFieldProps<T> = {
-
-  // TODO: This is only optional for compat with a react-aria
-  // feature we don't use. Need to somehow make it stricter
-  // while dropping react-aria's nonsense.
-  name?: string;
+  name: string;
 
   label: React.ReactNode;
   description?: React.ReactNode;
+
+  'aria-label'?: string;
 
   /**
    * Placeholder content if the field has not been filled out.
@@ -42,7 +32,7 @@ export type BaseFieldProps<T> = {
   diff?: DiffMode;
 
   value?: T;
-  onChange?: (value: T) => void;
+  onChange?: (value: T | undefined) => void;
   onBlur?: (e: React.FocusEvent) => void;
 
   children: any;
@@ -66,29 +56,3 @@ export type ChoiceFieldProps<T> = BaseFieldProps<T> & ListProps<any> & PreviousC
 export type FieldComponentProps<T> = BaseFieldProps<T> & (ChoiceFieldProps<T> | ValueFieldProps<T>);
 
 export type FieldComponentType<T> = React.ComponentType<FieldComponentProps<T>>;
-
-/**
- * Mapping between a Ripple atomic and default RUI component
- */
-export const defaultComponent: Record<FieldType, FieldComponentType<any> | undefined> = {
-  // Text: TextAreaField,
-  Text: TextEditor,
-  Boolean: YesNoField,
-  Person: TextField,
-
-  Key: RadioSetField,
-  KeyArray: CheckboxSetField,
-
-  Flag: CheckboxField,
-  FlagArray: CheckboxSetField,
-
-  Date: DateField,
-  File: undefined, // FilesField
-
-  Number: NumberField,
-  NumberRange: undefined, // RangeField?
-
-  Section: Section,
-
-  Collection: undefined,
-};

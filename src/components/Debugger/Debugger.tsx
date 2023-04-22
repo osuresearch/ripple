@@ -11,8 +11,8 @@ export function Debugger() {
   // const { annotations } = useAnnotationsContext();
 
   return (
-    <Stack miw={400} w={400} style={{ overflowX: 'auto' }}>
-      <Heading level={2}>RHF</Heading>
+    <Stack miw={300} w={300} style={{ overflowX: 'auto' }}>
+      <Heading level={3}>RHF</Heading>
       <Text fw="bold">formState.touchedFields</Text>
       <Code block>{JSON.stringify(touchedFields, undefined, 2)}</Code>
 

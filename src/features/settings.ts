@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { DiffMode, LayoutMode, InteractionMode, PageName } from '../types';
 
 type SettingsState = {
   value: number;

@@ -1,3 +1,5 @@
+import { FieldDefinition } from "../types";
+
 export type ValidationResult = {
   state: 'incomplete' | 'valid' | 'invalid';
   message?: string;

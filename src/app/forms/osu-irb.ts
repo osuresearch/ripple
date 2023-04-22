@@ -274,7 +274,7 @@ const MultiSiteStudy: PageDefinition = {
     },
     nonOsuApprovalFiles: {
       condition: 'isMultiSite and not isOsuProjectLead',
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide the IRB or ethics board approval from the lead institution,
         as applicable.
@@ -422,7 +422,7 @@ const DomesticResearchSite: PageDefinition = {
       label: 'Other activity description',
     },
     approvalDocuments: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         A letter of support and/or another IRB\'s approval should
         be provided, as necessary.
@@ -697,7 +697,7 @@ const InternationalResearchSite: PageDefinition = {
       `
     },
     internationalSiteFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
       **Approval Documents**
 
@@ -1024,7 +1024,7 @@ const ExternalCollaborator: PageDefinition = {
     },
 
     teamCVFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide the external collaborator's resume/CV. This document
         is required in order for a reliance agreement to be drafted.
@@ -1120,7 +1120,7 @@ const Funding: PageDefinition = {
       label: 'Please specify the support and provider'
     },
     grantFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: 'Provide a copy of the grant application or funding proposal.'
     },
 
@@ -1337,12 +1337,12 @@ const InstitutionalApprovals: PageDefinition = {
     },
     institutionalApprovalFiles: {
       condition: `
-        hasCccApproval or
+        hasCCCApproval or
         hasIBCApproval or
         hasMFWCApproval or
         hasHSRCApproval
       `,
-      type: 'File',
+      type: 'Attachment',
       label: 'Upload approval letters for all applicable committees above.',
     }
   }
@@ -1383,7 +1383,7 @@ const ResearchMethodsAndActivities: PageDefinition = {
       label: 'Specify the other activities'
     },
     dataCollectionFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide data collection forms, subject material, subject diaries,
         and/or other instruments, if applicable. Do not include case report
@@ -1391,7 +1391,7 @@ const ResearchMethodsAndActivities: PageDefinition = {
       `
     },
     surveyQuestionnaireFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide surveys, questionnaires, interview guides, and/or focus
         group guides, if applicable.
@@ -1405,7 +1405,7 @@ const ResearchMethodsAndActivities: PageDefinition = {
           "Ohio State Cancer IRB"
         )
       `,
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide subject information, such as newsletters, instruction
         sheets, appointment reminder cards, drug/device information,
@@ -1416,7 +1416,7 @@ const ResearchMethodsAndActivities: PageDefinition = {
 };
 
 const ExpeditedReview: PageDefinition = {
-  condition: 'TODO?',
+  // condition: 'TODO?',
   title: 'Conditions required for expedited IRB review',
   description: `
     The Federal Regulations establish two main criteria
@@ -1646,7 +1646,7 @@ const Summary: PageDefinition = {
       `
     },
     protocolFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: 'Upload research protocol',
       description: `
         A research protocol provides information such as the study
@@ -1682,7 +1682,7 @@ const DataRepositories: PageDefinition = {
       label: 'Describe the type(s) of data to be collected and stored.',
     },
     dataCollectionFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: 'Provide a copy of the data collection form(s).',
     },
     dataFormat: {
@@ -1800,7 +1800,7 @@ const DataRepositories: PageDefinition = {
     },
     dataReleaseFiles: {
       condition: 'releasesData',
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide copies of all applicable forms/agreements that will
         be used to request and release data.
@@ -1967,7 +1967,7 @@ const ApprovedDevice: PageDefinition = {
       `
     },
     fdaLabelingFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide a copy of the device manufacturer's approved labeling
         (e.g., package insert, device label, descriptive and
@@ -1986,6 +1986,14 @@ const InvestigationalDevice: PageDefinition = {
     Devices that are investigational, modified, or proposed new intended uses.
   `,
   fields: {
+
+    approvedDevicesX: {
+      type: 'Collection',
+      label: 'FDA Approved Devices',
+      // placeholder: 'You have listed no FDA Approved Devices.',
+      template: ApprovedDevice,
+    },
+
     deviceName: {
       type: 'Text',
       label: 'Name of device',
@@ -2041,7 +2049,7 @@ const InvestigationalDevice: PageDefinition = {
     },
     investigationalIdeFiles: {
       condition: 'classification == "Significant Risk"',
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide protocol-specific documentation (e.g., sponsor's protocol
         cover sheet, FDA or sponsor correspondence, etc.) of the IDE number.
@@ -2075,7 +2083,7 @@ const InvestigationalDevice: PageDefinition = {
 
     investigationalNsrFiles: {
       condition: 'classification == "Non-significant Risk"',
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide supporting documentation from sponsor regarding
         why the device does not pose a significant risk.
@@ -2125,7 +2133,7 @@ const InvestigationalDevice: PageDefinition = {
       `
     },
     investigationalApprovalFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide documentation of all applicable FDA approvals/exemptions
         for the investigational or research use of the devices. Copies
@@ -2135,7 +2143,7 @@ const InvestigationalDevice: PageDefinition = {
       `
     },
     investigationalLabelingFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide a copy of the device manufacturer's approved labeling
         (e.g., package insert, device label, descriptive and informational
@@ -2171,7 +2179,7 @@ const HumanitarianDevice: PageDefinition = {
       label: 'Holder of the HDE (i.e., sponsor, investigator, other)',
     },
     humanitarianApprovalFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: 'Provide letter from FDA granting HDE approval.',
     },
     proposedUseSummary: {
@@ -2280,7 +2288,7 @@ const ApprovedProduct: PageDefinition = {
     },
 
     drugLabelingFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide a copy of the drug or biologic manufacturer's
         approved labeling (i.e., package insert).
@@ -3140,7 +3148,7 @@ const RadiationDosageTotals: PageDefinition = {
       `,
     },
     doseCalculationFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Attach a copy of dose calculations (i.e., printout from [online dose calculator](https://go.osu.edu/radardoseriskcalc),
         including recommended consent language). Also remember to insert the
@@ -3281,7 +3289,7 @@ const BiologicalStorage: PageDefinition = {
     },
     biologicalReleaseFiles: {
       condition: 'releasesSamples',
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide copies of all applicable forms/agreements that will
         be used to request and release samples.
@@ -4116,7 +4124,7 @@ const PrisonersPopulation: PageDefinition = {
       `
     },
     institutionSupportFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Upload a letter of support if the institution is not covered by the
         Ohio Department of Rehabilitation and Correction (ODRC) Human
@@ -4270,7 +4278,7 @@ const ParicipantIdentification: PageDefinition = {
       `
     },
     recruitmentFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide copies of proposed recruitment materials (e.g., ads,
         fliers, website postings, and recruitment letters).
@@ -4278,7 +4286,7 @@ const ParicipantIdentification: PageDefinition = {
     },
     // NOTE: was consentFiles
     recruitmentConsentFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide copies of consent materials used during the recruitment
         process (e.g., oral/written scripts).
@@ -4394,7 +4402,7 @@ const InformedConsentProcess: PageDefinition = {
       ),
     },
     consentFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide copies of all documents, as applicable. Attach the debriefing
         script or information sheet to be used to explain the research to the
@@ -4456,7 +4464,7 @@ const InformedConsentProcess: PageDefinition = {
     },
     consentToolsFiles: {
       condition: 'hasAdditionalTools',
-      type: 'File',
+      type: 'Attachment',
       label: 'Provide copies of these tools',
     },
 
@@ -4470,7 +4478,7 @@ const InformedConsentProcess: PageDefinition = {
     },
     additionalConsentFiles: {
       condition: 'hasAdditionalForms',
-      type: 'File',
+      type: 'Attachment',
       label: 'Provide copies of these tools',
     },
   }
@@ -5205,7 +5213,7 @@ const DataConfidentiality: PageDefinition = {
     },
     // note: was nihCertificateFiles
     certificateOfConfidentialityFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: 'Provide a copy of the certificate of confidentiality'
     }
   }
@@ -5297,7 +5305,7 @@ const GeneralAuthorizationForms: PageDefinition = {
       // that were uploaded to a section that we can pick from.
     },
     hipaaWrittenFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: 'Provide a copy of the authorization form',
     },
 
@@ -5319,7 +5327,7 @@ const GeneralAuthorizationForms: PageDefinition = {
       // that were uploaded to a section that we can pick from.
     },
     hipaaAlterationFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: 'Provide a copy of the authorization form',
     }
   }
@@ -5385,7 +5393,7 @@ const HIPAAFullWaiver: PageDefinition = {
 
     // NOTE: This is intentially a shared upload with other pages.
     dataCollectionFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide a copy of the data collection form(s) used
         (e.g., Excel spreadsheet, etc.) to record the information above.
@@ -5533,7 +5541,7 @@ const HIPAAPartialWaiver: PageDefinition = {
 
     // NOTE: This is intentially a shared upload with other pages.
     dataCollectionFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide a copy of the data collection form(s) used
         (e.g., Excel spreadsheet, etc.) to record the information above.
@@ -5680,7 +5688,7 @@ const HIPAAAlterationWaiver: PageDefinition = {
 
     // NOTE: This is intentially a shared upload with other pages.
     dataCollectionFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Provide a copy of the data collection/screening form(s) used
         (e.g., screening log, Excel spreadsheet, etc.) to record the
@@ -5878,7 +5886,7 @@ const Monitoring: PageDefinition = {
       `,
     },
     monitoringPlanFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: `
         Upload the data and/or safety monitoring plan, if applicable.
       `,
@@ -5949,7 +5957,7 @@ const Other: PageDefinition = {
   `,
   fields: {
     otherFiles: {
-      type: 'File',
+      type: 'Attachment',
       label: 'Additional files for this submission',
     },
     otherComments: {

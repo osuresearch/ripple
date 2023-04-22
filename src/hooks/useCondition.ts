@@ -1,6 +1,7 @@
 import { compileExpression, Options, useDotAccessOperator } from 'filtrex';
 import { getReferencedFields, findField } from '../tools';
 import { useRippleContext } from './useRippleContext';
+import { FieldReferenceSet, Condition } from '../types';
 
 export type UseConditionReturn = {
   passed: boolean;

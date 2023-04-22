@@ -54,7 +54,7 @@ const MultiSiteStudy: PageDefinition = {
       label: 'Provide the name of the lead institution directing the research.'
     },
     leadInstitutionApproval: {
-      type: 'File',
+      type: 'Attachment',
       condition: 'isMultiSite and not isPILeadInvestigator',
       label: 'Provide the IRB or ethics board approval from the lead institution, as applicable.'
     },
@@ -222,7 +222,7 @@ const LocationOfResearch: PageDefinition = {
             label: 'State'
           },
           approvalDocuments: {
-            type: 'File',
+            type: 'Attachment',
             label: `
               A letter of support and/or another IRB\'s approval should be provided, as necessary.
               [Contact ORRP](mailto:irbinfo@osu.edu) for more information.

@@ -1,18 +1,32 @@
 import React from 'react';
+import { Stack, IconButton, ScrollArea, Text } from '@osuresearch/ui';
+import { toggleComments } from '../../features/settings';
 import { useRippleContext } from '../../hooks';
+import { Debugger } from '../Debugger';
 
 export function Aside() {
-  const { selector } = useRippleContext();
+  const { selector, dispatch } = useRippleContext();
   const showComments = selector((state) => state.settings.showComments);
-
-  if (!showComments) {
-    return null;
-  }
+  const dispatcher = dispatch();
 
   return (
-    <div>
-      Annotator components have been moved to @osuresearch/annotator
-      and will need to be re-added.
-    </div>
+    <Stack p="md" align="end">
+      <IconButton
+        name="bars"
+        size={24}
+        label="Toggle navigation"
+        onPress={() => dispatcher(toggleComments(!showComments))}
+      />
+
+      {showComments &&
+      <ScrollArea h="100px" w="100%" miw={350} type="hover" style={{ flexGrow: 1 }} hideDelay={1000}>
+        <Debugger />
+        {/* <Stack gap={0}>
+          <Text c="dark" fw="bold" fs="sm">Comments</Text>
+          <Text>Content here.</Text>
+        </Stack> */}
+      </ScrollArea>
+      }
+    </Stack>
   )
 }

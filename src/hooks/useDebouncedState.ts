@@ -9,7 +9,7 @@ export function useDebouncedState<T = any>(
   options = { leading: false }
 ) {
   const [value, setValue] = useState(defaultValue);
-  const timeoutRef = useRef<number>(null);
+  const timeoutRef = useRef<number>();
   const leadingRef = useRef(true);
 
   const clearTimeout = () => window.clearTimeout(timeoutRef.current);

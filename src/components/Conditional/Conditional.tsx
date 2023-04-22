@@ -1,8 +1,8 @@
 import React from 'react';
-import { useRippleContext } from '../../hooks/useRippleContext';
-import { Alert, Paper, Text } from '@osuresearch/ui';
-import { useCondition } from '../../hooks';
+import { Paper } from '@osuresearch/ui';
 import { ConditionInformation } from './ConditionInformation';
+import { useCondition, useRippleContext } from '../../hooks';
+import { Condition } from '../../types';
 
 export type ConditionalProps = {
   name: string;
@@ -22,7 +22,7 @@ export function Conditional({ name, condition, children }: ConditionalProps) {
   const { selector } = useRippleContext();
   const showConditions = selector((state) => state.settings.showConditions);
 
-  const { passed, error, fields, references } = useCondition(condition);
+  const { passed, error, references } = useCondition(condition);
 
   // Display the children regardless of passing the condition
   // *and* show information about the condition itself.
@@ -43,12 +43,6 @@ export function Conditional({ name, condition, children }: ConditionalProps) {
       </ConditionInformation>
     );
   }
-
-  // if (error) {
-  //   return (
-  //     <Paper p="xs" bgc="error" c="error-contrast">{error}</Paper>
-  //   )
-  // }
 
   // Default behaviour: only show the children if the condition passes
   if (!passed) {

@@ -1,12 +1,27 @@
-import React, { ComponentType } from 'react';
+import React, { ComponentType, forwardRef } from 'react';
+import { Chip } from '@osuresearch/ui';
 import { useRippleContext } from '../../hooks/useRippleContext';
 import { ValueFieldProps, BaseFieldProps } from '../../react';
+import styled from 'styled-components';
+import { Debug } from '../Debug';
 
-export type ValueFieldRendererProps = BaseFieldProps & {
-  as: ComponentType<ValueFieldProps>;
+export type ValueFieldRendererProps<T> = BaseFieldProps<T> & {
+  as: ComponentType<ValueFieldProps<T>>;
 };
 
-export function ValueFieldRenderer({ as: Component, ...props }: ValueFieldRendererProps) {
+const DebugWrapper = styled.div`
+  position: absolute;
+  left: calc(100% + 16px);
+  white-space: nowrap;
+`
+// export function ValueFieldRenderer2<T> = forwardRef<HTMLElement, ValueFieldRendererProps<T>>((
+//   { as: Component, ...props },
+//   ref
+// ) => {
+
+// })
+
+export function ValueFieldRenderer<T>({ as: Component, ...props }: ValueFieldRendererProps<T>) {
   const {
     selector,
     formState: { errors }
@@ -15,9 +30,14 @@ export function ValueFieldRenderer({ as: Component, ...props }: ValueFieldRender
   const diffMode = selector((state) => state.settings.diffMode);
 
   return (
-    <>
-      {/* {diffMode} */}
+    <div className="rui-relative">
+      <Debug>
+        <DebugWrapper>
+          <Chip variant="indicator" c="pink">field: {props.name}</Chip>
+        </DebugWrapper>
+      </Debug>
+
       <Component {...props} />
-    </>
+    </div>
   );
 }

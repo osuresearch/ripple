@@ -1,8 +1,11 @@
-import { Group, Heading, Divider, FormErrors, Text, Box } from '@osuresearch/ui';
+import { Group, Heading, Divider, FormErrors, Text, Box, Paper, Chip } from '@osuresearch/ui';
 import React from 'react';
-import { Outlet } from 'react-router';
+import { Outlet, useLocation } from 'react-router-dom';
+import styled from 'styled-components';
 import { useRippleContext } from '../../hooks';
 import { Aside } from '../Aside';
+import { Debug } from '../Debug';
+import { MemoryRouterEditor } from '../MemoryRouterEditor';
 import { Navigation } from '../Navigation';
 
 // Content container for the TOC, page(s), and comment(s)
@@ -17,28 +20,26 @@ export function Content() {
   } = useRippleContext();
 
   return (
-    <Group grow>
+    <Group bgc="light" grow align="stretch" gap={0} mih="100vh">
       <Navigation />
-      <Box w="100%">
-        <Heading level={1}>{form.title}</Heading>
+      <Paper w={815} miw={815} bgc="light-tint" my="xxl" p="xxl" shadow="sm">
+        {/* <Heading level={1}>{form.title}</Heading>
         <Text fs="sm" c="dark">
           Version {form.version}
-        </Text>
-        <Divider />
+        </Text> */}
+
+        <Debug>
+          <MemoryRouterEditor />
+        </Debug>
 
         {/* TODO: FormErrors needs to be contextual based on view mode
           Agg of all vs single page fields */}
-        <FormErrors errorMessages={errors} />
+        {/* <FormErrors errorMessages={errors} /> */}
 
         {/* Outlet could be a single page or
           all pages at once depending on view mode */}
         <Outlet />
-
-        {/* <Group justify="end">
-          <Button variant="subtle">Cancel</Button>
-          <SubmitButton />
-        </Group> */}
-      </Box>
+      </Paper>
       <Aside />
     </Group>
   );

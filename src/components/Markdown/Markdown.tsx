@@ -1,4 +1,4 @@
-import { Heading, Link, Box, Text, Icon } from '@osuresearch/ui';
+import { Heading, Link, Box, Text, Icon, Group } from '@osuresearch/ui';
 import MarkdownToJSX from 'markdown-to-jsx';
 import React from 'react';
 
@@ -34,9 +34,10 @@ export type MarkdownProps = {
 
 function ListItem({ children }: { children: React.ReactNode }) {
   return (
-    <Text as="li">
-      <Icon name="circleFill" c="scarlet" size={10} /> {children}
-    </Text>
+    <Group as="li" ml="md">
+      <Icon name="circleFill" c="scarlet" size={10} ml="-md" pt="xs" />
+      <p>{children}</p>
+    </Group>
   );
 }
 
@@ -75,7 +76,7 @@ export function _Markdown({ text }: MarkdownProps) {
             component: Text,
             props: {
               as: 'p',
-              py: 'xs'
+              pb: 'xs'
             }
           },
           // TODO: How should this be styled?

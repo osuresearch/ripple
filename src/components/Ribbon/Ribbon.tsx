@@ -28,6 +28,7 @@ import {
 } from '../../features/settings';
 import { SubmitButton } from '../SubmitButton';
 import { Awareness } from '../Awareness';
+import { DiffMode, LayoutMode, InteractionMode } from '../../types';
 
 // export type RibbonProps = {};
 
@@ -52,7 +53,6 @@ export function Ribbon() {
       shadow="md"
       bgc="light"
       p={0}
-      mb="xl"
       h={108}
       style={{
         position: 'sticky',
@@ -63,11 +63,29 @@ export function Ribbon() {
     >
       <Group justify="apart">
         <TabPanel variant="simple">
-          <Item title="Home">
+          {/* <Item title="Home">
             <Group p="sm">Formatting things</Group>
-          </Item>
-          <Item title="Design">
-            <Group p="sm">Design things for devs</Group>
+          </Item> */}
+          <Item title="Developer">
+            <Group p="sm">
+
+            <ToggleButton
+                variant="default"
+                isSelected={showDebugger}
+                onChange={(value) => dispatch(toggleDebugger(value as boolean))}
+              >
+                <Icon name="code" /> Debugger
+              </ToggleButton>
+
+              <ToggleButton
+                variant="default"
+                isSelected={showConditions}
+                onChange={(value) => dispatch(toggleConditions(value as boolean))}
+              >
+                <Icon name="code" /> Conditions
+              </ToggleButton>
+
+            </Group>
           </Item>
           <Item title="Review">
             <Group p="sm">
@@ -82,6 +100,7 @@ export function Ribbon() {
               <Divider orientation="vertical" gap={0} />
 
               <SelectField
+                name="trackedChanges"
                 aria-label="View tracked changes as"
                 value={diffMode}
                 onChange={(value) => {
@@ -104,25 +123,10 @@ export function Ribbon() {
                 Navigation
               </ToggleButton>
 
-              <ToggleButton
-                variant="default"
-                isSelected={showDebugger}
-                onChange={(value) => dispatch(toggleDebugger(value as boolean))}
-              >
-                <Icon name="code" /> Debugger
-              </ToggleButton>
-
-              <ToggleButton
-                variant="default"
-                isSelected={showConditions}
-                onChange={(value) => dispatch(toggleConditions(value as boolean))}
-              >
-                <Icon name="code" /> Conditions
-              </ToggleButton>
-
               <Divider orientation="vertical" gap={0} />
 
               <SelectField
+                name="layout"
                 aria-label="Layout"
                 value={layoutMode}
                 onChange={(value) => {
@@ -136,6 +140,7 @@ export function Ribbon() {
               <Divider orientation="vertical" gap={0} />
 
               <SelectField
+                name="interactionMode"
                 aria-label="Interaction Mode"
                 value={interactionMode}
                 onChange={(value) => {

@@ -1,6 +1,5 @@
 import React, { ComponentType, useContext } from 'react';
 import { useRippleContext } from '../../hooks/useRippleContext';
-import { context } from '../Page';
 import { Markdown } from '../Markdown';
 
 import { BaseFieldProps, ChoiceFieldProps, ValueFieldProps } from '../../react';
@@ -8,8 +7,9 @@ import { useRippleField } from '../../hooks/useRippleField';
 import { ValueFieldRenderer } from './ValueFieldRenderer';
 import { ChoiceFieldRenderer } from './ChoiceFieldRenderer';
 import { Conditional } from '../Conditional';
-import { Chip, Stack, Text } from '@osuresearch/ui';
 import { useResizeObserver } from '../../hooks/useResizeObserver';
+import { usePageContext } from '../../hooks/usePageContext';
+import { FieldName } from '../../types';
 
 export type FieldProps = {
   /**
@@ -25,32 +25,24 @@ export type FieldProps = {
    */
   name: FieldName;
 
-  instance?: string;
+  variant?: 'tableCell'
 };
 
 /**
  * Ripple field
  */
-export function Field({ name, instance }: FieldProps) {
-  const ctx = useRippleContext();
-  const { name: pageName, page } = useContext(context);
+export function Field({ name, variant }: FieldProps) {
+  const { page } = usePageContext();
 
-  // Extract field from form responses and form definition.
-  // If the field has a condition associated with it, evaluate
-  //  (or pull cached evaluation)
+  const parts = name.split('.');
+  const localFieldName = parts[parts.length - 1];
 
-  // If the field hasn't been loaded yet (no response data from backend,
-  //  no definition, etc) - add it to the batch of fields to pull down.
-  //  This also should account for any condition fields it depends on
-  //  to be pulled down.
+  const definition = page.fields[localFieldName];
+  if (!definition) {
+    throw new Error(`Could not retrieve definition for field '${localFieldName}.' Full named path was '${name}'`);
+  }
 
-  // If loading response data, placeholder it or persist as read-only
-  // until available for editing. (every RUI field should have a skeleton state, tbh)
-
-  // TODO: Can be null if the field is invalid
-  const definition = page.fields[name];
-
-  const { component, componentProps } = useRippleField(name, definition, instance);
+  const { ref, component, componentProps } = useRippleField(name, definition);
   const {
     selector,
     formState: { errors }
@@ -67,74 +59,57 @@ export function Field({ name, instance }: FieldProps) {
   // TODO: Should be in the hook too tbh
   const fieldProps: Partial<BaseFieldProps<any>> = {
     name,
-    label: (
-      // Using data tags for targetting fields as we can't guarantee that a
-      // developer won't place multiple instances of the form in the same DOM.
-      <span data-ripple-field={name}>
-        <Chip variant="outline" c="pink" style={{ float: 'right' }}>field: {name}</Chip>
-        <Markdown text={definition.label} />
-      </span>
-    ),
-    description: <Markdown text={definition.description} />,
-    placeholder: definition.placeholder ? <Markdown text={definition.placeholder} /> : undefined,
+    placeholder: definition.placeholder,
     errorMessage: error?.message as string,
     // isRequired: !!definition?.required,
     necessityIndicator: !!definition?.required,
     diff: diffMode !== 'Current' ? diffMode : undefined
   };
 
-  // if (!definition) {
-  //   return (
-  //     <Alert variant="error" title="Missing definition">
-  //       Cannot load definition for field {name} on page {pageName}
-  //     </Alert>
-  //   );
-  // }
+  const label = (
+    // Using data tags for targetting fields as we can't guarantee that a
+    // developer won't place multiple instances of the form in the same DOM.
+    <span data-ripple-field={name}>
+      <Markdown text={definition.label} />
+    </span>
+  );
+  const description = <Markdown text={definition.description} />;
 
-  // // Find a field component to resolve for rendering
-  // const component = defaultComponent[definition.type as keyof typeof defaultComponent];
-  // if (!component) {
-  //   return (
-  //     <Alert variant="error" title="Missing field component">
-  //       Cannot load field component for field {name} on page {pageName}:
-  //       no field component is assigned to definition type {definition.type}
-  //     </Alert>
-  //   )
-  // }
-
-  // TODO: Custom component render prop support for edge cases.
-
-  // --- everything below is default rendering behaviour ---
-
-  const [ref, rect] = useResizeObserver<HTMLDivElement>();
+  if (variant !== 'tableCell') {
+    fieldProps.label = label;
+    fieldProps.description = description;
+  }
+  else {
+    // TODO: No coercing the label type into a string here.
+    // Unforseen consequences and all that jazz.
+    fieldProps['aria-label'] = '' + label;
+  }
 
   if (definition.choices) {
     // If there's choices, we need <Item> children to represent each choice.
     // We assume all RUI choice components behave the same way by default.
     // TODO: Don't assume, verify.
     return (
-      // <Anchor name={(instance ?? '') + name}>
         <Conditional name={name} condition={definition.condition}>
           <ChoiceFieldRenderer
+            ref={ref}
             as={component as ComponentType<ChoiceFieldProps<any>>}
             {...fieldProps}
             {...componentProps}
             choices={definition.choices}
           />
         </Conditional>
-      // </Anchor>
     );
   }
 
   return (
     <Conditional name={name} condition={definition.condition}>
-      {/* <Anchor name={(instance ?? '') + name}> */}
-        <ValueFieldRenderer
-          as={component as ComponentType<ValueFieldProps<any>>}
-          {...fieldProps}
-          {...componentProps}
-        />
-      {/* </Anchor> */}
+      <ValueFieldRenderer
+        ref={ref}
+        as={component as ComponentType<ValueFieldProps<any>>}
+        {...fieldProps}
+        {...componentProps}
+      />
     </Conditional>
   );
 }
