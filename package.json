@@ -4,6 +4,9 @@
   "description": "",
   "main": "dist/index.umd.js",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "pretest": "yarn lint",
     "test": "jest",
