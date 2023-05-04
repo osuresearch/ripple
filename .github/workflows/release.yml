@@ -2,6 +2,7 @@ name: Release
 on:
   push:
     branches:
+      - dev
       - main
       - next
       - alpha
@@ -34,12 +35,13 @@ jobs:
         run: yarn build:storybook
 
       - name: Deploy GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@3.6.2
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: docs-build
-          CLEAN: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: docs-build
+          target-folder: ${{ github.ref_name }}
+          clean: true
 
       - name: Release
         env:

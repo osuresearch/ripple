@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.umd.js",
   "scripts": {
-    "pretest": "npm run lint",
+    "pretest": "yarn lint",
     "test": "jest",
     "build": "microbundle --jsx React.createElement --jsxFragment React.Fragment --visualize",
     "test:watch": "jest --watch",
@@ -40,6 +40,8 @@
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@mdx-js/react": "^2.3.0",
+    "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/git": "^10.0.1",
     "@storybook/addon-actions": "^6.5.15",
     "@storybook/addon-essentials": "^6.5.15",
     "@storybook/addon-interactions": "^6.5.15",
@@ -127,7 +129,7 @@
     "importOrderSortSpecifiers": true
   },
   "lint-staged": {
-    "*.{ts,tsx}": "npm run lint"
+    "*.{ts,tsx}": "yarn lint"
   },
   "dependencies": {
     "@internationalized/date": "^3.2.0",
