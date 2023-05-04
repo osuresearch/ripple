@@ -39,7 +39,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: docs-build
+          folder: storybook-static
           target-folder: ${{ github.ref_name }}
           clean: true
 
