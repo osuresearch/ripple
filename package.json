@@ -3,6 +3,7 @@
   "version": "1.0.0-alpha.1",
   "description": "",
   "main": "dist/index.umd.js",
+  "private": false,
   "scripts": {
     "pretest": "yarn lint",
     "test": "jest",
