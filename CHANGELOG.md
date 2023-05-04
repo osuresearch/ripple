@@ -1,3 +1,10 @@
+# [1.0.0-alpha.3](https://github.com/osuresearch/ripple/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2023-05-04)
+
+
+### Bug Fixes
+
+* add missing publishConfig ([5eb7b30](https://github.com/osuresearch/ripple/commit/5eb7b307849ad9142d5b283fd692f1668f88e633))
+
 # [1.0.0-alpha.2](https://github.com/osuresearch/ripple/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2023-05-04)
 
 
