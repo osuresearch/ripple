@@ -27,7 +27,7 @@ import {
   setInteractionMode
 } from '../../features/settings';
 import { SubmitButton } from '../SubmitButton';
-import { Awareness } from '../Awareness';
+// TODO_YJS: import { Awareness } from '../Awareness';
 import { DiffMode, LayoutMode, InteractionMode } from '../../types';
 
 // export type RibbonProps = {};
@@ -159,7 +159,7 @@ export function Ribbon() {
         </TabPanel>
 
         <Group p="sm">
-          <Awareness />
+          {/* // TODO_YJS: <Awareness /> */}
           <SubmitButton />
         </Group>
       </Group>

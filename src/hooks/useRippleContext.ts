@@ -1,10 +1,10 @@
 import { useContext } from 'react';
-import { context, RippleContext } from './useRipple';
+import { RippleContext, IRippleContext } from './useRipple';
 import { FormDefinition } from '../types';
 
-export type UseRippleContextReturn<T extends FormDefinition> = RippleContext;
+export type UseRippleContextReturn<T extends FormDefinition> = IRippleContext;
 
 export function useRippleContext<T extends FormDefinition>(): UseRippleContextReturn<T> {
-  const ctx = useContext(context);
+  const ctx = useContext(RippleContext);
   return ctx;
 }

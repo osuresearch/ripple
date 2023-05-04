@@ -37,6 +37,9 @@ export function Field({ name, variant }: FieldProps) {
   const parts = name.split('.');
   const localFieldName = parts[parts.length - 1];
 
+  // TODO: This should not be a throw.
+  // If a field is manually specified by a developer and we
+  // change the form definition, we need some more adaptive behaviour.
   const definition = page.fields[localFieldName];
   if (!definition) {
     throw new Error(`Could not retrieve definition for field '${localFieldName}.' Full named path was '${name}'`);
@@ -63,7 +66,7 @@ export function Field({ name, variant }: FieldProps) {
     errorMessage: error?.message as string,
     // isRequired: !!definition?.required,
     necessityIndicator: !!definition?.required,
-    diff: diffMode !== 'Current' ? diffMode : undefined
+    diff: diffMode !== 'Current' ? diffMode : undefined,
   };
 
   const label = (
@@ -73,6 +76,7 @@ export function Field({ name, variant }: FieldProps) {
       <Markdown text={definition.label} />
     </span>
   );
+
   const description = <Markdown text={definition.description} />;
 
   if (variant !== 'tableCell') {
@@ -85,20 +89,20 @@ export function Field({ name, variant }: FieldProps) {
     fieldProps['aria-label'] = '' + label;
   }
 
+  // If there's choices, we need <Item> children to represent each choice.
+  // We assume all RUI choice components behave the same way by default.
+  // TODO: Don't assume, verify.
   if (definition.choices) {
-    // If there's choices, we need <Item> children to represent each choice.
-    // We assume all RUI choice components behave the same way by default.
-    // TODO: Don't assume, verify.
     return (
-        <Conditional name={name} condition={definition.condition}>
-          <ChoiceFieldRenderer
-            ref={ref}
-            as={component as ComponentType<ChoiceFieldProps<any>>}
-            {...fieldProps}
-            {...componentProps}
-            choices={definition.choices}
-          />
-        </Conditional>
+      <Conditional name={name} condition={definition.condition}>
+        <ChoiceFieldRenderer
+          ref={ref}
+          as={component as ComponentType<ChoiceFieldProps<any>>}
+          {...fieldProps}
+          {...componentProps}
+          choices={definition.choices}
+        />
+      </Conditional>
     );
   }
 
@@ -109,6 +113,7 @@ export function Field({ name, variant }: FieldProps) {
         as={component as ComponentType<ValueFieldProps<any>>}
         {...fieldProps}
         {...componentProps}
+        value={ componentProps.value }
       />
     </Conditional>
   );

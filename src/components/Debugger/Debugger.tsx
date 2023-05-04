@@ -4,15 +4,21 @@ import { useRippleContext } from '../../hooks';
 
 export function Debugger() {
   const {
+    watch,
     formState: { touchedFields, dirtyFields, errors, defaultValues },
     getValues
   } = useRippleContext();
+
+  const watched = watch();
 
   // const { annotations } = useAnnotationsContext();
 
   return (
     <Stack miw={300} w={300} style={{ overflowX: 'auto' }}>
       <Heading level={3}>RHF</Heading>
+      <Text fw="bold">watched</Text>
+      <Code block>{JSON.stringify(watched, undefined, 2)}</Code>
+
       <Text fw="bold">formState.touchedFields</Text>
       <Code block>{JSON.stringify(touchedFields, undefined, 2)}</Code>
 
@@ -24,13 +30,6 @@ export function Debugger() {
 
       <Text fw="bold">formState.defaultValues</Text>
       <Code block>{JSON.stringify(defaultValues, undefined, 2)}</Code>
-
-      <Text fw="bold">getValues</Text>
-      <Code block>{JSON.stringify(getValues(), undefined, 2)}</Code>
-
-      {/*
-      <Heading level={2}>Threads</Heading>
-      <Code block>{JSON.stringify(annotations, undefined, 2)}</Code> */}
     </Stack>
   );
 }

@@ -1,3 +1,6 @@
+
+import { FormDefinition } from "../../types"
+
 // Define your form
 const ContactForm: FormDefinition = {
   title: 'My Contact  Form',

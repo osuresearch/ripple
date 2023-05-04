@@ -1,5 +1,5 @@
 import React from "react";
-import { Group, DocumentPagination } from "@osuresearch/ui";
+import { Group, PageButton } from "@osuresearch/ui";
 import { Link } from 'react-router-dom';
 import { useRippleContext } from "../../hooks";
 import { PageName } from "../../types";
@@ -16,27 +16,27 @@ export function Pagination({ current }: PaginationProps) {
   return (
     <Group justify="apart">
       {!prev && (
-        <DocumentPagination as={Link} to="/" direction="previous">
+        <PageButton as={Link} to="/" direction="previous">
           Home
-        </DocumentPagination>
+        </PageButton>
       )}
 
       {prev && (
-        <DocumentPagination as={Link} to={'/page/' + prev.name} direction="previous">
+        <PageButton as={Link} to={'/page/' + prev.name} direction="previous">
           {prev.definition.title}
-        </DocumentPagination>
+        </PageButton>
       )}
 
       {next && (
-        <DocumentPagination as={Link} to={'/page/' + next.name} direction="next">
+        <PageButton as={Link} to={'/page/' + next.name} direction="next">
           {next.definition.title}
-        </DocumentPagination>
+        </PageButton>
       )}
 
       {!next && (
-        <DocumentPagination<typeof Link> as={Link} to="/submit" direction="next">
+        <PageButton<typeof Link> as={Link} to="/submit" direction="next">
           Review &amp; Submit
-        </DocumentPagination>
+        </PageButton>
       )}
     </Group>
   );

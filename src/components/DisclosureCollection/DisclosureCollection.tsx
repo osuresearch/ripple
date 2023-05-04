@@ -15,7 +15,7 @@ export function DisclosureCollection({
   isDisabled,
   ...props
 }: DisclosureCollectionProps) {
-  const { items, add, remove, definition, getSubpageLink } = useCollection(name);
+  const { items, add, remove, definition } = useCollection(name);
 
   const ids = Object.keys(items).filter((id) => !items[id]._deleted);
   // const deletedIds = Object.keys(items).filter((id) => items[id]._deleted);

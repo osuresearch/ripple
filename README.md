@@ -10,6 +10,6 @@ The changelog can be found on the [Releases page](https://github.com/osuresearch
 
 ## Authors and license
 
-[Chase McManning](Chase McManning) and [contributors](https://github.com/osuresearch/ripple/graphs/contributors).
+[Chase McManning](https://github.com/McManning) and [contributors](https://github.com/osuresearch/ripple/graphs/contributors).
 
 MIT License, see the included [LICENSE](LICENSE.md) file.

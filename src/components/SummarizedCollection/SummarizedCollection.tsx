@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FieldComponentProps } from '../../react';
-import { Alert, Button, Code, Details, Divider, Group, Heading, IconButton, Stack } from '@osuresearch/ui';
+import { Button, Divider, Group, Heading, IconButton, Stack } from '@osuresearch/ui';
 import { useCollection } from '../../hooks/useCollection';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { InstanceSummary } from '../InstanceSummary';
 import { EmptyCollection } from '../EmptyCollection';
 import { CollectionInstanceId } from '../../types';
+import { normalizeFieldPath } from '../../tools';
 
 export type SummarizedCollectionProps = FieldComponentProps<any>;
 
@@ -14,7 +15,8 @@ export function SummarizedCollection({
   isDisabled,
   ...props
 }: SummarizedCollectionProps) {
-  const { items, add, remove, definition, getSubpageLink } = useCollection(name);
+  const location = useLocation();
+  const { items, add, remove, definition } = useCollection(name);
 
   const ids = Object.keys(items).filter((id) => !items[id]._deleted);
   // const deletedIds = Object.keys(items).filter((id) => items[id]._deleted);
@@ -26,6 +28,9 @@ export function SummarizedCollection({
   const onRemove = (id: CollectionInstanceId) => {
     remove(id);
   }
+
+  const getSubpageLink = (id: CollectionInstanceId) =>
+    normalizeFieldPath(location, `${name}.${id}`);
 
   return (
     <Stack align="stretch">

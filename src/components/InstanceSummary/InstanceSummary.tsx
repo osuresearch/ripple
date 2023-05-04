@@ -3,7 +3,7 @@ import {
 } from '@osuresearch/ui';
 import React from 'react';
 import striptags from 'striptags';
-import { CollectionInstanceId, BaseField, CollectionField, PageResponses, PageDefinition, Markdown as MarkdownText } from '../../types';
+import { CollectionInstanceId, BaseField, CollectionField, PageResponses, PageDefinition, MarkdownText } from '../../types';
 import { Markdown } from '../Markdown';
 
 export type InstanceSummaryProps = {

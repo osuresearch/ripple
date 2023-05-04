@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { FieldComponentProps } from '../../react';
 import { Alert, Button, Code, Group, Heading, IconButton, Stack, Text } from '@osuresearch/ui';
 import { useCollection } from '../../hooks/useCollection';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { EmptyCollection } from '../EmptyCollection';
 import styled from 'styled-components';
 import { TableRowInstance } from './TableRowInstance';
 import { TableHeaders } from './TableHeaders';
 import { CollectionInstanceId } from '../../types';
+import { normalizeFieldPath } from '../../tools';
 
 export type TableCollectionProps = FieldComponentProps<any> & {
   editInline?: boolean
@@ -24,7 +25,8 @@ export function TableCollection({
   isDisabled,
   ...props
 }: TableCollectionProps) {
-  const { items, add, remove, definition, getSubpageLink } = useCollection(name);
+  const location = useLocation();
+  const { items, add, remove, definition } = useCollection(name);
 
   const ids = Object.keys(items).filter((id) => !items[id]._deleted);
   // const deletedIds = Object.keys(items).filter((id) => items[id]._deleted);
@@ -36,6 +38,9 @@ export function TableCollection({
   const onRemove = (id: CollectionInstanceId) => {
     remove(id);
   }
+
+  const getSubpageLink = (id: CollectionInstanceId) =>
+    normalizeFieldPath(location, `${name}.${id}`);
 
   return (
     <Stack align="stretch">

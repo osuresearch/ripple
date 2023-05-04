@@ -17,12 +17,12 @@ export type InteractionMode = 'Edit' | 'Read' | 'Review';
 /**
  * GitHub-flavored markdown text
  */
-export type Markdown = string;
+export type MarkdownText = string;
 
 /**
  * Generate markdown composed of response data.
  */
-export type MarkdownFactory = ((responses: FormResponses) => Markdown);
+export type MarkdownFactory = ((responses: FormResponses) => MarkdownText);
 
 /**
  * Mustache template text
@@ -116,7 +116,7 @@ export type BaseField = {
   /**
    * Primary label for the field.
    */
-  label: Markdown;
+  label: MarkdownText;
 
   /**
    * Additional secondary help text to display alongside the field.
@@ -124,7 +124,7 @@ export type BaseField = {
    * Depending on how field components are rendered, this may appear
    * either under the field input or in a popover dialog.
    */
-  description?: Markdown;
+  description?: MarkdownText;
 
   /**
    * Content to display when there is no response to the field.
@@ -132,7 +132,7 @@ export type BaseField = {
    * Depending on the implementing component for the field, this
    * may or may not actually support Markdown format.
    */
-  placeholder?: Markdown;
+  placeholder?: MarkdownText;
 
   /**
    * Simple "is this field required" validation rule.
@@ -194,7 +194,7 @@ export type CollectionField = {
    * Mustache variables will be derived from the field responses
    * within each instance being summarized.
    */
-  summary?: Markdown | MarkdownFactory;
+  summary?: MarkdownText | MarkdownFactory;
 
   /**
    * Optional component to render.
@@ -250,7 +250,7 @@ export type FieldDefinition = BaseField & (AtomicField | CollectionField | Secti
 
 export type PageDefinition = {
   title: string;
-  description?: Markdown;
+  description?: MarkdownText;
   condition?: Condition;
 
   fields: Record<FieldName, FieldDefinition>;

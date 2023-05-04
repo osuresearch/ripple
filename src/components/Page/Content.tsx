@@ -27,7 +27,8 @@ export function Content({ autolayout, children }: ContentProps) {
   const { name, page } = usePageContext();
 
   // TODO: Impl. Also requires handling bubbling up subpage errors.
-  const errors = { foo: { message: 'bar'} };
+  // const errors = { foo: { message: 'bar'} };
+  const errors = {};
 
   return (
     <div>
@@ -48,7 +49,8 @@ export function Content({ autolayout, children }: ContentProps) {
         {!autolayout && <>{children}</>}
       </Stack>
 
-      <Pagination current={name} />
+      {/* TODO: Extract out of Page */}
+      {/* <Pagination current={name} /> */}
     </div>
   )
 }

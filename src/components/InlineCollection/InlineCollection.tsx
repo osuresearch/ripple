@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FieldComponentProps } from '../../react';
-import { Alert, Button, Code, Details, Divider, Group, Heading, IconButton, Stack } from '@osuresearch/ui';
+import { Button, Divider, Group, Heading, IconButton, Stack } from '@osuresearch/ui';
 import { useCollection } from '../../hooks/useCollection';
-import { Link } from 'react-router-dom';
-import { InstanceSummary } from '../InstanceSummary';
 import { EmptyCollection } from '../EmptyCollection';
 import { InlineInstancePage } from '../InlineInstancePage';
 import { CollectionInstanceId } from '../../types';
@@ -15,7 +13,7 @@ export function InlineCollection({
   isDisabled,
   ...props
 }: InlineCollectionProps) {
-  const { items, add, remove, definition, getSubpageLink } = useCollection(name);
+  const { items, add, remove, definition } = useCollection(name);
 
   const ids = Object.keys(items).filter((id) => !items[id]._deleted);
   // const deletedIds = Object.keys(items).filter((id) => items[id]._deleted);

@@ -4,7 +4,7 @@ import { useController } from 'react-hook-form';
 
 import { useRippleContext } from './useRippleContext';
 import { FieldComponentType } from '../react';
-import { useCollab } from './useCollab';
+// TODO_YJS: import { useCollab } from './useCollab';
 import { useFieldComponent } from './useFieldComponent';
 import { FieldDefinition } from '../types';
 
@@ -21,7 +21,7 @@ export function useRippleField<T extends object = any>(
 ): UseRippleFieldReturn {
   const { selector, setValue, control } = useRippleContext();
   const [ component, props ] = useFieldComponent<T>(def);
-  const [ setCollabValue ] = useCollab(name);
+  // TODO_YJS: const [ setCollabValue ] = useCollab(name);
 
   const interactionMode = selector((state) => state.settings.interactionMode);
 
@@ -36,7 +36,7 @@ export function useRippleField<T extends object = any>(
   // Wrap onChange with a Yjs node sync
   const handleChange = async (value: any) => {
     setValue(name, value);
-    setCollabValue(value);
+    // TODO_YJS: setCollabValue(value);
     // Pass down to RHF onChange.
     // onChange && onChange(value);
   };
@@ -50,14 +50,11 @@ export function useRippleField<T extends object = any>(
 
   const { field: { ref, onChange, onBlur, value } } = useController({ name, control });
 
-  console.log(name, value);
-
   return {
     ref,
     component,
     componentProps: mergeProps(
       props,
-      // registerProps,
       {
         onBlur: onBlur,
         onChange: onChange,
@@ -65,15 +62,6 @@ export function useRippleField<T extends object = any>(
         isDisabled: interactionMode !== 'Edit',
         // isDisabled: true,
       }
-      // register(name, {
-      //   disabled: interactionMode !== 'Edit'
-      // }),
-
-
-      // {
-      //   onChange: handleChange,
-      //   value: value ?? undefined
-      // }
     )
   };
 }

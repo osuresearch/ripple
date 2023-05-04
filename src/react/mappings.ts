@@ -2,11 +2,13 @@
 import {
   CheckboxField,
   TextField,
-  YesNoField,
+
   DateField,
-  RadioSetField,
   CheckboxSetField,
-  NumberField
+  NumberField,
+  TextAreaField,
+  YesNoField,
+  RadioSetField
 } from '@osuresearch/ui';
 
 import { TextEditor } from '../components/TextEditor';
@@ -20,21 +22,21 @@ import { FieldComponentType } from './types';
  * Mapping between a Ripple atomic and default RUI component
  */
 export const defaultComponent: Record<FieldType, FieldComponentType<any> | undefined> = {
-  // Text: TextAreaField,
-  Text: TextEditor,
+  Text: TextAreaField,
+  // Text: TextEditor,
   Boolean: YesNoField,
 
   // TODO: Fix these type incompatibilities.
   // Forcing 'any' to make it build for now which *works* but is error prone.
   Person: TextField as any,
 
-  Key: RadioSetField as any,
-  KeyArray: CheckboxSetField as any,
+  Key: RadioSetField,
+  KeyArray: CheckboxSetField,
 
   Flag: CheckboxField,
-  FlagArray: CheckboxSetField as any,
+  FlagArray: CheckboxSetField,
 
-  Date: DateField as any,
+  Date: DateField,
   Attachment: undefined, // AttachmentsField
 
   Number: NumberField,

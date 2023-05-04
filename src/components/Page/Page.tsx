@@ -33,7 +33,17 @@ const DebugWrapper = styled.div`
   left: calc(100% - 30px);
   white-space: nowrap;
 `
-
+/**
+ * A page provides context for all child fields and handles
+ * automatic layout rendering if `autolayout` is specified.
+ *
+ * Pages control routing for nested collection fields that
+ * are displayed as sub-pages.
+ *
+ * Includes route paths:
+ * - `/`: The current page
+ * - `:fieldName/*`: A collection instance sub-page
+ */
 export function Page(props: PageProps) {
   const { form } = useRippleContext();
 
@@ -58,8 +68,12 @@ export function Page(props: PageProps) {
           </DebugWrapper>
         </Debug>
 
+        <Content {...props} />
+
+        {/* Disabled for now - issue with accessing this router state from outside the package.  */}
+
         {/* Routing to either subpages (for collection instances) or content for *this* page */}
-        <Routes>
+        {/* <Routes>
           <Route path="/"
             element={<Content {...props} />}
             errorElement={<ErrorBoundary />}
@@ -68,7 +82,7 @@ export function Page(props: PageProps) {
             element={<InstancePage breadcrumbs={[{ label: page.title, href: `/page/${name}` }]} {...props} name="" />}
             errorElement={<ErrorBoundary />}
           />
-        </Routes>
+        </Routes> */}
       </Conditional>
     </Provider>
   );

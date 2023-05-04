@@ -9,9 +9,9 @@ import {
   useForm,
   RefCallBack
 } from 'react-hook-form';
-import { ydoc } from '../yjs';
+// TODO_YJS: import { ydoc } from '../yjs';
 
-import * as Y from 'yjs';
+// TODO_YJS: import * as Y from 'yjs';
 import { FormResponses } from '../types';
 
 /**
@@ -57,7 +57,7 @@ export type UseRippleFormReturn<
 > = Omit<UseFormReturn<TFieldValues, TContext>, 'register'> & {
   register: UseRippleFormRegister<TFieldValues>;
   save: () => Promise<void>;
-  doc: Y.Doc;
+  // TODO_YJS: doc: Y.Doc;
 };
 
 // TODO: Unused. I'm thinking of offering a plugin system for formatting
@@ -74,6 +74,8 @@ export type RUIFieldFormatter = {
  *
  * @param props
  * @returns
+ *
+ * @deprecated `useRipple` contains most behaviour we need sans YJS integrations.
  */
 export function useRippleForm<TFieldValues extends FormResponses = FormResponses, TContext = any>(
   props?: UseFormProps<TFieldValues, TContext>
@@ -89,7 +91,7 @@ export function useRippleForm<TFieldValues extends FormResponses = FormResponses
   // re-renders when used in hook deps.
   return useMemo<UseRippleFormReturn<TFieldValues, TContext>>(
     () => ({
-      doc: ydoc,
+      // TODO_YJS: doc: ydoc,
       save: async () => {
         // TODO: Push RHF form data to the API.
       },

@@ -1,8 +1,6 @@
-import { useLocation } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { usePageContext } from './usePageContext';
 import { useRippleContext } from './useRippleContext';
-import { normalizeFieldPath } from '../tools';
 import { CollectionInstanceId, PageResponses, BaseField, CollectionField, FieldName } from '../types';
 
 export type UseCollectionReturn = {
@@ -11,20 +9,17 @@ export type UseCollectionReturn = {
 
   add: () => CollectionInstanceId;
   remove: (id: CollectionInstanceId) => void;
-  getSubpageLink: (id: CollectionInstanceId) => string;
 }
 
 export function useCollection(name: FieldName): UseCollectionReturn {
   const ctx = useRippleContext();
   const { page } = usePageContext();
-  const location = useLocation();
 
   const parts = name.split('.');
   const localFieldName = parts[parts.length - 1];
 
   const definition = page.fields[localFieldName];
   if (!definition) {
-    debugger;
     throw new Error(
       `Could not retrieve definition for collection '${localFieldName}.' Full named path was '${name}'`
     );
@@ -52,12 +47,7 @@ export function useCollection(name: FieldName): UseCollectionReturn {
     ctx.setValue(`${name}.${id}._deleted`, true);
   }
 
-
-  const getSubpageLink = (id: CollectionInstanceId) =>
-    normalizeFieldPath(location, `${name}.${id}`);
-
   return {
-    getSubpageLink,
     items,
     definition,
     add,

@@ -14,13 +14,13 @@ import { BaseFieldProps } from '../../react/types';
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { Collaboration } from './collab';
-import { ydoc, provider as rtcProvider } from '../../yjs';
-import { WebrtcProvider } from 'y-webrtc';
+// TODO_YJS: import { Collaboration } from './collab';
+// TODO_YJS: import { ydoc, provider as rtcProvider } from '../../yjs';
+// TODO_YJS: import { WebrtcProvider } from 'y-webrtc';
 import { CharacterLimit } from './CharacterLimit';
 import styled from 'styled-components';
 
-import './collab-cursor.css';
+// TODO_YJS: import './collab-cursor.css';
 
 
 const Container = styled.div<{ height: number }>`
@@ -50,36 +50,39 @@ export type TextEditorProps = BaseFieldProps<string> & {
 
 // TODO: Rename to TextField or RichtextField
 export function TextEditor({ limit = 0, height = 5, ...props }: TextEditorProps) {
-  const [provider, setProvider] = useState<WebrtcProvider>();
+  // TODO_YJS: const [provider, setProvider] = useState<WebrtcProvider>();
 
   const { name, onChange, onBlur, value, isDisabled } = props;
 
   useEffect(() => {
-    setProvider(rtcProvider);
+  // TODO_YJS:   setProvider(rtcProvider);
   }, []);
 
-  const extensions = provider
-    ? [
-        // Placeholder.configure({
-        //   placeholder: 'Start typing...'
-        // }),
+  // TODO_YJS:
+  // const extensions = provider
+  //   ? [
+  //       // Placeholder.configure({
+  //       //   placeholder: 'Start typing...'
+  //       // }),
 
-        StarterKit.configure({
-          history: false
-        }),
+  //       StarterKit.configure({
+  //         history: false
+  //       }),
 
-        // Collaboration.configure({
-        //   document: ydoc,
-        //   provider,
-        //   field: name + '-tiptap',
-        //   user: { color: '#3daee9', name: 'John Doe' }
-        // }),
+  //       // Collaboration.configure({
+  //       //   document: ydoc,
+  //       //   provider,
+  //       //   field: name + '-tiptap',
+  //       //   user: { color: '#3daee9', name: 'John Doe' }
+  //       // }),
 
-        CharacterCount.configure({
-          limit
-        }),
-      ]
-    : [Placeholder.configure({ placeholder: 'Loading...' }), StarterKit];
+  //       CharacterCount.configure({
+  //         limit
+  //       }),
+  //     ]
+  //   : [Placeholder.configure({ placeholder: 'Loading...' }), StarterKit];
+
+  const extensions = [Placeholder.configure({ placeholder: 'Loading...' }), StarterKit];
 
   const editor = useEditor(
     {
@@ -109,7 +112,7 @@ export function TextEditor({ limit = 0, height = 5, ...props }: TextEditorProps)
         }
       },
     },
-    [provider]
+    // TODO_YJS: [provider]
   );
 
   const inputRef = useRef<HTMLInputElement>(null);

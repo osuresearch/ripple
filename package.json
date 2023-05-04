@@ -85,6 +85,7 @@
   },
   "module": "dist/index.module.js",
   "source": "src/index.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
@@ -162,10 +163,6 @@
     "striptags": "^3.2.0",
     "styled-components": "^5.3.9",
     "tsconfig-paths-webpack-plugin": "^4.0.0",
-    "uuid": "^9.0.0",
-    "y-prosemirror": "^1.2.0",
-    "y-quill": "^0.1.5",
-    "y-webrtc": "^10.2.4",
-    "yjs": "^13.5.45"
+    "uuid": "^9.0.0"
   }
 }

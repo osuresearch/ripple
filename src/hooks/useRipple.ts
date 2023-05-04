@@ -7,9 +7,10 @@ import { LocalStoragePersistence } from '../providers/LocalStoragePersistence';
 import { ClientsideValidation } from '../providers/ClientsideValidation';
 import { NullLookup } from '../providers/NullLookup';
 import { getNextPage, getPreviousPage } from '../tools';
-import { RipplePersistenceProvider, RippleLookupProvider, RippleValidationProvider, FormDefinition, PageName, PageDefinition } from '../types';
+import { RipplePersistenceProvider, RippleLookupProvider, RippleValidationProvider, FormDefinition, PageName, PageDefinition, FormResponses } from '../types';
 
 import { defaultComponent } from '../react/mappings';
+import { UseFormReturn, useForm } from 'react-hook-form';
 
 export type RippleOptions = {
   /**
@@ -43,7 +44,7 @@ export type RippleOptions = {
   validation: RippleValidationProvider[];
 };
 
-export type RippleContext = {
+export type IRippleContext = {
   form: FormDefinition;
   options: RippleOptions;
 
@@ -67,11 +68,11 @@ export type RippleContext = {
         definition: PageDefinition;
       }
     | undefined;
-} & UseRippleFormReturn<any, any>;
+} & UseFormReturn<FormResponses, any>;
 
-export type UseRippleReturn<T extends FormDefinition> = RippleContext;
+export type UseRippleReturn<T extends FormDefinition> = IRippleContext;
 
-export const context = createContext<RippleContext>({} as RippleContext);
+export const RippleContext = createContext<IRippleContext>({} as IRippleContext);
 
 export function useRipple<T extends FormDefinition>(
   form: T,
@@ -96,7 +97,11 @@ export function useRipple<T extends FormDefinition>(
   };
 
   // Wire up to RHF
-  const rform = useRippleForm({
+  // const rform = useRippleForm({
+  //   mode: 'onBlur'
+  // });
+
+  const rform = useForm<FormResponses, any>({
     mode: 'onBlur'
   });
 

@@ -1,40 +1,20 @@
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
-import styled from 'styled-components';
-import { useRipple, context, RippleOptions } from '../../hooks/useRipple';
+import { useRipple, RippleContext, RippleOptions } from '../../hooks';
 import { useRippleContext } from '../../hooks/useRippleContext';
 import { Ribbon } from '../Ribbon';
 import { store } from '../../store';
 import { PageRouter } from '../PageRouter';
 import { FormDefinition } from '../../types';
+import { FormProvider } from '../FormProvider';
 
 export type FormProps = {
   form: FormDefinition;
 
   options?: Partial<RippleOptions>;
 
-  /**
-   * Automatically generate Page and Field components
-   * based on the current form definition.
-   */
-  autolayout?: boolean;
-
   children?: React.ReactNode;
 };
-
-export function Form({ form, options, autolayout, children }: FormProps) {
-  const ctx = useRipple(form, options);
-
-  const Provider = context.Provider;
-
-  return (
-    <Provider value={ctx}>
-      <ReduxProvider store={store}>
-        <FormWrapper>{children}</FormWrapper>
-      </ReduxProvider>
-    </Provider>
-  );
-}
 
 function FormWrapper({ children }: { children: React.ReactNode }) {
   const {
@@ -50,5 +30,13 @@ function FormWrapper({ children }: { children: React.ReactNode }) {
 
       <PageRouter>{children}</PageRouter>
     </form>
+  );
+}
+
+export function Form({ children, ...providerProps }: FormProps) {
+  return (
+    <FormProvider {...providerProps}>
+      <FormWrapper>{children}</FormWrapper>
+    </FormProvider>
   );
 }
