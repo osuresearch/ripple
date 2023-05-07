@@ -60,16 +60,17 @@ function PageNavLink({ name, children }: PageNavLinkProps) {
         </NavLink>
 
         {showConditions && definition.condition &&
-        <Tooltip contentSlot="This page is conditionally displayed" delay={0}>
+        <Tooltip contentSlot="This page is conditionally displayed" delay={0} placement="left">
           <NavLink to={'page/' + name}>
             <Icon size={20} name={passed ? 'eye' : 'eyeSlash'} c="error" aria-label="Conditional" />
           </NavLink>
         </Tooltip>
         }
 
-        {!showConditions &&
+        {/* TODO: Error indicator  */}
+        {/* {!showConditions &&
           <Icon name="exclamationFill" c="error" aria-label="Errors" />
-        }
+        } */}
       </Group>
     </FocusRing>
   );

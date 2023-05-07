@@ -2438,6 +2438,7 @@ __metadata:
     "@mantine/hooks": ^6.0.1
     "@mdx-js/react": ^2.3.0
     "@osuresearch/iconography": ^1.0.1
+    "@osuresearch/types": ^1.0.3
     "@osuresearch/ui": alpha
     "@radix-ui/react-scroll-area": ^1.0.3
     "@reduxjs/toolkit": ^1.9.1
@@ -2519,6 +2520,13 @@ __metadata:
     react-router-dom: ">=5.0.1"
   languageName: unknown
   linkType: soft
+
+"@osuresearch/types@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@osuresearch/types@npm:1.0.3"
+  checksum: 7659a6b9bf19ebc4937dfc3953033374571c369c56919bf5816de08cbe459382532c5b0668e298467e6fd0b33e27add770ac2120b803d87abd98641d5d4ff635
+  languageName: node
+  linkType: hard
 
 "@osuresearch/ui@npm:alpha":
   version: 5.0.0-alpha.18

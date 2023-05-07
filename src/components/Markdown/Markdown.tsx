@@ -1,4 +1,4 @@
-import { Heading, Link, Box, Text, Icon, Group } from '@osuresearch/ui';
+import { Heading, Link, Box, Text, Icon, Group, Admonition } from '@osuresearch/ui';
 import MarkdownToJSX from 'markdown-to-jsx';
 import React from 'react';
 
@@ -107,6 +107,11 @@ export function _Markdown({ text }: MarkdownProps) {
           },
           li: {
             component: ListItem
+          },
+
+          // Expose RUI 5 admonitions for markdown
+          Admonition: {
+            component: Admonition,
           }
         }
       }}

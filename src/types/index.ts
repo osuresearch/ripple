@@ -248,19 +248,22 @@ export type AtomicField = {
 
 export type FieldDefinition = BaseField & (AtomicField | CollectionField | SectionField);
 
+export type FieldList = Record<string, FieldDefinition>;
+export type FieldKeys = keyof FieldList;
+
 export type PageDefinition = {
   title: string;
   description?: MarkdownText;
   condition?: Condition;
 
-  fields: Record<FieldName, FieldDefinition>;
+  fields: FieldList;
 };
 
 export type FormDefinition = {
   title: string;
   version: string;
 
-  pages: { [name: PageName]: PageDefinition };
+  pages: Record<PageName, PageDefinition>;
 };
 
 // Responses are their own data type.

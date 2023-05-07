@@ -55,4 +55,10 @@ export type ChoiceFieldProps<T> = BaseFieldProps<T> & ListProps<any> & PreviousC
 
 export type FieldComponentProps<T> = BaseFieldProps<T> & (ChoiceFieldProps<T> | ValueFieldProps<T>);
 
+export type DiffComponentProps<T> = {
+  current: FieldComponentProps<T>
+  previous: FieldComponentProps<T>
+}
+
 export type FieldComponentType<T> = React.ComponentType<FieldComponentProps<T>>;
+export type DiffComponentType<T> = React.ComponentType<DiffComponentProps<T>>;

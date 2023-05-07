@@ -17,7 +17,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
 
-    "baseUrl": ".",
+    // "baseUrl": ".",
     "paths": {
       // Note: Only use these paths for Storybook stories.
       // Compilation of the main library will break otherwise.
