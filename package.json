@@ -1,8 +1,12 @@
 {
   "name": "@osuresearch/ripple",
-  "version": "1.0.0-alpha",
+  "version": "1.0.0-alpha.3",
   "description": "",
   "main": "dist/index.umd.js",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "pretest": "yarn lint",
     "test": "jest",
