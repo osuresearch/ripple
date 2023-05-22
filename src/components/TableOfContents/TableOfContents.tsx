@@ -53,15 +53,15 @@ function PageNavLink({ name, children }: PageNavLinkProps) {
   return (
     <FocusRing>
       <Group w={300} justify="apart" px="xs">
-        <NavLink to={'page/' + name} style={{ maxWidth: 250 }}>
-          {({ isActive }) => <StyledNavLink isActive={isActive} isHidden={!passed}>
+        <NavLink to={'#/' + name} style={{ maxWidth: 250 }}>
+          {({ isActive }) => <StyledNavLink isActive={window.location.hash === '#/' + name} isHidden={!passed}>
             {definition.title} {children}
           </StyledNavLink>}
         </NavLink>
 
         {showConditions && definition.condition &&
         <Tooltip contentSlot="This page is conditionally displayed" delay={0} placement="left">
-          <NavLink to={'page/' + name}>
+          <NavLink to={'#/' + name}>
             <Icon size={20} name={passed ? 'eye' : 'eyeSlash'} c="error" aria-label="Conditional" />
           </NavLink>
         </Tooltip>
@@ -76,7 +76,7 @@ function PageNavLink({ name, children }: PageNavLinkProps) {
   );
 }
 
-export function Navigation() {
+export function TableOfContents() {
   const { selector, dispatch, form } = useRippleContext();
 
   const showNavigation = selector((state) => state.settings.showNavigation);
