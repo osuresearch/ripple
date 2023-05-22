@@ -1,7 +1,5 @@
 import { ChoicesList, PageDefinition, FieldDefinition, FormDefinition } from "../../types"
 
-import { PageDefinition, ChoicesList, FormDefinition } from "../../types"
-
 // More IRB to waste time.
 
 // I feel like 'summary' should be at PageDefinition.
@@ -6042,10 +6040,18 @@ const DeceptionConsentAlteration: PageDefinition = {
   radiation locations
 */
 
-export const IRB: FormDefinition = {
+// Define your form
+// Ref: https://orrp.osu.edu/files/2019/03/IRB-Initial-Submission.pdf
+export const IRB = {
   title: 'Ohio State IRB Initial Submission',
+
+  // Version it - will help you compare versioned responses later
+  // Will probably be semver-related, e.g. major changes aren't fully diffable,
+  // but minors are. Or something along those lines.
   version: '1.0',
 
+  // All your pages in the order they should display.
+  // Each page has an optional condition to control visibility.
   pages: {
     Identification: Identification,
 
@@ -6142,7 +6148,7 @@ export const IRB: FormDefinition = {
     // and submit for review
     FindErrors: FindErrors,
   }
-};
+} as const satisfies FormDefinition;
 
 export default IRB;
 

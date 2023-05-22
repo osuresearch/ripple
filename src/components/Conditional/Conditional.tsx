@@ -16,7 +16,10 @@ export type ConditionalProps = {
 };
 
 /**
- * Conditionally render children based on evaluating Ripple conditionals
+ * Conditionally render children based on evaluating Ripple form state.
+ *
+ * This makes use of [filtrex](https://www.npmjs.com/package/filtrex)
+ * expressions for evaluating the current form state.
  */
 export function Conditional({ name, condition, children }: ConditionalProps) {
   const { selector } = useRippleContext();

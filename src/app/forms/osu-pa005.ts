@@ -770,7 +770,7 @@ const StatementOfResponsibility: PageDefinition = {
   }
 }
 
-const PA005: FormDefinition = {
+export const PA005 = {
   title: 'The Ohio State University Authorization to Seek Off-Campus Funding',
   version: '1.0',
   pages: {
@@ -783,6 +783,4 @@ const PA005: FormDefinition = {
     additionalInfo: AdditionalInformation,
     legal: StatementOfResponsibility,
   }
-}
-
-export default PA005;
+} as const satisfies FormDefinition;

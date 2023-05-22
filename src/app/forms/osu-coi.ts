@@ -615,7 +615,7 @@ const Travels: PageDefinition = {
   }
 }
 
-const COI: FormDefinition = {
+export const COI = {
   title: 'Ohio State Conflict of Interest',
   version: '1.0',
   pages: {
@@ -624,6 +624,4 @@ const COI: FormDefinition = {
     outsideActivities: OutsideActivities,
     travels: Travels,
   }
-}
-
-export default COI;
+} as const satisfies FormDefinition;

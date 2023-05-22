@@ -119,4 +119,9 @@ export function _Markdown({ text }: MarkdownProps) {
   );
 }
 
+/**
+ * Renders text content as markdown using the lightweight
+ * [markdown-to-jsx](https://github.com/probablyup/markdown-to-jsx) to render
+ * [Research UI 5](https://github.com/osuresearch/ui) components.
+ */
 export const Markdown = React.memo(_Markdown);
