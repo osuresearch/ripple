@@ -15,6 +15,10 @@ export function useCollection(name: FieldName): UseCollectionReturn {
   const ctx = useRippleContext();
   const { page } = usePageContext();
 
+  if (!page) {
+    throw new Error('Cannot call useCollection outside of a Ripple Page');
+  }
+
   const parts = name.split('.');
   const localFieldName = parts[parts.length - 1];
 

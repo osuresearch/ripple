@@ -1,15 +1,10 @@
-import React, { createContext } from 'react';
+import { createContext } from 'react';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import type { RootState, RippleDispatch } from '../store';
 import { FieldComponentType } from '../react';
-import { useRippleForm, UseRippleFormReturn } from './useRippleForm';
-import { LocalStoragePersistence } from '../providers/LocalStoragePersistence';
-import { ClientsideValidation } from '../providers/ClientsideValidation';
-import { NullLookup } from '../providers/NullLookup';
 import { getNextPage, getPreviousPage } from '../tools';
 import { RipplePersistenceProvider, RippleLookupProvider, RippleValidationProvider, FormDefinition, PageName, PageDefinition, FormResponses } from '../types';
 
-import { defaultComponent } from '../react/mappings';
 import { UseFormReturn, useForm } from 'react-hook-form';
 
 export type RippleOptions = {
@@ -76,25 +71,9 @@ export const RippleContext = createContext<IRippleContext>({} as IRippleContext)
 
 export function useRipple<T extends FormDefinition>(
   form: T,
-  options: Partial<RippleOptions> = {}
+  options: RippleOptions
 ): UseRippleReturn<T> {
-  const { components, ...otherOptions } = options;
-
-  const opt: RippleOptions = {
-    // Default options
-    persistence: LocalStoragePersistence,
-    validation: [ClientsideValidation],
-    lookup: [NullLookup],
-
-    // Merge default components with overrides
-    components: {
-      ...defaultComponent,
-      ...components,
-    },
-
-    // Merge the rest of the overrides
-    ...otherOptions
-  };
+  const { ...otherOptions } = options;
 
   // Wire up to RHF
   // const rform = useRippleForm({
@@ -109,7 +88,7 @@ export function useRipple<T extends FormDefinition>(
   // Retval can be passed into a <Ripple> component for providing context.
   return {
     form,
-    options: opt,
+    options,
     dispatch: useDispatch,
     selector: useSelector,
     getNextPage: (page: PageName) => getNextPage(form, page),

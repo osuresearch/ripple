@@ -9,5 +9,13 @@ export type IPageContext = {
 export const PageContext = createContext<IPageContext>({} as IPageContext);
 
 export function usePageContext(): IPageContext {
-  return useContext(PageContext);
+  const ctx = useContext(PageContext);
+
+  if (!ctx) {
+    throw new Error(
+      'Cannot call usePageContext outside of a Ripple Page context',
+    );
+  }
+
+  return ctx;
 }
