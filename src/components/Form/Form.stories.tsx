@@ -1,126 +1,77 @@
 import React from 'react';
-import { Story, Meta } from '@storybook/react';
-
-import { Form, FormProps } from '../Form/Form';
-
-import IRBInitial from '../../app/forms/osu-irb-initial';
-import { Page } from '../Page';
+import { Meta, StoryObj } from '@storybook/react';
+import { Button, Group } from '@osuresearch/ui';
+import { Form } from './Form';
 import { Field } from '../Field';
+import { Page } from '../Page';
+import { RippleOptions, useRippleContext } from '../../hooks';
+import { DisclosureCollection } from '../DisclosureCollection';
+import { SummarizedCollection } from '../SummarizedCollection';
+import { TableCollection } from '../TableCollection';
+import { Debugger } from '../Debugger';
 
-import { Item, TabPanel, NumberField } from '@osuresearch/ui';
-import { RippleOptions } from '../../hooks/useRipple';
-import { InvestigatorSearchField } from '../../app/components/InvestigatorSearchField';
-import { ApprovedResearchSiteSearchField } from '../../app/components/ApprovedResearchSiteSearchField';
+import { SimpleForm } from '../../mocks/simple';
+import tests from '../../mocks/tests';
 
-export default {
+const meta: Meta<typeof Form> = {
   title: 'Components/Form',
   component: Form,
   argTypes: {}
-} as Meta<typeof Form>;
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Form>;
+
+export const Example: Story = {
+  render: (args) => (
+    <Form {...args} form={SimpleForm}>
+      <Page name="Main">
+        <Group grow>
+          <Field name="textField1" />
+          <Field name="textField1" />
+          <Field name="textField2" />
+        </Group>
+        <Field name="booleanField" />
+        <Field name="booleanField" />
+        <Field name="dateField" />
+        <Field name="keyField" />
+      </Page>
+
+      <Debugger />
+      <ResetButton />
+    </Form>
+  ),
+  args: {
+
+  }
+}
 
 const options: Partial<RippleOptions> = {
   components: {
-    InvestigatorSearchField,
-    ApprovedResearchSiteSearchField
+    TableCollection,
+    SummarizedCollection,
+    DisclosureCollection,
   }
 };
 
-export const Template: Story<FormProps> = (args) => (
-  <Form {...args} form={IRBInitial} options={options}>
-    {/*
-    Notice this is basically the same as an autolayout component
-    that just iterates pages/fields and dumps components.
+export const KitchenSink: Story = {
+  render: (args) => (
+    <Form {...args} form={tests} options={options} />
+  ),
+  args: {
 
-    I want combinations of both possible. From autolayout of pages,
-    autolayout of entire forms, to customization on a per page per
-    form basis to add custom content and layout configurations.
+  }
+}
 
-    */}
+function ResetButton() {
+  const { reset } = useRippleContext();
 
-    <Page name="team">
-      <Field name="team" />
-    </Page>
-
-    {/* Autolayout */}
-    <Page name="activities" autolayout />
-
-    {/*
-      Explicit layout - a developer can customize content between pages.
-      However custom content may not be included in final printouts.
-    */}
-    {/* <Page name="multiSiteStudy">
-      <Field name="isTest1" />
-
-      <Field name="isMultiSite" />
-      <Field name="isPILeadInvestigator" />
-      <Field name="communicationPlan" />
-      <Field name="leadInstitution" />
-      <Field name="leadInstitutionApproval" />
-      <Field name="coordinatingCenter" />
-      <Field name="isOhioStateIRBOfRecord" />
-      <Field name="siteCommunications" />
-    </Page> */}
-
-    <Page name="locations" autolayout />
-  </Form>
-);
-
-export const Autolayout: Story<FormProps> = (args) => (
-  <Form {...args} form={IRBInitial} options={options} autolayout />
-);
-
-export const CustomizingLayout: Story<FormProps> = (args) => (
-  <Form {...args} form={IRBInitial}>
-    <TabPanel>
-      <Item title="Multi-Site Study">
-        <Page name="multiSiteStudy">
-          <Field name="isMultiSite" />
-          <Field name="isPILeadInvestigator" />
-          <Field name="communicationPlan" />
-          <Field name="leadInstitution" />
-          <Field name="leadInstitutionApproval" />
-          <Field name="coordinatingCenter" />
-          <Field name="isOhioStateIRBOfRecord" />
-          <Field name="siteCommunications" />
-        </Page>
-      </Item>
-      <Item title="Locations">
-        <Page name="locations">
-          <Field name="approved" />
-        </Page>
-      </Item>
-      <Item title="New Study Team Member">
-        <Page name="newTeamMember">
-          <Field name="person" />
-          <Field name="designation" />
-          <Field name="activities" />
-        </Page>
-      </Item>
-    </TabPanel>
-  </Form>
-);
-
-// export const CustomizingLayout: Story<FormProps> = (args) => (
-//   <Form {...args} form={IRBInitial}>
-//     <Stack>
-//       <Page name="multiSiteStudy">
-//         <Field name="isMultiSite" />
-//         <Field name="isPILeadInvestigator" />
-//         <Field name="communicationPlan" />
-//         <Field name="leadInstitution" />
-//         <Field name="leadInstitutionApproval" />
-//         <Field name="coordinatingCenter" />
-//         <Field name="isOhioStateIRBOfRecord" />
-//         <Field name="siteCommunications" />
-//       </Page>
-//       <Page name="locations">
-//         <Field name="approved" />
-//       </Page>
-//       <Page name="newTeamMember">
-//         <Field name="person" />
-//         <Field name="designation" />
-//         <Field name="activities" />
-//       </Page>
-//     </Stack>
-//   </Form>
-// );
+  return (
+    <Button onPress={() => reset({
+      textField1: '',
+      textField2: '',
+      booleanField: undefined,
+    })}>Reset</Button>
+  )
+}

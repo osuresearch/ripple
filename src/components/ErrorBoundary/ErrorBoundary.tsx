@@ -1,8 +1,9 @@
 import React from 'react';
-import { useRouteError } from 'react-router-dom';
+import { useLocation, useRouteError } from 'react-router-dom';
 
 export function ErrorBoundary() {
   const error = useRouteError() as any;
+  const location = useLocation();
   // Uncaught ReferenceError: path is not defined
 
   return (
@@ -12,6 +13,7 @@ export function ErrorBoundary() {
       <p>
         <i>{error.statusText || error.message}</i>
       </p>
+      <p>Location: {JSON.stringify(location)}</p>
     </div>
   );
 }

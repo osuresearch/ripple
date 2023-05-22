@@ -6,7 +6,7 @@ import { useRippleContext } from '../../hooks';
 import { Aside } from '../Aside';
 import { Debug } from '../Debug';
 import { MemoryRouterEditor } from '../MemoryRouterEditor';
-import { Navigation } from '../Navigation';
+import { TableOfContents } from '../TableOfContents';
 
 // Content container for the TOC, page(s), and comment(s)
 export function Content() {
@@ -21,7 +21,7 @@ export function Content() {
 
   return (
     <Group bgc="light" grow align="stretch" gap={0} mih="100vh">
-      <Navigation />
+      <TableOfContents />
       <Paper w={815} miw={815} bgc="light-tint" my="xxl" p="xxl" shadow="sm">
         {/* <Heading level={1}>{form.title}</Heading>
         <Text fs="sm" c="dark">

@@ -87,22 +87,25 @@ export function ConditionInformation({
   passed,
   children
 }: ConditionInformationProps) {
+  let formatted: string | React.ReactNode = condition;
+
   const fieldNames = Object.keys(references);
+  if (fieldNames.length > 0) {
+    const pattern = new RegExp(`(?<field>(${fieldNames.join('|').replaceAll('.', '\\.')}))`, 'g');
 
-  const pattern = new RegExp(`(?<field>(${fieldNames.join('|').replaceAll('.', '\\.')}))`, 'g');
-
-  // Replace identified fields with DOM with additional information
-  const formatted = regexifyString({
-    // Compile:
-    // ant or not bat and cat in ("dog", "elf") or fish and g.h.i == jaguar
-    // /(?<field>(ant|bat|cat|fish|g\.h\.i|jaguar))/g
-    pattern,
-    decorator: (match, index, result) => {
-      const [field, page] = references[match];
-      return <FieldInfo name={match} field={field} page={page} />;
-    },
-    input: condition
-  });
+    // Replace identified fields with DOM with additional information
+    formatted = regexifyString({
+      // Compile:
+      // ant or not bat and cat in ("dog", "elf") or fish and g.h.i == jaguar
+      // /(?<field>(ant|bat|cat|fish|g\.h\.i|jaguar))/g
+      pattern,
+      decorator: (match, index, result) => {
+        const [field, page] = references[match];
+        return <FieldInfo name={match} field={field} page={page} />;
+      },
+      input: condition
+    });
+  }
 
   return (
     <Container>

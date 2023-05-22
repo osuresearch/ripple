@@ -1,7 +1,7 @@
 import { compileExpression, Options, useDotAccessOperator } from 'filtrex';
 import { getReferencedFields, findField } from '../tools';
 import { useRippleContext } from './useRippleContext';
-import { FieldReferenceSet, Condition } from '../types';
+import { FieldReferenceSet, Condition, FormResponses, FormDefinition } from '../types';
 
 export type UseConditionReturn = {
   passed: boolean;
@@ -12,9 +12,8 @@ export type UseConditionReturn = {
   invalidFields: string[];
 };
 
-export function useCondition(condition?: Condition): UseConditionReturn {
-  const { form, watch, getValues } = useRippleContext();
 
+function evaluateCondition(form: FormDefinition, condition?: Condition, responses?: FormResponses) {
   if (!condition) {
     return {
       passed: true,
@@ -33,18 +32,14 @@ export function useCondition(condition?: Condition): UseConditionReturn {
 
   const invalidFields = Object.keys(references).filter((k) => !references[k as any][0]);
 
-  // TODO: Transform referenced fields to watch fields for RHF
-  const responseFields = fields;
-
-  // watch() is used to trigger a re-render when any referenced fields change.
-  const watched = watch(responseFields);
-
   const options: Options = {
     extraFunctions: {
       // strlen,
     },
     constants: {
-      pi: Math.PI
+      pi: Math.PI,
+      true: true,
+      false: false,
     },
     customProp: (
       propertyName: string, // name of the property being accessed
@@ -76,11 +71,10 @@ export function useCondition(condition?: Condition): UseConditionReturn {
     }
   };
 
+
   // a.b.c = data['a.b.c'] not data.a.b.c
 
   // TODO: this.KEY will use `instance` as 'this' to find a path.
-
-  const responses = getValues();
 
   let passed = false;
   let error: string | undefined = undefined;
@@ -122,4 +116,28 @@ export function useCondition(condition?: Condition): UseConditionReturn {
     references,
     invalidFields
   };
+}
+
+export function useCondition(condition?: Condition): UseConditionReturn {
+  const { form, watch, getValues } = useRippleContext();
+
+  if (!condition) {
+    return {
+      passed: true,
+      fields: [],
+      references: {},
+      invalidFields: []
+    };
+  }
+
+  // TODO: Just use watched?
+  const responses = getValues();
+
+  const ret = evaluateCondition(form, condition, getValues());
+
+  // watch() is used to trigger a re-render when any referenced fields change.
+  // TODO: Do I actually need this anymore?
+  const watched = watch(ret.fields);
+
+  return ret;
 }
