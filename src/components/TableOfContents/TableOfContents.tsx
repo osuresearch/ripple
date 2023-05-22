@@ -1,12 +1,8 @@
-import { Box, FocusRing, Stack, Divider, Link, Text, IconButton, ScrollArea, Icon, Group, Tooltip } from '@osuresearch/ui';
-import { isActive } from '@tiptap/core';
-import React, { CSSProperties, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Box, FocusRing, Stack, Link, Text, IconButton, ScrollArea, Icon, Group, Tooltip } from '@osuresearch/ui';
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components'
-import { toggleNavigation } from '../../features/settings';
-import { useCondition, useRippleContext, useRippleDispatch, useRippleSelector } from '../../hooks';
-import { Conditional } from '../Conditional';
-import { Debugger } from '../Debugger';
+import { useRippleSelector, useRippleContext } from '../../hooks';
 import { PageName } from '../../types';
 
 const StyledNavLink = styled.div<{ isActive: boolean, isHidden: boolean }>`

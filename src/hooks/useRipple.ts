@@ -1,7 +1,7 @@
 import { createContext, useState } from 'react';
 import { FieldComponentType } from '../react';
 import { getNextPage, getPreviousPage } from '../tools';
-import { RipplePersistenceProvider, RippleLookupProvider, RippleValidationProvider, FormDefinition, PageName, PageDefinition, FormResponses, InteractionMode } from '../types';
+import { RipplePersistenceProvider, RippleLookupProvider, RippleValidationProvider, FormDefinition, PageName, PageDefinition, FormResponses, InteractionMode, LayoutMode, DiffMode } from '../types';
 import { UseFormReturn, useForm } from 'react-hook-form';
 
 export type RippleOptions = {
@@ -10,6 +10,10 @@ export type RippleOptions = {
    * Initial interaction mode for the form
    */
   interactionMode: InteractionMode
+
+  diffMode: DiffMode
+
+  layoutMode: LayoutMode
 
   /**
    * Mapping between a component name and a React component to render a field.
@@ -63,6 +67,12 @@ export type IRippleContext = {
   interactionMode: InteractionMode;
   setInteractionMode: (mode: InteractionMode) => void;
 
+  layoutMode: LayoutMode;
+  setLayoutMode: (mode: LayoutMode) => void;
+
+  diffMode: DiffMode;
+  setDiffMode: (mode: DiffMode) => void;
+
 } & UseFormReturn<FormResponses, any>;
 
 export type UseRippleReturn<T extends FormDefinition> = IRippleContext;
@@ -74,6 +84,8 @@ export function useRipple<T extends FormDefinition>(
   options: RippleOptions
 ): UseRippleReturn<T> {
   const [interactionMode, setInteractionMode] = useState<InteractionMode>(options.interactionMode);
+  const [diffMode, setDiffMode] = useState<DiffMode>(options.diffMode);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(options.layoutMode);
 
   const rform = useForm<FormResponses, any>({
     mode: 'onBlur'
@@ -90,6 +102,12 @@ export function useRipple<T extends FormDefinition>(
 
     interactionMode,
     setInteractionMode,
+
+    layoutMode,
+    setLayoutMode,
+
+    diffMode,
+    setDiffMode,
 
     ...rform
   };

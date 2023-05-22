@@ -25,6 +25,8 @@ function WrappedFormProvider({ form, options = {}, children }: FormProviderProps
 
   const ctx = useRipple(form, {
     interactionMode: 'Edit',
+    layoutMode: 'Paged',
+    diffMode: 'Current',
     components: {
       ...defaultComponent,
       ...components,
