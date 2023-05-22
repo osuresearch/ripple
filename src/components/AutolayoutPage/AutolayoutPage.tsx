@@ -13,7 +13,7 @@ export type AutolayoutPageProps = {
   name: PageName;
 };
 
-export function Content() {
+function Content() {
   const { page } = usePageContext();
 
   return (

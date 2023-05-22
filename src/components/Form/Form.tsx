@@ -13,7 +13,7 @@ import { MemoryRouterEditor } from '../MemoryRouterEditor';
 export type FormProps = {
   form: FormDefinition;
 
-  options: Partial<RippleOptions>;
+  options?: Partial<RippleOptions>;
 
   children?: React.ReactNode;
 };
