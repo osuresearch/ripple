@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Group, PageButton } from "@osuresearch/ui";
+import { Box, Group, PageButton } from "@osuresearch/ui";
 import { useRippleContext } from "../../hooks";
 import { PageName } from "../../types";
 
@@ -19,13 +19,13 @@ export function Pagination({ current }: PaginationProps) {
       )}
 
       {prev && (
-        <PageButton as="a" href={'#/' + prev.name} direction="previous">
+        <PageButton as="a" href={prev.name} direction="previous">
           {prev.definition.title}
         </PageButton>
       )}
 
       {next && (
-        <PageButton as="a" href={'#/' + next.name} direction="next">
+        <PageButton as="a" href={next.name} direction="next">
           {next.definition.title}
         </PageButton>
       )}

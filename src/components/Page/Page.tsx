@@ -28,6 +28,7 @@ export type PageProps = {
 };
 
 function Content({ name, withHeader, children }: PageProps) {
+  const { layoutMode } = useRippleContext();
   const { page } = usePageContext();
 
   // TODO: Impl. Also requires handling bubbling up subpage errors.
@@ -42,7 +43,7 @@ function Content({ name, withHeader, children }: PageProps) {
 
       {children}
 
-      <Pagination current={name} />
+      {layoutMode === 'Paged' && <Pagination current={name} />}
     </>
   )
 }
