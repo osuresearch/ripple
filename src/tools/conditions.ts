@@ -10,6 +10,11 @@ export function getReferencedFields(condition: string): string[] {
       //   '==': (a, b) => false,
       //   '!=': (a, b) => false,
       // },
+      constants: {
+        pi: Math.PI,
+        true: true,
+        false: false,
+      },
       customProp: (
         propertyName: string, // name of the property being accessed
         get: (name: string) => any, // safe getter that retrieves the property from obj
