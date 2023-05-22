@@ -1,4 +1,5 @@
-import IRBInitial from '../forms/osu-irb-initial';
+import { Person } from '@osuresearch/types';
+import { IRB } from '../forms/osu-irb';
 
 // Mock people
 export const people: Record<string, Person> = {

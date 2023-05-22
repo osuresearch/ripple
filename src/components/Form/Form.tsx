@@ -3,15 +3,17 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { useRipple, RippleContext, RippleOptions } from '../../hooks';
 import { useRippleContext } from '../../hooks/useRippleContext';
 import { Ribbon } from '../Ribbon';
-import { store } from '../../store';
-import { PageRouter } from '../PageRouter';
 import { FormDefinition } from '../../types';
 import { FormProvider } from '../FormProvider';
+import { FormRouter } from '../FormRouter';
+import { TableOfContents } from '../TableOfContents';
+import { Group, Stack } from '@osuresearch/ui';
+import { MemoryRouterEditor } from '../MemoryRouterEditor';
 
 export type FormProps = {
   form: FormDefinition;
 
-  options?: Partial<RippleOptions>;
+  options: Partial<RippleOptions>;
 
   children?: React.ReactNode;
 };
@@ -26,9 +28,17 @@ function FormWrapper({ children }: { children: React.ReactNode }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Ribbon />
-
-      <PageRouter>{children}</PageRouter>
+      <FormRouter renderContainer={({ children }) =>
+        <Group>
+          <TableOfContents />
+          <Stack>
+            <MemoryRouterEditor />
+            {children}
+          </Stack>
+        </Group>
+      }>
+        {children}
+      </FormRouter>
     </form>
   );
 }

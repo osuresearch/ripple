@@ -29,7 +29,7 @@ export function PageRouter({ children }: PageRouterProps) {
   // exist on the form - we autogenerate a page with its content.
   Object.keys(form.pages).forEach((name) => {
     if (!(name in pages)) {
-      pages[name] = <Page key={name} name={name} autolayout />;
+      pages[name] = <Page key={name} name={name} />;
     }
   });
 

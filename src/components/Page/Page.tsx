@@ -1,6 +1,7 @@
 import {
   Alert,
-  Chip
+  Chip,
+  Stack
 } from '@osuresearch/ui';
 
 import React from 'react';
@@ -10,29 +11,48 @@ import styled from 'styled-components';
 import { useRippleContext } from '../../hooks/useRippleContext';
 import { Conditional } from '../Conditional';
 import { ErrorBoundary } from '../ErrorBoundary';
-import { PageContext } from '../../hooks/usePageContext';
+import { PageContext, usePageContext } from '../../hooks/usePageContext';
 import { InstancePage } from '../InstancePage';
-import { Content } from './Content';
 import { Debug } from '../Debug';
 import { PageName } from '../../types';
+import { PageHeader } from '../PageHeader';
+import { Field } from '../Field';
+import { Pagination } from '../Pagination';
 
 export type PageProps = {
   name: PageName;
 
-  /**
-   * Automatically generate Page and Field components
-   * based on the current form definition.
-   */
-  autolayout?: boolean;
+  withHeader?: boolean;
 
   children?: React.ReactNode;
 };
+
+function Content({ name, withHeader, children }: PageProps) {
+  const { page } = usePageContext();
+
+  // TODO: Impl. Also requires handling bubbling up subpage errors.
+  // const errors = { foo: { message: 'bar'} };
+  const errors = {};
+
+  return (
+    <>
+      {withHeader &&
+        <PageHeader name={name} page={page} errors={errors} />
+      }
+
+      {children}
+
+      <Pagination current={name} />
+    </>
+  )
+}
 
 const DebugWrapper = styled.div`
   position: absolute;
   left: calc(100% - 30px);
   white-space: nowrap;
 `
+
 /**
  * A page provides context for all child fields and handles
  * automatic layout rendering if `autolayout` is specified.
@@ -46,9 +66,7 @@ const DebugWrapper = styled.div`
  */
 export function Page(props: PageProps) {
   const { form } = useRippleContext();
-
-  const name = props.name;
-  const Provider = PageContext.Provider;
+  const { name } = props;
 
   const page = form.pages[name];
   if (!page) {
@@ -60,7 +78,7 @@ export function Page(props: PageProps) {
   }
 
   return (
-    <Provider value={{ name, page }}>
+    <PageContext.Provider value={{ name, page }}>
       <Conditional name={name} condition={page.condition}>
         <Debug>
           <DebugWrapper>
@@ -69,7 +87,6 @@ export function Page(props: PageProps) {
         </Debug>
 
         <Content {...props} />
-
         {/* Disabled for now - issue with accessing this router state from outside the package.  */}
 
         {/* Routing to either subpages (for collection instances) or content for *this* page */}
@@ -84,6 +101,6 @@ export function Page(props: PageProps) {
           />
         </Routes> */}
       </Conditional>
-    </Provider>
+    </PageContext.Provider>
   );
 }

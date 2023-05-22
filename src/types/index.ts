@@ -90,6 +90,14 @@ export type FieldName = Exclude<string, keyof ReservedNames>;
 
 export type FieldType = Atomic | 'Section' | 'Collection';
 
+export type ErrorList = {
+  [field: string]: {
+    message?: string;
+  };
+};
+
+export type PageErrors = ErrorList;
+
 export type Validator = {
   // required: Input your ZIP code
 };

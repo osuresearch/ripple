@@ -18,6 +18,15 @@ export function findField(
   return [undefined, undefined];
 }
 
+export function getCollectionFields(page: PageDefinition): string[] {
+  return Object.keys(page.fields).reduce<string[]>((agg, name) => {
+    if (page.fields[name].type === 'Collection') {
+      agg.push(name);
+    }
+    return agg;
+  }, []);
+}
+
 export function getNextPage(
   form: FormDefinition,
   page: PageName
