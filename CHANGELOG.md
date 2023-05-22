@@ -1,3 +1,10 @@
+# [1.0.0-alpha.6](https://github.com/osuresearch/ripple/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2023-05-22)
+
+
+### Features
+
+* expose Redux reducers as a separate hook ([6a064fa](https://github.com/osuresearch/ripple/commit/6a064fa37a3115cc0a9ccd8af9181e05665160f2))
+
 # [1.0.0-alpha.5](https://github.com/osuresearch/ripple/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2023-05-22)
 
 
