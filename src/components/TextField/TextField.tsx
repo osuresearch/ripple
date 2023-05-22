@@ -9,6 +9,7 @@ import TiptapText from '@tiptap/extension-text';
 import Highlight from '@tiptap/extension-highlight';
 import Placeholder from '@tiptap/extension-placeholder';
 import CharacterCount from '@tiptap/extension-character-count';
+import { NoNewLine } from './NoNewLine';
 
 import { BaseFieldProps } from '../../react/types';
 
@@ -46,10 +47,24 @@ export type TextEditorProps = BaseFieldProps<string> & {
    * Defaults to `5`.
    */
   height?: number;
+
+  /**
+   * Disable newlines. Set to true to mimic simple `<input type="text" />` inputs.
+   *
+   * Do note that text will still wrap in the editor.
+   */
+  noNewline: boolean;
 };
 
-// TODO: Rename to TextField or RichtextField
-export function TextEditor({ limit = 0, height = 5, ...props }: TextEditorProps) {
+/**
+ * The Ripple Text field does not behave exactly like native `input` or `textarea` fields.
+ *
+ * This supports:
+ * - Rich text editing
+ * - Markdown WYSIWYG
+ * - In-field collaboration and annotation
+ */
+export function TextField({ limit = 0, height = 5, noNewline, ...props }: TextEditorProps) {
   // TODO_YJS: const [provider, setProvider] = useState<WebrtcProvider>();
 
   const { name, onChange, onBlur, value, isDisabled } = props;
@@ -82,7 +97,14 @@ export function TextEditor({ limit = 0, height = 5, ...props }: TextEditorProps)
   //     ]
   //   : [Placeholder.configure({ placeholder: 'Loading...' }), StarterKit];
 
-  const extensions = [Placeholder.configure({ placeholder: 'Loading...' }), StarterKit];
+  const extensions = [
+    Placeholder.configure({ placeholder: 'Loading...' }),
+    StarterKit
+  ];
+
+  if (noNewline) {
+    extensions.push(NoNewLine);
+  }
 
   const editor = useEditor(
     {

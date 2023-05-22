@@ -11,7 +11,6 @@ import {
   RadioSetField
 } from '@osuresearch/ui';
 
-import { TextEditor } from '../components/TextEditor';
 import { Section } from '../components/Section';
 import { SignatureField } from '../components/SignatureField/SignatureField';
 import { InlineCollection } from '../components/InlineCollection';
@@ -23,7 +22,6 @@ import { FieldComponentType } from './types';
  */
 export const defaultComponent: Record<FieldType, FieldComponentType<any> | undefined> = {
   Text: TextAreaField,
-  // Text: TextEditor,
   Boolean: YesNoField,
 
   // TODO: Fix these type incompatibilities.
