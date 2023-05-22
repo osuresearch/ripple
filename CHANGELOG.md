@@ -1,3 +1,10 @@
+# [1.0.0-alpha.5](https://github.com/osuresearch/ripple/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2023-05-22)
+
+
+### Features
+
+* expose Redux settings to consumers ([a406572](https://github.com/osuresearch/ripple/commit/a406572d86e2866fd6a16965564eb33eeafce49c))
+
 # [1.0.0-alpha.4](https://github.com/osuresearch/ripple/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2023-05-22)
 
 
