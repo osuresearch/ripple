@@ -23,30 +23,28 @@ import {
   setDiffMode,
   toggleNavigation,
   toggleDebugger,
-  setLayoutMode,
-  setInteractionMode
+  setLayoutMode
 } from '../../features/settings';
 import { SubmitButton } from '../SubmitButton';
 // TODO_YJS: import { Awareness } from '../Awareness';
 import { DiffMode, LayoutMode, InteractionMode } from '../../types';
+import { useRippleDispatch, useRippleSelector } from '../../hooks';
 
 // export type RibbonProps = {};
 
 export function Ribbon() {
   const ctx = useRippleContext();
   const {
+    interactionMode,
+    setInteractionMode,
     getValues,
     formState: { errors, dirtyFields, touchedFields, defaultValues }
   } = ctx;
 
-  const showComments = ctx.selector((state) => state.settings.showComments);
-  const showConditions = ctx.selector((state) => state.settings.showConditions);
-  const showNavigation = ctx.selector((state) => state.settings.showNavigation);
-  const showDebugger = ctx.selector((state) => state.settings.showDebugger);
-  const diffMode = ctx.selector((state) => state.settings.diffMode);
-  const layoutMode = ctx.selector((state) => state.settings.layoutMode);
-  const interactionMode = ctx.selector((state) => state.settings.interactionMode);
-  const dispatch = ctx.dispatch();
+  const settings = useRippleSelector((s) => s.settings);
+
+  const { showComments, showConditions, showNavigation, showDebugger, diffMode, layoutMode } = settings;
+  const dispatch = useRippleDispatch();
 
   return (
     <Paper
@@ -144,7 +142,7 @@ export function Ribbon() {
                 aria-label="Interaction Mode"
                 value={interactionMode}
                 onChange={(value) => {
-                  dispatch(setInteractionMode(value as InteractionMode));
+                  setInteractionMode(value as InteractionMode);
                 }}
               >
                 <Item key="Edit">Editable</Item>

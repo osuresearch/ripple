@@ -1,13 +1,12 @@
 import React from 'react';
-import { Stack, IconButton, ScrollArea, Text } from '@osuresearch/ui';
+import { Stack, IconButton, ScrollArea } from '@osuresearch/ui';
 import { toggleComments } from '../../features/settings';
-import { useRippleContext } from '../../hooks';
+import { useRippleDispatch, useRippleSelector } from '../../hooks';
 import { Debugger } from '../Debugger';
 
 export function Aside() {
-  const { selector, dispatch } = useRippleContext();
-  const showComments = selector((state) => state.settings.showComments);
-  const dispatcher = dispatch();
+  const showComments = useRippleSelector((state) => state.settings.showComments);
+  const dispatch = useRippleDispatch();
 
   return (
     <Stack p="md" align="end">
@@ -15,7 +14,7 @@ export function Aside() {
         name="bars"
         size={24}
         label="Toggle navigation"
-        onPress={() => dispatcher(toggleComments(!showComments))}
+        onPress={() => dispatch(toggleComments(!showComments))}
       />
 
       {showComments &&

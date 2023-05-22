@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FieldComponentProps } from '../../react';
-import { Alert, Button, Code, Details, Group, Heading, IconButton, Stack, Table, Text } from '@osuresearch/ui';
+import { Alert, Button, Details, Group, Heading, IconButton, Stack } from '@osuresearch/ui';
 import { useCollection } from '../../hooks/useCollection';
-import { Link } from 'react-router-dom';
 import { InstanceSummary } from '../InstanceSummary';
 import { InlineInstance } from './InlineInstance';
 import { EmptyCollection } from '../EmptyCollection';

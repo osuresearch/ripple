@@ -19,11 +19,9 @@ export function useRippleField<T extends object = any>(
   name: string,
   def: FieldDefinition,
 ): UseRippleFieldReturn {
-  const { selector, setValue, control } = useRippleContext();
+  const { interactionMode, setValue, control } = useRippleContext();
   const [ component, props ] = useFieldComponent<T>(def);
   // TODO_YJS: const [ setCollabValue ] = useCollab(name);
-
-  const interactionMode = selector((state) => state.settings.interactionMode);
 
   // const { onChange, ...registerProps } = register(key, {
   //   disabled: interactionMode !== 'Edit'
@@ -50,6 +48,7 @@ export function useRippleField<T extends object = any>(
 
   const { field: { ref, onChange, onBlur, value } } = useController({ name, control });
 
+  debugger;
   return {
     ref,
     component,

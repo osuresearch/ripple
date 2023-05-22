@@ -10,6 +10,7 @@ import { Conditional } from '../Conditional';
 import { useResizeObserver } from '../../hooks/useResizeObserver';
 import { usePageContext } from '../../hooks/usePageContext';
 import { FieldName } from '../../types';
+import { useRippleSelector } from '../../hooks';
 
 export type FieldProps = {
   /**
@@ -47,12 +48,11 @@ export function Field({ name, variant }: FieldProps) {
 
   const { ref, component, componentProps } = useRippleField(name, definition);
   const {
-    selector,
+    interactionMode,
     formState: { errors }
   } = useRippleContext();
 
-  const diffMode = selector((state) => state.settings.diffMode);
-  const interactionMode = selector((state) => state.settings.interactionMode);
+  const diffMode = useRippleSelector((state) => state.settings.diffMode);
 
   // honestly, diff handling should be here instead.
   // In case we need to do unified diff on labels and descriptions.
@@ -65,6 +65,7 @@ export function Field({ name, variant }: FieldProps) {
     placeholder: definition.placeholder,
     errorMessage: error?.message as string,
     // isRequired: !!definition?.required,
+    // isDisabled: false,
     necessityIndicator: !!definition?.required,
     diff: diffMode !== 'Current' ? diffMode : undefined,
   };

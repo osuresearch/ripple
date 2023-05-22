@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { MemoryRouter, Routes, Route, createBrowserRouter, RouterProvider, createHashRouter, Link, RouteObject, Outlet, useRouteError, createMemoryRouter } from 'react-router-dom';
-import { useRippleContext } from '../../hooks';
+import { useRippleContext, useRippleSelector } from '../../hooks';
 import { Content } from '../Content';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { PageNotFound } from '../PageNotFound';
@@ -23,9 +23,9 @@ export type FormRouterProps = {
 };
 
 function WrappedFormRouter({ children }: FormRouterProps) {
-  const { form, selector } = useRippleContext();
+  const { form } = useRippleContext();
 
-  const layoutMode = selector((state) => state.settings.layoutMode);
+  const layoutMode = useRippleSelector((state) => state.settings.layoutMode);
 
   const pages: Record<string, React.ReactNode> = {};
 
@@ -121,9 +121,8 @@ function addChildCollectionRoutes(page?: PageDefinition): RouteObject[] {
 }
 
 export function FormRouter({ children, renderContainer }: FormRouterProps) {
-  const { form, selector } = useRippleContext();
+  const { form } = useRippleContext();
 
-  const layoutMode = selector((state) => state.settings.layoutMode);
   const pageNames = Object.keys(form.pages);
 
   // Pages that exist as children to the form are explicitly laid out

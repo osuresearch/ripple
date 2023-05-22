@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import { useRippleContext } from '../../hooks';
+import { useRippleContext, useRippleSelector } from '../../hooks';
 import { Content } from '../Content';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { PageNotFound } from '../PageNotFound';
@@ -11,9 +11,9 @@ export type PageRouterProps = {
 };
 
 export function PageRouter({ children }: PageRouterProps) {
-  const { form, selector } = useRippleContext();
+  const { form } = useRippleContext();
 
-  const layoutMode = selector((state) => state.settings.layoutMode);
+  const layoutMode = useRippleSelector((state) => state.settings.layoutMode);
 
   const pages: Record<string, React.ReactNode> = {};
 

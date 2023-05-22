@@ -1,7 +1,7 @@
 import React from 'react';
 import { Paper } from '@osuresearch/ui';
 import { ConditionInformation } from './ConditionInformation';
-import { useCondition, useRippleContext } from '../../hooks';
+import { useCondition, useRippleContext, useRippleSelector } from '../../hooks';
 import { Condition } from '../../types';
 
 export type ConditionalProps = {
@@ -22,8 +22,7 @@ export type ConditionalProps = {
  * expressions for evaluating the current form state.
  */
 export function Conditional({ name, condition, children }: ConditionalProps) {
-  const { selector } = useRippleContext();
-  const showConditions = selector((state) => state.settings.showConditions);
+  const showConditions = useRippleSelector((state) => state.settings.showConditions);
 
   const { passed, error, references } = useCondition(condition);
 

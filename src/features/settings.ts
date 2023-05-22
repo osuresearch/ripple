@@ -9,7 +9,6 @@ type SettingsState = {
   showDebugger: boolean;
   diffMode: DiffMode;
   layoutMode: LayoutMode;
-  interactionMode: InteractionMode;
 
   currentPage?: PageName;
 };
@@ -22,7 +21,6 @@ const initialState: SettingsState = {
   showDebugger: false,
   diffMode: 'Current',
   layoutMode: 'Paged',
-  interactionMode: 'Edit'
 };
 
 export const settingsSlice = createSlice({
@@ -47,9 +45,6 @@ export const settingsSlice = createSlice({
     setLayoutMode: (state, action: PayloadAction<LayoutMode>) => {
       state.layoutMode = action.payload;
     },
-    setInteractionMode: (state, action: PayloadAction<InteractionMode>) => {
-      state.interactionMode = action.payload;
-    },
     setCurrentPage: (state, action: PayloadAction<PageName>) => {
       state.currentPage = action.payload;
     }
@@ -63,7 +58,6 @@ export const {
   toggleDebugger,
   setDiffMode,
   setLayoutMode,
-  setInteractionMode,
   setCurrentPage
 } = settingsSlice.actions;
 

@@ -4,7 +4,7 @@ import React, { CSSProperties, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components'
 import { toggleNavigation } from '../../features/settings';
-import { useCondition, useRippleContext } from '../../hooks';
+import { useCondition, useRippleContext, useRippleDispatch, useRippleSelector } from '../../hooks';
 import { Conditional } from '../Conditional';
 import { Debugger } from '../Debugger';
 import { PageName } from '../../types';
@@ -31,10 +31,10 @@ type PageNavLinkProps = {
 };
 
 function PageNavLink({ name, children }: PageNavLinkProps) {
-  const { form, selector } = useRippleContext();
+  const { form } = useRippleContext();
   const definition = form.pages[name];
 
-  const showConditions = selector((state) => state.settings.showConditions);
+  const showConditions = useRippleSelector((state) => state.settings.showConditions);
 
   const { passed, error, fields, references } = useCondition(definition.condition);
 
@@ -77,12 +77,12 @@ function PageNavLink({ name, children }: PageNavLinkProps) {
 }
 
 export function TableOfContents() {
-  const { selector, dispatch, form } = useRippleContext();
+  const { form } = useRippleContext();
+  const [visible, setVisible] = useState(true);
 
-  const showNavigation = selector((state) => state.settings.showNavigation);
-  const layoutMode = selector((state) => state.settings.layoutMode);
-  const dispatcher = dispatch();
+  const layoutMode = useRippleSelector((state) => state.settings.layoutMode);
 
+  // TODO:
   // Link behaviour changes based on layout mode.
   // If we're on a single page, each link will jump to
   // the heading of the appropriate section.
@@ -95,10 +95,10 @@ export function TableOfContents() {
           name="bars"
           size={24}
           label="Toggle navigation"
-          onPress={() => dispatcher(toggleNavigation(!showNavigation))}
+          onPress={() => setVisible(!visible)}
         />
 
-        {showNavigation &&
+        {visible &&
         <ScrollArea h="100px" type="hover" style={{ flexGrow: 1 }} hideDelay={1000}>
           <Stack gap="xs">
             <Text c="dark" fw="bold" fs="sm">Outline</Text>

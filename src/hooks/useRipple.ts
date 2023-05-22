@@ -1,13 +1,16 @@
-import { createContext } from 'react';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import type { RootState, RippleDispatch } from '../store';
+import { createContext, useState } from 'react';
 import { FieldComponentType } from '../react';
 import { getNextPage, getPreviousPage } from '../tools';
-import { RipplePersistenceProvider, RippleLookupProvider, RippleValidationProvider, FormDefinition, PageName, PageDefinition, FormResponses } from '../types';
-
+import { RipplePersistenceProvider, RippleLookupProvider, RippleValidationProvider, FormDefinition, PageName, PageDefinition, FormResponses, InteractionMode } from '../types';
 import { UseFormReturn, useForm } from 'react-hook-form';
 
 export type RippleOptions = {
+
+  /**
+   * Initial interaction mode for the form
+   */
+  interactionMode: InteractionMode
+
   /**
    * Mapping between a component name and a React component to render a field.
    *
@@ -43,13 +46,6 @@ export type IRippleContext = {
   form: FormDefinition;
   options: RippleOptions;
 
-  // Needed? Redux is a pretty heavy dependency for this.
-  // Does let me control form stuff outside the form though...
-  // I can localize settings and all that for the end user
-  // and other libraries.
-  dispatch: () => RippleDispatch;
-  selector: TypedUseSelectorHook<RootState>;
-
   getPreviousPage: (page: PageName) =>
     | {
         name: PageName;
@@ -63,6 +59,10 @@ export type IRippleContext = {
         definition: PageDefinition;
       }
     | undefined;
+
+  interactionMode: InteractionMode;
+  setInteractionMode: (mode: InteractionMode) => void;
+
 } & UseFormReturn<FormResponses, any>;
 
 export type UseRippleReturn<T extends FormDefinition> = IRippleContext;
@@ -73,12 +73,7 @@ export function useRipple<T extends FormDefinition>(
   form: T,
   options: RippleOptions
 ): UseRippleReturn<T> {
-  const { ...otherOptions } = options;
-
-  // Wire up to RHF
-  // const rform = useRippleForm({
-  //   mode: 'onBlur'
-  // });
+  const [interactionMode, setInteractionMode] = useState<InteractionMode>(options.interactionMode);
 
   const rform = useForm<FormResponses, any>({
     mode: 'onBlur'
@@ -89,10 +84,13 @@ export function useRipple<T extends FormDefinition>(
   return {
     form,
     options,
-    dispatch: useDispatch,
-    selector: useSelector,
+
     getNextPage: (page: PageName) => getNextPage(form, page),
     getPreviousPage: (page: PageName) => getPreviousPage(form, page),
+
+    interactionMode,
+    setInteractionMode,
+
     ...rform
   };
 }

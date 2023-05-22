@@ -3,8 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Conditional } from './Conditional';
 import { Button, Text } from '@osuresearch/ui';
 import { FormProvider } from '../FormProvider';
-import { useRippleContext } from '../../hooks';
-import { useDispatch } from 'react-redux';
+import { useRippleDispatch, useRippleSelector } from '../../hooks';
 import { toggleConditions } from '../../features/settings';
 
 const meta: Meta<typeof Conditional> = {
@@ -18,9 +17,8 @@ export default meta;
 type Story = StoryObj<typeof Conditional>;
 
 function ToggleShowConditionsButton() {
-  const { selector } = useRippleContext();
-  const dispatch = useDispatch();
-  const showConditions = selector((state) => state.settings.showConditions);
+  const dispatch = useRippleDispatch();
+  const showConditions = useRippleSelector((state) => state.settings.showConditions);
 
   return (
     <Button onPress={() => dispatch(toggleConditions(!showConditions))}>

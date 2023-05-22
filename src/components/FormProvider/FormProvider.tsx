@@ -19,14 +19,12 @@ export type FormProviderProps = {
   children: React.ReactNode
 }
 
-/**
- * Wraps children in the Ripple context and Redux store
- * used across Ripple components.
- */
-export function FormProvider({ form, options = {}, children }: FormProviderProps) {
+
+function WrappedFormProvider({ form, options = {}, children }: FormProviderProps) {
   const { components, ...otherOptions } = options;
 
   const ctx = useRipple(form, {
+    interactionMode: 'Edit',
     components: {
       ...defaultComponent,
       ...components,
@@ -39,9 +37,19 @@ export function FormProvider({ form, options = {}, children }: FormProviderProps
 
   return (
     <RippleContext.Provider value={ctx}>
-      <ReduxProvider store={store}>
-        {children}
-      </ReduxProvider>
+      {children}
     </RippleContext.Provider>
+  )
+}
+
+/**
+ * Wraps children in the Ripple context and Redux store
+ * used across Ripple components.
+ */
+export function FormProvider(props: FormProviderProps) {
+  return (
+    <ReduxProvider store={store}>
+      <WrappedFormProvider {...props} />
+    </ReduxProvider>
   )
 }

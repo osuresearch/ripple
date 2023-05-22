@@ -4,6 +4,7 @@ import { useRippleContext } from '../../hooks/useRippleContext';
 import { ValueFieldProps, BaseFieldProps } from '../../react';
 import styled from 'styled-components';
 import { Debug } from '../Debug';
+import { useRippleSelector } from '../../hooks';
 
 export type ValueFieldRendererProps<T> = BaseFieldProps<T> & {
   as: ComponentType<ValueFieldProps<T>>;
@@ -23,11 +24,10 @@ const DebugWrapper = styled.div`
 
 export function ValueFieldRenderer<T>({ as: Component, ...props }: ValueFieldRendererProps<T>) {
   const {
-    selector,
     formState: { errors }
   } = useRippleContext();
 
-  const diffMode = selector((state) => state.settings.diffMode);
+  const diffMode = useRippleSelector((state) => state.settings.diffMode);
 
   return (
     <div className="rui-relative">
