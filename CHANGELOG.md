@@ -1,3 +1,16 @@
+# [1.0.0-alpha.7](https://github.com/osuresearch/ripple/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2023-05-23)
+
+
+### Bug Fixes
+
+* missing imports ([66039f3](https://github.com/osuresearch/ripple/commit/66039f3ff24a009e26ada8c3805ec26189924ceb))
+* **Page:** hide pagination buttons in single page layouts ([a40f297](https://github.com/osuresearch/ripple/commit/a40f297e8e48b9ba6934952afc14405c1d841d52))
+
+
+### Features
+
+* expose layoutMode and diffMode in the Ripple context ([7646506](https://github.com/osuresearch/ripple/commit/7646506f305315ed94495f8e95ef1dd8c8136827))
+
 # [1.0.0-alpha.6](https://github.com/osuresearch/ripple/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2023-05-22)
 
 
