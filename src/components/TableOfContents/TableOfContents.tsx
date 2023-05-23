@@ -2,7 +2,7 @@ import { Box, FocusRing, Stack, Link, Text, IconButton, ScrollArea, Icon, Group,
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components'
-import { useRippleSelector, useRippleContext } from '../../hooks';
+import { useRippleSelector, useRippleContext, useCondition } from '../../hooks';
 import { PageName } from '../../types';
 
 const StyledNavLink = styled.div<{ isActive: boolean, isHidden: boolean }>`
