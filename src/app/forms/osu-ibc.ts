@@ -1829,7 +1829,7 @@ type CombinedResponses<T extends PageDefinition> = {
   }[]
 };
 
-let safety: CombinedResponses<typeof SafetyEquipment> = {} as any;
+const safety: CombinedResponses<typeof SafetyEquipment> = {} as any;
 
 
 

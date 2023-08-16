@@ -6,6 +6,7 @@ import { usePageContext } from '../../hooks/usePageContext';
 import { PageDeepLink } from '../../react';
 import { Breadcrumbs } from '../Breadcrumbs';
 import { Paper, Stack, Typography } from '@mui/material';
+import { FormErrors } from '../FormErrors';
 
 export type ContentProps = {
   /**
