@@ -1,6 +1,7 @@
-import { Item } from '@osuresearch/ui';
 import React, { ComponentType } from 'react';
+import { Item } from '@osuresearch/ui';
 import { useListData } from 'react-stately';
+
 import { BaseFieldProps, ChoiceFieldProps } from '../../react';
 import { Markdown } from '../Markdown';
 import { ChoicesList } from '../../types';

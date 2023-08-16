@@ -1,34 +1,30 @@
-import React from 'react';
+import React, { useId } from 'react';
+import { styled } from '@mui/material';
 import { MediaObject } from '@osuresearch/types';
-import { BaseFieldProps } from "../../react";
-import { FormField, Paper } from '@osuresearch/ui';
-import styled from 'styled-components';
+import { FormField } from '@osuresearch/ui';
 
-export type AttachmentsFieldProps = BaseFieldProps<MediaObject> & {
+import { BaseFieldProps } from '../../react';
 
-}
+export type AttachmentsFieldProps = BaseFieldProps<MediaObject>;
 
-const Placeholder = styled.div`
-  width: 100%;
-  border: 2px dashed var(--rui-dark);
-  padding: var(--rui-spacing-xxl);
-  color: var(--rui-dark);
-  text-align: center;
-`
+const Placeholder = styled('div')(({ theme }) => ({
+  width: '100%',
+  border: '2px dashed pink',
+  padding: 8,
+  color: 'pink',
+  textAlign: 'center'
+}));
 
 export function AttachmentsField(props: AttachmentsFieldProps) {
-
   const { name, onChange, onBlur, value, isDisabled } = props;
+  const id = useId();
 
   return (
     <FormField<MediaObject>
-      labelProps={{}}
-      descriptionProps={{}}
-      errorMessageProps={{}}
       {...props}
+      id={id}
       name={name}
-    >
-      <Placeholder>Attachments field</Placeholder>
-    </FormField>
-  )
+      renderInput={(props) => <Placeholder>Attachments field</Placeholder>}
+    />
+  );
 }

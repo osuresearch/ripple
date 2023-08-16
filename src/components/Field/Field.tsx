@@ -1,16 +1,15 @@
-import React, { ComponentType, useContext } from 'react';
-import { useRippleContext } from '../../hooks/useRippleContext';
-import { Markdown } from '../Markdown';
+import React, { ComponentType } from 'react';
 
+import { useRippleContext } from '../../hooks/useRippleContext';
 import { BaseFieldProps, ChoiceFieldProps, ValueFieldProps } from '../../react';
 import { useRippleField } from '../../hooks/useRippleField';
 import { ValueFieldRenderer } from './ValueFieldRenderer';
 import { ChoiceFieldRenderer } from './ChoiceFieldRenderer';
-import { Conditional } from '../Conditional';
-import { useResizeObserver } from '../../hooks/useResizeObserver';
 import { usePageContext } from '../../hooks/usePageContext';
 import { FieldName } from '../../types';
 import { useRippleSelector } from '../../hooks';
+import { Conditional } from '../Conditional';
+import { Markdown } from '../Markdown';
 
 export type FieldProps = {
   /**
@@ -26,7 +25,7 @@ export type FieldProps = {
    */
   name: FieldName;
 
-  variant?: 'tableCell'
+  variant?: 'tableCell';
 };
 
 /**
@@ -43,7 +42,9 @@ export function Field({ name, variant }: FieldProps) {
   // change the form definition, we need some more adaptive behaviour.
   const definition = page.fields[localFieldName];
   if (!definition) {
-    throw new Error(`Could not retrieve definition for field '${localFieldName}.' Full named path was '${name}'`);
+    throw new Error(
+      `Could not retrieve definition for field '${localFieldName}.' Full named path was '${name}'`
+    );
   }
 
   const { ref, component, componentProps } = useRippleField(name, definition);
@@ -67,7 +68,7 @@ export function Field({ name, variant }: FieldProps) {
     // isRequired: !!definition?.required,
     // isDisabled: false,
     necessityIndicator: !!definition?.required,
-    diff: diffMode !== 'Current' ? diffMode : undefined,
+    diff: diffMode !== 'Current' ? diffMode : undefined
   };
 
   const label = (
@@ -83,8 +84,7 @@ export function Field({ name, variant }: FieldProps) {
   if (variant !== 'tableCell') {
     fieldProps.label = label;
     fieldProps.description = description;
-  }
-  else {
+  } else {
     // TODO: No coercing the label type into a string here.
     // Unforseen consequences and all that jazz.
     fieldProps['aria-label'] = '' + label;
@@ -114,7 +114,7 @@ export function Field({ name, variant }: FieldProps) {
         as={component as ComponentType<ValueFieldProps<any>>}
         {...fieldProps}
         {...componentProps}
-        value={ componentProps.value }
+        value={componentProps.value}
       />
     </Conditional>
   );

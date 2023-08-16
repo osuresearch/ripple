@@ -5,13 +5,13 @@ import { DiffMode } from '../types';
 export type PageDeepLink = {
   label: React.ReactNode;
   href: string;
-}
+};
 
 export type BaseFieldProps<T> = {
-  name: string;
+  'name': string;
 
-  label: React.ReactNode;
-  description?: React.ReactNode;
+  'label': React.ReactNode;
+  'description'?: React.ReactNode;
 
   'aria-label'?: string;
 
@@ -21,21 +21,21 @@ export type BaseFieldProps<T> = {
    * This must be a string to support inserting placeholder
    * text within native `input` elements.
    */
-  placeholder?: string;
+  'placeholder'?: string;
 
-  validationState?: 'invalid' | 'valid';
-  errorMessage?: React.ReactNode;
-  necessityIndicator?: boolean;
+  'validationState'?: 'invalid' | 'valid';
+  'errorMessage'?: React.ReactNode;
+  'necessityIndicator'?: boolean;
 
-  isRequired?: boolean;
-  isDisabled?: boolean;
-  diff?: DiffMode;
+  'isRequired'?: boolean;
+  'isDisabled'?: boolean;
+  'diff'?: DiffMode;
 
-  value?: T;
-  onChange?: (value: T | undefined) => void;
-  onBlur?: (e: React.FocusEvent) => void;
+  'value'?: T;
+  'onChange'?: (value: T | undefined) => void;
+  'onBlur'?: () => void;
 
-  children: any;
+  'children': any;
 };
 
 export interface PreviousValueBase<T> {
@@ -56,9 +56,9 @@ export type ChoiceFieldProps<T> = BaseFieldProps<T> & ListProps<any> & PreviousC
 export type FieldComponentProps<T> = BaseFieldProps<T> & (ChoiceFieldProps<T> | ValueFieldProps<T>);
 
 export type DiffComponentProps<T> = {
-  current: FieldComponentProps<T>
-  previous: FieldComponentProps<T>
-}
+  current: FieldComponentProps<T>;
+  previous: FieldComponentProps<T>;
+};
 
 export type FieldComponentType<T> = React.ComponentType<FieldComponentProps<T>>;
 export type DiffComponentType<T> = React.ComponentType<DiffComponentProps<T>>;

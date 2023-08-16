@@ -1,18 +1,14 @@
 import React from 'react';
 import { FieldComponentProps } from '../../react';
-import { Button, Divider, Group, Heading, IconButton, Stack } from '@osuresearch/ui';
 import { useCollection } from '../../hooks/useCollection';
 import { EmptyCollection } from '../EmptyCollection';
 import { InlineInstancePage } from '../InlineInstancePage';
 import { CollectionInstanceId } from '../../types';
+import { Stack, Typography, Button, IconButton, Divider } from '@mui/material';
 
 export type InlineCollectionProps = FieldComponentProps<any>;
 
-export function InlineCollection({
-  name,
-  isDisabled,
-  ...props
-}: InlineCollectionProps) {
+export function InlineCollection({ name, isDisabled, ...props }: InlineCollectionProps) {
   const { items, add, remove, definition } = useCollection(name);
 
   const ids = Object.keys(items).filter((id) => !items[id]._deleted);
@@ -20,45 +16,44 @@ export function InlineCollection({
 
   const onAdd = () => {
     const id = add();
-  }
+  };
 
   const onRemove = (id: CollectionInstanceId) => {
     remove(id);
-  }
+  };
 
   return (
-    <Stack align="stretch">
-      <Heading level={3}>{props.label}</Heading>
+    <Stack>
+      <Typography variant="h3">{props.label}</Typography>
 
       {props.description}
 
       {/* TODO: errorMessage, isRequired, necessityIndicator  */}
-      {ids.length > 0 &&
-      <Stack align="stretch" gap={0}>
-        {ids.map((id) => <>
-          <Group key={id} w="100%" justify="apart" gap="sm">
-            <InlineInstancePage id={id} name={name} page={definition.template} />
+      {ids.length > 0 && (
+        <Stack>
+          {ids.map((id) => (
+            <>
+              <Stack key={id} justifyContent="space-between">
+                <InlineInstancePage id={id} name={name} page={definition.template} />
 
-            {!isDisabled &&
-            <IconButton name="xmark" label="Remove" size={22} onPress={() => onRemove(id)} />
-            }
-          </Group>
-          <Divider />
-        </>
-        )}
+                {!isDisabled && (
+                  <IconButton name="xmark" label="Remove" size={22} onClick={() => onRemove(id)} />
+                )}
+              </Stack>
+              <Divider />
+            </>
+          ))}
 
-        {!isDisabled &&
-        <Group justify="apart">
-          <div></div>
-          <Button onPress={onAdd}>Add another</Button>
-        </Group>
-        }
-      </Stack>
-      }
+          {!isDisabled && (
+            <Stack justifyContent="space-between">
+              <div></div>
+              <Button onClick={onAdd}>Add another</Button>
+            </Stack>
+          )}
+        </Stack>
+      )}
 
-      {ids.length < 1 &&
-      <EmptyCollection placeholder={props.placeholder} onAdd={onAdd} />
-      }
+      {ids.length < 1 && <EmptyCollection placeholder={props.placeholder} onAdd={onAdd} />}
     </Stack>
   );
 }

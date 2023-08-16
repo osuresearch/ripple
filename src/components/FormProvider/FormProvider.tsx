@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
@@ -10,15 +9,15 @@ import { RippleOptions, RippleContext, useRipple } from '../../hooks';
 import { FormDefinition } from '../../types';
 import { store } from '../../store';
 import { defaultComponent } from '../../react/mappings';
+import { MemoryRouter } from 'react-router-dom';
 
 export type FormProviderProps = {
-  form: FormDefinition
+  form: FormDefinition;
 
   options?: Partial<RippleOptions>;
 
-  children: React.ReactNode
-}
-
+  children: React.ReactNode;
+};
 
 function WrappedFormProvider({ form, options = {}, children }: FormProviderProps) {
   const { components, ...otherOptions } = options;
@@ -29,7 +28,7 @@ function WrappedFormProvider({ form, options = {}, children }: FormProviderProps
     diffMode: 'Current',
     components: {
       ...defaultComponent,
-      ...components,
+      ...components
     },
     persistence: LocalStoragePersistence,
     validation: [ClientsideValidation],
@@ -37,11 +36,7 @@ function WrappedFormProvider({ form, options = {}, children }: FormProviderProps
     ...otherOptions
   });
 
-  return (
-    <RippleContext.Provider value={ctx}>
-      {children}
-    </RippleContext.Provider>
-  )
+  return <RippleContext.Provider value={ctx}>{children}</RippleContext.Provider>;
 }
 
 /**
@@ -51,7 +46,9 @@ function WrappedFormProvider({ form, options = {}, children }: FormProviderProps
 export function FormProvider(props: FormProviderProps) {
   return (
     <ReduxProvider store={store}>
+      {/* <MemoryRouter> */}
       <WrappedFormProvider {...props} />
+      {/* </MemoryRouter> */}
     </ReduxProvider>
-  )
+  );
 }

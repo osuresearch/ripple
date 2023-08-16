@@ -1,19 +1,16 @@
 import React from 'react';
+
 import { FieldComponentProps } from '../../react';
-import { Alert, Button, Details, Group, Heading, IconButton, Stack } from '@osuresearch/ui';
 import { useCollection } from '../../hooks/useCollection';
 import { InstanceSummary } from '../InstanceSummary';
 import { InlineInstance } from './InlineInstance';
 import { EmptyCollection } from '../EmptyCollection';
 import { CollectionInstanceId } from '../../types';
+import { Alert, AlertTitle, Button, Stack, Typography } from '@mui/material';
 
 export type DisclosureCollectionProps = FieldComponentProps<any>;
 
-export function DisclosureCollection({
-  name,
-  isDisabled,
-  ...props
-}: DisclosureCollectionProps) {
+export function DisclosureCollection({ name, isDisabled, ...props }: DisclosureCollectionProps) {
   const { items, add, remove, definition } = useCollection(name);
 
   const ids = Object.keys(items).filter((id) => !items[id]._deleted);
@@ -21,58 +18,62 @@ export function DisclosureCollection({
 
   const onAdd = () => {
     const id = add();
-  }
+  };
 
   const onRemove = (id: CollectionInstanceId) => {
     remove(id);
-  }
+  };
 
   if (!definition.summary) {
     return (
-      <Alert variant="error" title={`Missing required configuration for ${name}`}>
+      <Alert severity="error">
+        <AlertTitle>Missing required configuration for {name}</AlertTitle>
         The DisclosureCollection component requires a summary to title each instance.
       </Alert>
-    )
+    );
   }
 
   return (
-    <Stack align="stretch">
-      <Heading level={3}>{props.label}</Heading>
+    <Stack>
+      <Typography variant="h3">{props.label}</Typography>
 
       {props.description}
 
       {/* TODO: errorMessage, isRequired, necessityIndicator  */}
-      {ids.length > 0 &&
-      <Stack gap={0} align="stretch">
-        {ids.map((id) =>
-        <Details
-          mt="-xxs"
-          key={id}
-          summary={
-            <Group justify="apart">
-              <InstanceSummary id={id} definition={definition} responses={items[id]} />
-              {!isDisabled &&
-              <IconButton name="xmark" label="Remove" size={22} onPress={() => onRemove(id)} />
+      {ids.length > 0 && (
+        <Stack>
+          {/* {ids.map((id) => (
+            <Details
+              mt="-xxs"
+              key={id}
+              summary={
+                <Group justify="apart">
+                  <InstanceSummary id={id} definition={definition} responses={items[id]} />
+                  {!isDisabled && (
+                    <IconButton
+                      name="xmark"
+                      label="Remove"
+                      size={22}
+                      onPress={() => onRemove(id)}
+                    />
+                  )}
+                </Group>
               }
-            </Group>
-          }
-        >
-          <InlineInstance id={id} name={name} page={definition.template} />
-        </Details>
-        )}
+            >
+              <InlineInstance id={id} name={name} page={definition.template} />
+            </Details>
+          ))} */}
 
-        {!isDisabled &&
-        <Group justify="apart" mt="sm">
-          <div></div>
-          <Button onPress={onAdd}>Add another</Button>
-        </Group>
-        }
-      </Stack>
-      }
+          {!isDisabled && (
+            <Stack direction="row">
+              <div></div>
+              <Button onClick={onAdd}>Add another</Button>
+            </Stack>
+          )}
+        </Stack>
+      )}
 
-      {ids.length < 1 &&
-      <EmptyCollection placeholder={props.placeholder} onAdd={onAdd} />
-      }
+      {ids.length < 1 && <EmptyCollection placeholder={props.placeholder} onAdd={onAdd} />}
     </Stack>
   );
 }

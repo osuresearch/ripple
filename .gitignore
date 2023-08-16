@@ -10,3 +10,4 @@ coverage/
 storybook-static/
 .eslintcache
 .yarn
+stats.html

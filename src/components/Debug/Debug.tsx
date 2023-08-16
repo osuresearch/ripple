@@ -1,8 +1,8 @@
 import React from 'react';
-import { useRippleContext, useRippleSelector } from '../../hooks';
+import { useRippleSelector } from '../../hooks';
 
 /**
- * Render content only when teh debugger is active
+ * Render content only when the debugger is active
  */
 export function Debug({ children }: { children: React.ReactNode }) {
   const showDebugger = useRippleSelector((state) => state.settings.showDebugger);

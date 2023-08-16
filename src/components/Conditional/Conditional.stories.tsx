@@ -1,13 +1,13 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { Conditional } from './Conditional';
-import { Button, Text } from '@osuresearch/ui';
-import { FormProvider } from '../FormProvider';
 import { useRippleDispatch, useRippleSelector } from '../../hooks';
 import { toggleConditions } from '../../features/settings';
+import { Button, Typography } from '@mui/material';
+import { FormProvider } from '../FormProvider';
 
 const meta: Meta<typeof Conditional> = {
-  title: 'Components/Conditional',
+  title: 'Internal/Conditional',
   component: Conditional,
   argTypes: {}
 };
@@ -21,23 +21,31 @@ function ToggleShowConditionsButton() {
   const showConditions = useRippleSelector((state) => state.settings.showConditions);
 
   return (
-    <Button onPress={() => dispatch(toggleConditions(!showConditions))}>
+    <Button onClick={() => dispatch(toggleConditions(!showConditions))}>
       {showConditions ? 'Hide' : 'Show'} condition info
     </Button>
-  )
+  );
 }
 
-export const Example: Story = {
+export const Truthy: Story = {
   render: (args) => (
-    <FormProvider form={{ title: '', version: '', pages: {} }}>
+    <>
       <Conditional {...args}>
-        <Text as="div">I am conditionally visible!</Text>
+        <Typography>I am conditionally visible!</Typography>
       </Conditional>
       <ToggleShowConditionsButton />
-    </FormProvider>
+    </>
   ),
   args: {
     name: 'exampleCondition',
-    condition: 'true == true',
+    condition: 'true == true'
   }
-}
+};
+
+export const Falsey: Story = {
+  ...Truthy,
+  args: {
+    name: 'exampleFalsey',
+    condition: 'true == false'
+  }
+};

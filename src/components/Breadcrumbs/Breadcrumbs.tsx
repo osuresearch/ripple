@@ -1,11 +1,12 @@
 import React from 'react';
-import { Breadcrumbs as RUIBreadcrumbs, Link as RUILink, Text } from '@osuresearch/ui';
-import { PageDeepLink } from '../../react';
 import { Link } from 'react-router-dom';
+import { Breadcrumbs as MuiBreadcrumbs, Link as MuiLink } from '@mui/material';
+
+import { PageDeepLink } from '../../react';
 
 export type BreadcrumbsProps = {
-  items: PageDeepLink[]
-}
+  items: PageDeepLink[];
+};
 
 /**
  * Simple breadcrumb renderer for subpages.
@@ -20,13 +21,13 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
   const last = links.pop();
 
   return (
-    <RUIBreadcrumbs>
-      {links.map((link, i) =>
-        <RUILink as={Link} key={i} to={link.href}>
+    <MuiBreadcrumbs>
+      {links.map((link, i) => (
+        <MuiLink component={Link} key={i} to={link.href}>
           {link.label}
-        </RUILink>
-      )}
-      <Text c="dark">{last?.label}</Text>
-    </RUIBreadcrumbs>
-  )
+        </MuiLink>
+      ))}
+      <span>{last?.label}</span>
+    </MuiBreadcrumbs>
+  );
 }

@@ -1,16 +1,16 @@
-import { Button, Stack } from '@osuresearch/ui';
+import { Stack, Button } from '@mui/material';
 import React from 'react';
 
 export type EmptyCollectionProps = {
-  placeholder?: React.ReactNode
-  onAdd: () => void
-}
+  placeholder?: React.ReactNode;
+  onAdd: () => void;
+};
 
 export function EmptyCollection({ placeholder, onAdd }: EmptyCollectionProps) {
   return (
     <Stack>
       {placeholder}
-      <Button variant="primary" onPress={onAdd}>Add a new entry</Button>
+      <Button onClick={onAdd}>Add a new entry</Button>
     </Stack>
-  )
+  );
 }

@@ -1,17 +1,13 @@
 import React from 'react';
-import { Details, ConfirmButton, Text } from '@osuresearch/ui';
-import { Link } from 'react-router-dom';
-import { fieldToPath, normalizeFieldPath } from '../../tools';
 import { PageContext } from '../../hooks/usePageContext';
-import { Field } from '../Field';
-import { Markdown } from '../Markdown';
 import { CollectionInstanceId, FieldName, PageDefinition } from '../../types';
+import { Field } from '../Field';
 
 export type TableRowInstanceProps = {
-  id: CollectionInstanceId
-  name: FieldName
-  page: PageDefinition
-}
+  id: CollectionInstanceId;
+  name: FieldName;
+  page: PageDefinition;
+};
 
 export function TableRowInstance({ id, name, page }: TableRowInstanceProps) {
   const PageProvider = PageContext.Provider;
@@ -24,5 +20,5 @@ export function TableRowInstance({ id, name, page }: TableRowInstanceProps) {
         </td>
       ))}
     </PageProvider>
-  )
+  );
 }

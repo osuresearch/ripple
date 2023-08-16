@@ -1,25 +1,18 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import {
-  FormErrors,
-  Group,
-  Heading,
-  Paper,
-  Stack,
-  Text
-} from '@osuresearch/ui';
+import React, { useLayoutEffect } from 'react';
 
 import { Field } from '../Field';
 import { Markdown } from '../Markdown';
 import { usePageContext } from '../../hooks/usePageContext';
 import { PageDeepLink } from '../../react';
 import { Breadcrumbs } from '../Breadcrumbs';
+import { Paper, Stack, Typography } from '@mui/material';
 
 export type ContentProps = {
   /**
    * Recursive breadcrumbs up the chain of nested instance pages.
    */
   breadcrumbs: PageDeepLink[];
-}
+};
 
 export function Content({ breadcrumbs }: ContentProps) {
   const { name, page } = usePageContext();
@@ -37,11 +30,11 @@ export function Content({ breadcrumbs }: ContentProps) {
     <div>
       <Stack>
         <Breadcrumbs items={breadcrumbs} />
-        <Heading level={2}>{page.title}</Heading>
+        <Typography variant="h2">{page.title}</Typography>
       </Stack>
 
       {page.description && (
-        <Paper p="lg" bgc="light" shadow="sm" withBorder>
+        <Paper>
           <Markdown text={page.description} />
         </Paper>
       )}
@@ -49,12 +42,11 @@ export function Content({ breadcrumbs }: ContentProps) {
       <FormErrors errorMessages={errors} />
 
       {/* TODO: Autolayout vs custom layout support. */}
-      <Stack align="stretch" gap="xl" py="lg">
+      <Stack>
         {Object.keys(page.fields).map((fieldName) => (
           <Field key={fieldName} name={`${name}.${fieldName}`} />
         ))}
       </Stack>
-
     </div>
-  )
+  );
 }

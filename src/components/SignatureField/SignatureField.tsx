@@ -1,21 +1,25 @@
-import React, { useRef } from 'react';
+import React, { useId } from 'react';
+import { styled } from '@mui/material';
 import { FormField } from '@osuresearch/ui';
-import { useTextField } from 'react-aria';
+
 import { BaseFieldProps } from '../../react';
 
 // What would the type even be here? Base64 image?
-export type Signature = string
+export type Signature = string;
 
-export type SignatureFieldProps = BaseFieldProps<Signature> & {
+export type SignatureFieldProps = BaseFieldProps<Signature>;
 
-}
+const Placeholder = styled('div')(({ theme }) => ({
+  width: '100%',
+  border: '2px dashed pink',
+  padding: 8,
+  color: 'pink',
+  textAlign: 'center'
+}));
 
 export function SignatureField(props: SignatureFieldProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const { name, onChange, onBlur, value, isDisabled } = props;
-
-  const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(props, inputRef);
+  const id = useId();
 
   // TODO:
   // https://embiem.github.io/react-canvas-draw/
@@ -23,13 +27,10 @@ export function SignatureField(props: SignatureFieldProps) {
 
   return (
     <FormField<Signature>
-      labelProps={labelProps}
-      descriptionProps={descriptionProps}
-      errorMessageProps={errorMessageProps}
       {...props}
+      id={id}
       name={name}
-    >
-      <>signature things</>
-    </FormField>
-  )
+      renderInput={(props) => <Placeholder>Signature field</Placeholder>}
+    />
+  );
 }

@@ -1,4 +1,3 @@
-import { mergeProps } from '@osuresearch/ui';
 import React from 'react';
 import { useController } from 'react-hook-form';
 
@@ -14,13 +13,12 @@ export type UseRippleFieldReturn = {
   componentProps: React.ComponentProps<any>;
 };
 
-
 export function useRippleField<T extends object = any>(
   name: string,
-  def: FieldDefinition,
+  def: FieldDefinition
 ): UseRippleFieldReturn {
   const { interactionMode, setValue, control } = useRippleContext();
-  const [ component, props ] = useFieldComponent<T>(def);
+  const [component, props] = useFieldComponent<T>(def);
   // TODO_YJS: const [ setCollabValue ] = useCollab(name);
 
   // const { onChange, ...registerProps } = register(key, {
@@ -46,21 +44,20 @@ export function useRippleField<T extends object = any>(
   //   });
   // }, [key, register, interactionMode]);
 
-  const { field: { ref, onChange, onBlur, value } } = useController({ name, control });
+  const {
+    field: { ref, onChange, onBlur, value }
+  } = useController({ name, control });
 
-  debugger;
   return {
     ref,
     component,
-    componentProps: mergeProps(
-      props,
-      {
-        onBlur: onBlur,
-        onChange: onChange,
-        value: value,
-        isDisabled: interactionMode !== 'Edit',
-        // isDisabled: true,
-      }
-    )
+    componentProps: {
+      ...props,
+      onBlur: onBlur,
+      onChange: onChange,
+      value: value,
+      isDisabled: interactionMode !== 'Edit'
+      // isDisabled: true,
+    }
   };
 }

@@ -1,22 +1,12 @@
-import {
-  Alert,
-  Chip,
-  Stack
-} from '@osuresearch/ui';
-
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import styled from 'styled-components';
+import { Alert } from '@mui/material';
 
 import { useRippleContext } from '../../hooks/useRippleContext';
 import { Conditional } from '../Conditional';
-import { ErrorBoundary } from '../ErrorBoundary';
 import { PageContext, usePageContext } from '../../hooks/usePageContext';
-import { InstancePage } from '../InstancePage';
 import { Debug } from '../Debug';
 import { PageName } from '../../types';
 import { PageHeader } from '../PageHeader';
-import { Field } from '../Field';
 import { Pagination } from '../Pagination';
 
 export type PageProps = {
@@ -37,22 +27,14 @@ function Content({ name, withHeader, children }: PageProps) {
 
   return (
     <>
-      {withHeader &&
-        <PageHeader name={name} page={page} errors={errors} />
-      }
+      {withHeader && <PageHeader name={name} page={page} errors={errors} />}
 
       {children}
 
       {layoutMode === 'Paged' && <Pagination current={name} />}
     </>
-  )
+  );
 }
-
-const DebugWrapper = styled.div`
-  position: absolute;
-  left: calc(100% - 30px);
-  white-space: nowrap;
-`
 
 /**
  * A page provides context for all child fields and handles
@@ -71,20 +53,19 @@ export function Page(props: PageProps) {
 
   const page = form.pages[name];
   if (!page) {
-    return (
-      <Alert variant="error" title="Page not found">
-        Page missing from form definition: {name}
-      </Alert>
-    );
+    return <Alert severity="error">Page missing from form definition: {name}</Alert>;
   }
 
   return (
     <PageContext.Provider value={{ name, page }}>
       <Conditional name={name} condition={page.condition}>
         <Debug>
-          <DebugWrapper>
-            <Chip variant="indicator" c="green">page.name: {name}</Chip>
-          </DebugWrapper>
+          page.name: {name}
+          {/* <DebugWrapper>
+            <Chip variant="indicator" c="green">
+              page.name: {name}
+            </Chip>
+          </DebugWrapper> */}
         </Debug>
 
         <Content {...props} />

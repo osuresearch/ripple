@@ -1,21 +1,21 @@
 import React from 'react';
-import { VisuallyHidden, Text, Icon } from "@osuresearch/ui";
+import { VisuallyHidden, Icon } from '@osuresearch/ui';
+import { Typography } from '@mui/material';
 
 export type CharacterLimitProps = {
-  count: number
-  limit: number
-}
+  count: number;
+  limit: number;
+};
 
 export function CharacterLimit({ count, limit }: CharacterLimitProps) {
-  const isNearCharacterLimit = limit && (count / limit > 0.8);
+  const isNearCharacterLimit = limit && count / limit > 0.8;
 
   return (
-    <Text fs="sm" c={isNearCharacterLimit ? 'warning-shade' : 'dark'} style={{ float: 'right' }}>
-      {isNearCharacterLimit && <Icon name="exclamationFill" />}{' '}
+    <Typography fontSize="small" color={isNearCharacterLimit ? 'error.main' : 'text.secondary'}>
+      {isNearCharacterLimit && <Icon name="exclamationFill" mb={0.5} />}{' '}
       <VisuallyHidden>Character count: </VisuallyHidden>
       {count}
-      <VisuallyHidden> out of </VisuallyHidden>
-      {' '} / {limit}
-    </Text>
-  )
+      <VisuallyHidden> out of </VisuallyHidden> / {limit}
+    </Typography>
+  );
 }

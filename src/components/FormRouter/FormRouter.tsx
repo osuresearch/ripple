@@ -1,25 +1,34 @@
 import React, { Fragment } from 'react';
-import { MemoryRouter, Routes, Route, createBrowserRouter, RouterProvider, createHashRouter, Link, RouteObject, Outlet, useRouteError, createMemoryRouter } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  RouterProvider,
+  RouteObject,
+  Outlet,
+  createMemoryRouter,
+  createHashRouter
+} from 'react-router-dom';
+
 import { useRippleContext, useRippleSelector } from '../../hooks';
-import { Content } from '../Content';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { PageNotFound } from '../PageNotFound';
 import { PageProps } from '../Page';
 import { AutolayoutPage, AutolayoutPageProps } from '../AutolayoutPage';
 import { getCollectionFields } from '../../tools';
 import { PageDefinition } from '../../types';
+import { Content } from '../Content';
 
 export interface FormContainerProps {
-  pageName?: string
+  pageName?: string;
 }
 
 export type FormRouterProps = {
-  children?: React.ReactNode
+  children?: React.ReactNode;
 
   /**
    * Container element around all pages
    */
-  renderContainer?: (props: { children: React.ReactNode }) => React.ReactNode
+  renderContainer?: (props: { children: React.ReactNode }) => React.ReactNode;
 };
 
 function WrappedFormRouter({ children }: FormRouterProps) {
@@ -33,7 +42,8 @@ function WrappedFormRouter({ children }: FormRouterProps) {
   // by developers to include custom props or DOM.
   React.Children.forEach(children, (child) => {
     const isPage = React.isValidElement<PageProps>(child) && child.type === 'page';
-    const isAutolayoutPage = React.isValidElement<AutolayoutPageProps>(child) && child.type === 'autolayoutpage';
+    const isAutolayoutPage =
+      React.isValidElement<AutolayoutPageProps>(child) && child.type === 'autolayoutpage';
     if (isPage || isAutolayoutPage) {
       pages[child.props.name] = child;
     }
@@ -86,7 +96,7 @@ function WrappedFormRouter({ children }: FormRouterProps) {
           />
         </Route>
       </Routes>
-    )
+    );
   }
 
   // Multipage
@@ -99,7 +109,7 @@ function WrappedFormRouter({ children }: FormRouterProps) {
         <Route path="*" element={<PageNotFound />} />
       </Route>
     </Routes>
-  )
+  );
 }
 
 /**
@@ -114,12 +124,14 @@ function addChildCollectionRoutes(page?: PageDefinition): RouteObject[] {
   return getCollectionFields(page).map((name) => ({
     path: name,
     element: <div>TODO: instance of {name}</div>,
-    children: addChildCollectionRoutes(
-      page.fields[name].template
-    ),
+    children: addChildCollectionRoutes(page.fields[name].template)
   }));
 }
 
+/**
+ * Dynamic React Router memory router that configures itself to
+ * match the active form definition.
+ */
 export function FormRouter({ children, renderContainer }: FormRouterProps) {
   const { form } = useRippleContext();
 
@@ -131,7 +143,8 @@ export function FormRouter({ children, renderContainer }: FormRouterProps) {
 
   React.Children.forEach(children, (child) => {
     const isPage = React.isValidElement<PageProps>(child) && child.type === 'page';
-    const isAutolayoutPage = React.isValidElement<AutolayoutPageProps>(child) && child.type === 'autolayoutpage';
+    const isAutolayoutPage =
+      React.isValidElement<AutolayoutPageProps>(child) && child.type === 'autolayoutpage';
     if (isPage || isAutolayoutPage) {
       overrides[child.props.name] = child;
     }
@@ -140,42 +153,32 @@ export function FormRouter({ children, renderContainer }: FormRouterProps) {
   // Anything that isn't explicitly declared by the developer but *does*
   // exist on the form - we autogenerate a page with its content.
 
-
   const routes: RouteObject[] = [];
 
   pageNames.forEach((name) => {
     routes.push({
       path: name,
-      element: (name in overrides)
-        ? overrides[name]
-        : <AutolayoutPage name={name} />,
-      children: addChildCollectionRoutes(form.pages[name]),
+      element: name in overrides ? overrides[name] : <AutolayoutPage name={name} />,
+      children: addChildCollectionRoutes(form.pages[name])
     });
   });
 
   // First page is synonymous with the root path
   routes.push({
     ...routes[0],
-    path: '',
+    path: ''
   });
 
-  const router = createMemoryRouter([
+  const router = createHashRouter([
     {
       path: '/',
       errorElement: <ErrorBoundary />,
       element: (
-      <div>
-        {renderContainer
-            ? renderContainer({ children: <Outlet /> })
-            : <Outlet />
-        }
-      </div>
+        <div>{renderContainer ? renderContainer({ children: <Outlet /> }) : <Outlet />}</div>
       ),
-      children: routes,
+      children: routes
     }
   ]);
 
-  return (
-    <RouterProvider router={router} />
-  )
+  return <RouterProvider router={router} />;
 }

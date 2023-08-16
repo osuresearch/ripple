@@ -1,34 +1,40 @@
-import {
-  Text
-} from '@osuresearch/ui';
 import React from 'react';
 import striptags from 'striptags';
-import { CollectionInstanceId, BaseField, CollectionField, PageResponses, PageDefinition, MarkdownText } from '../../types';
+
+import {
+  CollectionInstanceId,
+  BaseField,
+  CollectionField,
+  PageResponses,
+  PageDefinition,
+  MarkdownText
+} from '../../types';
 import { Markdown } from '../Markdown';
 
 export type InstanceSummaryProps = {
   id: CollectionInstanceId;
   definition: BaseField & CollectionField;
-  responses: PageResponses
-
+  responses: PageResponses;
 };
 
 function createDefaultSummary(page: PageDefinition, responses: PageResponses): MarkdownText {
-  return Object.keys(page.fields).map((fieldName) => {
-    const field = page.fields[fieldName];
-    const response = responses[fieldName];
+  return Object.keys(page.fields)
+    .map((fieldName) => {
+      const field = page.fields[fieldName];
+      const response = responses[fieldName];
 
-    if (!response) {
-      return `- ${field.label}: *(no response)*`;
-    }
+      if (!response) {
+        return `- ${field.label}: *(no response)*`;
+      }
 
-    if (typeof response === 'string' || typeof response === 'number') {
-      return `- ${field.label}: ${response}`;
-    }
+      if (typeof response === 'string' || typeof response === 'number') {
+        return `- ${field.label}: ${response}`;
+      }
 
-    // Note that this doesn't work with complex fields yet.
-    return `- ${field.label}: (Cannot render type ${typeof response} yet)`
-  }).join('\n');
+      // Note that this doesn't work with complex fields yet.
+      return `- ${field.label}: (Cannot render type ${typeof response} yet)`;
+    })
+    .join('\n');
 }
 
 /**
@@ -38,9 +44,8 @@ export function InstanceSummary({ id, definition, responses }: InstanceSummaryPr
   // Summary is either a markdown string OR a function that
   // accepts the current responses and returns an interpolated
   // markdown string.
-  let summary = (typeof definition.summary === 'function')
-    ? definition.summary(responses)
-    : definition.summary;
+  let summary =
+    typeof definition.summary === 'function' ? definition.summary(responses) : definition.summary;
 
   // Fallback to just rendering a list of responses if the
   // markdown was never supplied for a custom layout.

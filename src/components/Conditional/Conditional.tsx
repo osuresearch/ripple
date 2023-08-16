@@ -1,8 +1,8 @@
 import React from 'react';
-import { Paper } from '@osuresearch/ui';
 import { ConditionInformation } from './ConditionInformation';
 import { useCondition, useRippleContext, useRippleSelector } from '../../hooks';
 import { Condition } from '../../types';
+import { Paper } from '@mui/material';
 
 export type ConditionalProps = {
   name: string;
@@ -36,11 +36,7 @@ export function Conditional({ name, condition, children }: ConditionalProps) {
         condition={condition}
         passed={passed}
       >
-        {error && (
-          <Paper p="xs" bgc="error" c="error-contrast">
-            {error}
-          </Paper>
-        )}
+        {error && <Paper>{error}</Paper>}
         {children}
       </ConditionInformation>
     );

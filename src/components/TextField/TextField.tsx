@@ -1,7 +1,6 @@
-import { cx, FormField, Item, Text, Stack, VisuallyHidden } from '@osuresearch/ui';
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useId } from 'react';
+import { FormField } from '@osuresearch/ui';
 import { Editor, Extensions } from '@tiptap/core';
-import { useTextField } from 'react-aria';
 
 import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -19,22 +18,21 @@ import StarterKit from '@tiptap/starter-kit';
 // TODO_YJS: import { ydoc, provider as rtcProvider } from '../../yjs';
 // TODO_YJS: import { WebrtcProvider } from 'y-webrtc';
 import { CharacterLimit } from './CharacterLimit';
-import styled from 'styled-components';
+import { styled } from '@mui/material';
 
 // TODO_YJS: import './collab-cursor.css';
 
+const Container = styled('div')<{ height: number }>(({ theme, height }) => ({
+  'width': '100%',
+  '.ProseMirror': {
+    'minHeight': `${height}rem`,
+    'border': '2px solid red',
 
-const Container = styled.div<{ height: number }>`
-  width: 100%;
-  .ProseMirror {
-    min-height: ${(props) => props.height}rem;
-
-    &.ProseMirror-focused {
-      outline: none;
+    '&.ProseMirror-focused': {
+      outline: 'none'
     }
   }
-`;
-
+}));
 
 export type TextEditorProps = BaseFieldProps<string> & {
   limit?: number;
@@ -57,9 +55,7 @@ export type TextEditorProps = BaseFieldProps<string> & {
 };
 
 /**
- * The Ripple Text field does not behave exactly like native `input` or `textarea` fields.
- *
- * This supports:
+ * The Ripple Text Field is an enhanced field that supports:
  * - Rich text editing
  * - Markdown WYSIWYG
  * - In-field collaboration and annotation
@@ -69,8 +65,10 @@ export function TextField({ limit = 0, height = 5, noNewline, ...props }: TextEd
 
   const { name, onChange, onBlur, value, isDisabled } = props;
 
+  const id = useId();
+
   useEffect(() => {
-  // TODO_YJS:   setProvider(rtcProvider);
+    // TODO_YJS:   setProvider(rtcProvider);
   }, []);
 
   // TODO_YJS:
@@ -98,8 +96,9 @@ export function TextField({ limit = 0, height = 5, noNewline, ...props }: TextEd
   //   : [Placeholder.configure({ placeholder: 'Loading...' }), StarterKit];
 
   const extensions = [
+    StarterKit,
     Placeholder.configure({ placeholder: 'Loading...' }),
-    StarterKit
+    CharacterCount.configure({ limit })
   ];
 
   if (noNewline) {
@@ -132,43 +131,42 @@ export function TextField({ limit = 0, height = 5, noNewline, ...props }: TextEd
           // sections of words, or a word is broken with a comment span.
           spellcheck: 'false'
         }
-      },
-    },
+      }
+    }
     // TODO_YJS: [provider]
   );
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(props, inputRef);
-
   return (
     <FormField<string>
-      labelProps={labelProps}
-      descriptionProps={descriptionProps}
-      errorMessageProps={errorMessageProps}
       {...props}
+      id={id}
       name={name}
-    >
-      <Container height={height}>
-        <EditorContent editor={editor}
-          id={inputProps.id}
-          aria-labelledby={inputProps['aria-labelledby']}
-          aria-describedby={inputProps['aria-describedby']}
-          className={cx(
-            'rui-w-full rui-p-xs rui-border-2',
-            { 'rui-border-light-shade': !editor?.isFocused },
-            { 'rui-border-dark-shade': editor?.isFocused },
+      renderInput={(props) => (
+        <Container height={height}>
+          <EditorContent
+            editor={editor}
+            id={props.id}
+            aria-labelledby={props['aria-labelledby']}
+            aria-describedby={props['aria-describedby']}
+            // className={cx(
+            //   'rui-w-full rui-p-xs rui-border-2',
+            //   { 'rui-border-light-shade': !editor?.isFocused },
+            //   { 'rui-border-dark-shade': editor?.isFocused },
 
-            // { 'rui-border-dimmed rui-bg-light-shade': props.disabled },
-            { 'rui-border-error': inputProps['aria-invalid'] },
+            //   // { 'rui-border-dimmed rui-bg-light-shade': props.disabled },
+            //   { 'rui-border-error': props['aria-invalid'] }
+            // )}
+            // TODO: disabled, readOnly, value, name, onBlur (null), type: text
+          />
+
+          {limit > 0 && (
+            <CharacterLimit
+              limit={limit}
+              count={editor?.storage.characterCount?.characters() ?? 0}
+            />
           )}
-          // disabled, readOnly, value, name, onBlur (null), type: text
-        />
-
-        {limit > 0 &&
-          <CharacterLimit limit={limit} count={editor?.storage.characterCount?.characters() ?? 0} />
-        }
-      </Container>
-    </FormField>
+        </Container>
+      )}
+    />
   );
 }

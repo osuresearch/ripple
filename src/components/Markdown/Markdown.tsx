@@ -1,4 +1,5 @@
-import { Heading, Link, Box, Text, Icon, Group, Admonition } from '@osuresearch/ui';
+import { Link, Stack, Typography } from '@mui/material';
+import { Icon, Admonition } from '@osuresearch/ui';
 import MarkdownToJSX from 'markdown-to-jsx';
 import React from 'react';
 
@@ -32,14 +33,14 @@ export type MarkdownProps = {
   text?: string;
 };
 
-function ListItem({ children }: { children: React.ReactNode }) {
-  return (
-    <Group as="li" ml="md">
-      <Icon name="circleFill" c="scarlet" size={10} ml="-md" pt="xs" />
-      <p>{children}</p>
-    </Group>
-  );
-}
+// function ListItem({ children }: { children: React.ReactNode }) {
+//   return (
+//     <Stack as="li" ml="md">
+//       <Icon name="circleFill" c="scarlet" size={10} ml="-md" pt="xs" />
+//       <p>{children}</p>
+//     </Stack>
+//   );
+// }
 
 export function _Markdown({ text }: MarkdownProps) {
   if (!text) {
@@ -52,66 +53,63 @@ export function _Markdown({ text }: MarkdownProps) {
         // Map DOM elements to RUI components
         overrides: {
           h1: {
-            component: Heading,
+            component: Typography,
             props: {
-              level: 1
+              variant: 'h1'
             }
           },
           h2: {
-            component: Heading,
+            component: Typography,
             props: {
-              level: 2
+              variant: 'h2'
             }
           },
           h3: {
-            component: Heading,
+            component: Typography,
             props: {
-              level: 3
+              variant: 'h3'
             }
           },
           a: {
-            component: Link // requires: title, href
+            component: Link
           },
           p: {
-            component: Text,
-            props: {
-              as: 'p',
-              pb: 'xs'
-            }
+            component: Typography,
+            props: {}
           },
           // TODO: How should this be styled?
           // See Radiation page.
           blockquote: {
-            component: Text,
+            component: Typography,
             props: {
-              as: 'p',
-              pl: 'md'
+              // as: 'p',
+              // pl: 'md'
             }
           },
           small: {
-            component: Text,
+            component: Typography,
             props: {
-              as: 'p',
-              fs: 'sm',
-              c: 'dark'
+              // as: 'p',
+              // fs: 'sm',
+              // c: 'dark'
             }
           },
 
           // TODO: Don't really have a list component yet.
           // Hacking something in.
-          ul: {
-            component: Box,
-            props: {
-              as: 'ul'
-            }
-          },
-          li: {
-            component: ListItem
-          },
+          // ul: {
+          //   component: Box,
+          //   props: {
+          //     as: 'ul'
+          //   }
+          // },
+          // li: {
+          //   component: ListItem
+          // },
 
           // Expose RUI 5 admonitions for markdown
           Admonition: {
-            component: Admonition,
+            component: Admonition
           }
         }
       }}

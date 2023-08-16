@@ -1,8 +1,6 @@
-
 import {
   CheckboxField,
   TextField,
-
   DateField,
   CheckboxSetField,
   NumberField,
@@ -12,8 +10,8 @@ import {
 } from '@osuresearch/ui';
 
 import { Section } from '../components/Section';
-import { SignatureField } from '../components/SignatureField/SignatureField';
-import { InlineCollection } from '../components/InlineCollection';
+// import { SignatureField } from '../components/SignatureField';
+// import { InlineCollection } from '../components/InlineCollection';
 import { FieldType } from '../types';
 import { FieldComponentType } from './types';
 
@@ -40,8 +38,8 @@ export const defaultComponent: Record<FieldType, FieldComponentType<any> | undef
   Number: NumberField,
   NumberRange: undefined, // RangeField?
 
-  Signature: SignatureField,
+  // Signature: SignatureField,
 
-  Section: Section,
-  Collection: InlineCollection,
+  Section: Section
+  // Collection: InlineCollection
 };

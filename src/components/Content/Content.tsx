@@ -1,14 +1,15 @@
-import { Group, Heading, Divider, FormErrors, Text, Box, Paper, Chip } from '@osuresearch/ui';
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import { Outlet } from 'react-router-dom';
 import { useRippleContext } from '../../hooks';
-import { Aside } from '../Aside';
 import { Debug } from '../Debug';
-import { MemoryRouterEditor } from '../MemoryRouterEditor';
 import { TableOfContents } from '../TableOfContents';
+import { Paper, Stack } from '@mui/material';
+import { MemoryRouterEditor } from '../MemoryRouterEditor';
+import { Aside } from '../Aside';
 
-// Content container for the TOC, page(s), and comment(s)
+/**
+ * Content container for the TOC, page(s), and comment(s)
+ */
 export function Content() {
   const {
     form,
@@ -20,27 +21,26 @@ export function Content() {
   } = useRippleContext();
 
   return (
-    <Group bgc="light" grow align="stretch" gap={0} mih="100vh">
+    // <Stack direction="row" bgc="light" grow align="stretch" gap={0} mih="100vh">
+    <Stack direction="row">
       <TableOfContents />
-      <Paper w={815} miw={815} bgc="light-tint" my="xxl" p="xxl" shadow="sm">
+      <Paper sx={{ width: 815, minWidth: 815 }}>
+        a{/* bgc="light-tint" my="xxl" p="xxl" shadow="sm" */}
         {/* <Heading level={1}>{form.title}</Heading>
         <Text fs="sm" c="dark">
           Version {form.version}
         </Text> */}
-
         <Debug>
           <MemoryRouterEditor />
         </Debug>
-
         {/* TODO: FormErrors needs to be contextual based on view mode
           Agg of all vs single page fields */}
         {/* <FormErrors errorMessages={errors} /> */}
-
         {/* Outlet could be a single page or
           all pages at once depending on view mode */}
         <Outlet />
       </Paper>
       <Aside />
-    </Group>
+    </Stack>
   );
 }

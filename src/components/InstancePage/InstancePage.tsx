@@ -54,24 +54,29 @@ export function InstancePage(props: InstancePageProps) {
   const page = definition.template;
   const Provider = PageContext.Provider;
 
-  const breadcrumbs = [...props.breadcrumbs, {
-    label: page.title,
-    href: normalizeFieldPath(location, name),
-  }];
+  const breadcrumbs = [
+    ...props.breadcrumbs,
+    {
+      label: page.title,
+      href: normalizeFieldPath(location, name)
+    }
+  ];
 
   // Recursive routing to this page OR subpages for nested collections
   return (
     <Provider value={{ name, page }}>
       <Routes>
-        <Route path="/"
+        <Route
+          path="/"
           element={<Content breadcrumbs={breadcrumbs} />}
           errorElement={<ErrorBoundary />}
         />
-        <Route path=":fieldName/*"
+        <Route
+          path=":fieldName/*"
           element={<InstancePage {...props} breadcrumbs={breadcrumbs} name={name} />}
           errorElement={<ErrorBoundary />}
         />
       </Routes>
     </Provider>
-  )
+  );
 }

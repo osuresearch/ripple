@@ -3,7 +3,7 @@ import { Meta, StoryObj } from '@storybook/react';
 import { Markdown } from './Markdown';
 
 const meta: Meta<typeof Markdown> = {
-  title: 'Components/Markdown',
+  title: 'Internal/Markdown',
   component: Markdown,
   argTypes: {}
 };
@@ -13,9 +13,7 @@ export default meta;
 type Story = StoryObj<typeof Markdown>;
 
 export const Example: Story = {
-  render: (args) => (
-    <Markdown {...args} />
-  ),
+  render: (args) => <Markdown {...args} />,
   args: {
     text: `
       # Markdown!
@@ -39,4 +37,4 @@ export const Example: Story = {
 
     `
   }
-}
+};

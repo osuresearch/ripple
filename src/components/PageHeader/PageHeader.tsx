@@ -1,13 +1,14 @@
-import { Box, FormErrors, HashLink, Heading, Paper } from "@osuresearch/ui"
-import React from "react"
-import { Markdown } from "../Markdown"
-import { PageDefinition, PageErrors, PageName } from "../../types"
+import React from 'react';
+import { Markdown } from '../Markdown';
+import { PageDefinition, PageErrors, PageName } from '../../types';
+import { Paper, Stack, Typography } from '@mui/material';
+import { FormErrors } from '../FormErrors';
 
 export type PageHeaderProps = {
-  name: PageName
-  page: PageDefinition
-  errors?: PageErrors
-}
+  name: PageName;
+  page: PageDefinition;
+  errors?: PageErrors;
+};
 
 /**
  * View for page title, description, and error messages.
@@ -17,18 +18,19 @@ export type PageHeaderProps = {
  */
 export function PageHeader({ name, page, errors }: PageHeaderProps) {
   return (
-    <Box>
-      <Heading level={2}>
-        <HashLink id={'ripple-page-' + name}>{page.title}</HashLink>
-      </Heading>
+    <Stack gap={2}>
+      <Typography variant="h2">
+        {/* <HashLink id={'ripple-page-' + name}>{page.title}</HashLink> */}
+        {page.title}
+      </Typography>
 
       {page.description && (
-        <Paper px="lg" pt="lg" pb="sm" bgc="light" shadow="sm" withBorder>
+        <Paper sx={{ p: 2 }}>
           <Markdown text={page.description} />
         </Paper>
       )}
 
       <FormErrors errorMessages={errors} />
-    </Box>
+    </Stack>
   );
 }

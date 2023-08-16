@@ -2,6 +2,7 @@ import React from 'react';
 import { RippleOptions } from '../../hooks';
 import { FormDefinition } from '../../types';
 import { Form } from '../Form';
+import { FormProvider } from '../FormProvider';
 
 export type AutolayoutFormProps = {
   form: FormDefinition;
@@ -17,7 +18,5 @@ export type AutolayoutFormProps = {
  * and fields are laid out in the order defined in `FieldDefinition.fields`.
  */
 export function AutolayoutForm(props: AutolayoutFormProps) {
-  return (
-    <Form {...props} />
-  );
+  return <Form {...props} />;
 }

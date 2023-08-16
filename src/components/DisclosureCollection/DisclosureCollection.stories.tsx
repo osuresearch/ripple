@@ -1,12 +1,13 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
+
 import { DisclosureCollection } from './DisclosureCollection';
 import { Page } from '../Page';
-import { FormDefinition } from '../../types';
 import { Form } from '../Form';
+import { FormDefinition } from '../../types';
 
 const meta: Meta<typeof DisclosureCollection> = {
-  title: 'Components/DisclosureCollection',
+  title: 'Collections/DisclosureCollection',
   component: DisclosureCollection,
   argTypes: {}
 };
@@ -30,12 +31,12 @@ const form = {
             fields: {
               field1: {
                 type: 'Text',
-                label: 'Field 1',
+                label: 'Field 1'
               },
               field2: {
                 type: 'Text',
-                label: 'Field 2',
-              },
+                label: 'Field 2'
+              }
             }
           }
         }
@@ -54,6 +55,6 @@ export const Example: Story = {
   ),
   args: {
     name: 'example',
-    placeholder: 'There is nothing here!',
+    placeholder: 'There is nothing here!'
   }
-}
+};

@@ -1,15 +1,15 @@
 import React from 'react';
-import { Stack, IconButton, ScrollArea } from '@osuresearch/ui';
-import { toggleComments } from '../../features/settings';
-import { useRippleDispatch, useRippleSelector } from '../../hooks';
-import { Debugger } from '../Debugger';
+import { IconButton, Stack } from '@mui/material';
+
+import { toggleComments } from '../../features';
+import { useRippleSelector, useRippleDispatch } from '../../hooks';
 
 export function Aside() {
   const showComments = useRippleSelector((state) => state.settings.showComments);
   const dispatch = useRippleDispatch();
 
   return (
-    <Stack p="md" align="end">
+    <Stack>
       <IconButton
         name="bars"
         size={24}
@@ -17,15 +17,18 @@ export function Aside() {
         onPress={() => dispatch(toggleComments(!showComments))}
       />
 
-      {showComments &&
-      <ScrollArea h="100px" w="100%" miw={350} type="hover" style={{ flexGrow: 1 }} hideDelay={1000}>
-        <Debugger />
-        {/* <Stack gap={0}>
-          <Text c="dark" fw="bold" fs="sm">Comments</Text>
-          <Text>Content here.</Text>
-        </Stack> */}
-      </ScrollArea>
-      }
+      {/* {showComments && (
+        <ScrollArea
+          h="100px"
+          w="100%"
+          miw={350}
+          type="hover"
+          style={{ flexGrow: 1 }}
+          hideDelay={1000}
+        >
+          <Debugger />
+        </ScrollArea>
+      )} */}
     </Stack>
-  )
+  );
 }

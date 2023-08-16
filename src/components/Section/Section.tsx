@@ -1,6 +1,6 @@
 import React from 'react';
 import { BaseFieldProps } from '../../react';
-import { Heading, HashLink } from '@osuresearch/ui';
+import { Typography } from '@mui/material';
 
 export type SectionProps = BaseFieldProps<void>;
 
@@ -18,14 +18,12 @@ export type SectionProps = BaseFieldProps<void>;
 export function Section({ label, description }: SectionProps) {
   return (
     <>
-      <Heading level={2}>
-        <HashLink id={'ripple-page-' + name}>{label}</HashLink>
-      </Heading>
+      <Typography variant="h2">
+        {label}
+        {/* <HashLink id={'ripple-page-' + name}>{label}</HashLink> */}
+      </Typography>
 
-      {description &&
-        <p>{description}</p>
-      }
+      {description && <p>{description}</p>}
     </>
   );
 }
-

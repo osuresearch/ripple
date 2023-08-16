@@ -1,11 +1,12 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import { Breadcrumbs } from './Breadcrumbs';
-import { FormProvider } from '../FormProvider';
 import { MemoryRouter } from 'react-router-dom';
 
+import { Breadcrumbs } from './Breadcrumbs';
+import { FormProvider } from '../FormProvider';
+
 const meta: Meta<typeof Breadcrumbs> = {
-  title: 'Components/Breadcrumbs',
+  title: 'Navigation/Breadcrumbs',
   component: Breadcrumbs,
   argTypes: {}
 };
@@ -16,26 +17,24 @@ type Story = StoryObj<typeof Breadcrumbs>;
 
 export const Example: Story = {
   render: (args) => (
-    <FormProvider form={{ title: '', version: '', pages: {} }}>
-      <MemoryRouter>
-        <Breadcrumbs {...args} />
-      </MemoryRouter>
-    </FormProvider>
+    <MemoryRouter>
+      <Breadcrumbs {...args} />
+    </MemoryRouter>
   ),
   args: {
     items: [
       {
         label: 'Foo',
-        href: '/foo',
+        href: '/foo'
       },
       {
         label: 'Subpage of Foo',
-        href: '/foo/subpage',
+        href: '/foo/subpage'
       },
       {
         label: 'A third level',
-        href: '/foo/subpage/lvl3',
+        href: '/foo/subpage/lvl3'
       }
     ]
   }
-}
+};

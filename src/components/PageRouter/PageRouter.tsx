@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
+
 import { useRippleContext, useRippleSelector } from '../../hooks';
-import { Content } from '../Content';
 import { ErrorBoundary } from '../ErrorBoundary';
 import { PageNotFound } from '../PageNotFound';
 import { PageProps, Page } from '../Page';
+import { Content } from '../Content';
 
 export type PageRouterProps = {
   children: React.ReactNode;

@@ -1,21 +1,18 @@
+import { Button, Stack, Typography } from '@mui/material';
 import React from 'react';
-import { Text, Heading, Stack, HashLink, Button } from '@osuresearch/ui';
-
-export type SummaryProps = {
-  placeholderBecauseUnexpectedEmptyObjectPattern?: string;
-};
+export interface SummaryProps {}
 
 export function Summary(props: SummaryProps) {
   return (
     <Stack>
-      <HashLink id="ripple-summary">
-        <Heading level={2}>Submission summary</Heading>
-      </HashLink>
+      {/* <HashLink id="ripple-summary"> */}
+      <Typography variant="h2">Submission summary</Typography>
+      {/* </HashLink> */}
 
-      <Text>
+      <Typography>
         TODO: Full form error scanning, verification, wiring into implementing apps, custom
         markdown, etc.
-      </Text>
+      </Typography>
 
       <Button>Submit</Button>
     </Stack>
