@@ -11,7 +11,13 @@ import { FormProvider } from '../src/components/FormProvider';
 import { TestForm } from '../src/mocks/tests';
 
 const preview: Preview = {
-  parameters: {},
+  parameters: {
+    options: {
+      storySort: {
+        order: ['Getting Started', 'Components', 'Fields', 'Collections', 'Navigation', 'Internal']
+      }
+    }
+  },
   decorators: [
     // All stories need an RUI provider and a mock form
     (Story) => (
